@@ -38,6 +38,7 @@ Content-Type: application/json
                 "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
                 "name": "Pikachu",
                 "battle_stats": {
+                    "init_health": 100,
                     "health": 100,
                     "attack": 25,
                     "defense": 5,
@@ -93,6 +94,7 @@ Content-Type: application/json
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
             "name": "Pikachu",
             "battle_stats": {
+                "init_health": 100,
                 "health": 100,
                 "attack": 25,
                 "defense": 5,
@@ -154,6 +156,7 @@ Content-Type: application/json
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
             "name": "Pikachu",
             "battle_stats": {
+                "init_health": 100,
                 "health": 100,
                 "attack": 25,
                 "defense": 5,
@@ -215,6 +218,56 @@ Content-Type: application/json
 
 POST: `/games/{game_id}/battles`
 
+This endpoint is used for initializing new battle for given game. The enemy that will be faced by player will be randomized by the system.
+
+Everytime player finish from battle, health point for pokemon partner will be set back to full.
+
+**Example Request:**
+
+```http
+POST /games/640dd7ef-be61-437d-a8ea-f12383185949/battles
+```
+
+**Success Response:**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "ok": true,
+    "data": {
+        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "state": "DECIDE_TURN",
+        "partner": {
+            "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+            "name": "Pikachu",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 100,
+                "attack": 25,
+                "defense": 5,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+        },
+        "enemy": {
+            "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+            "name": "Charmander",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 100,
+                "attack": 30,
+                "defense": 4,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        }
+    },
+    "ts": 1644934528
+}
+```
+
 [Back to Top](#http-api)
 
 ---
@@ -223,6 +276,63 @@ POST: `/games/{game_id}/battles`
 
 GET: `/games/{game_id}/battles/{battle_id}`
 
+This endpoint is used for getting battle info for specified battle id. It is useful for displaying current battle info.
+
+In the response, there is a field called `state`. It is represents what action should be taken by the client in the battle.
+
+Available values for the `state` are following:
+
+- `DECIDE_TURN` => client should call [Decide Turn](#decide-turn) endpoint
+- `PLAYER_TURN` => client should call either [Attack](#attack) or [Surrender](#surrender)
+- `FINISHED` => battle is already finished, either pokemon partner or enemy win the battle, the value of field `winner` will be set on the response data
+
+**Example Request:**
+
+```http
+GET /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a
+```
+
+**Success Response:**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "ok": true,
+    "data": {
+        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "state": "FINISHED",
+        "winner": "ENEMY", // value of winner being set because the battle state is `FINISHED`
+        "partner": {
+            "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+            "name": "Pikachu",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 0,
+                "attack": 25,
+                "defense": 5,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+        },
+        "enemy": {
+            "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+            "name": "Charmander",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 20,
+                "attack": 30,
+                "defense": 4,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        }
+    },
+    "ts": 1644934528
+}
+```
+
 [Back to Top](#http-api)
 
 ---
@@ -230,6 +340,98 @@ GET: `/games/{game_id}/battles/{battle_id}`
 ## Decide Turn
 
 PUT: `/games/{game_id}/battles/{battle_id}/turn`
+
+This endpoint is used for deciding whether it is player or enemy turn to attack. If it is enemy turn, the pokemon partner will take some damage from enemy.
+
+Turn is being randomized based on speed stats from both pokemon partner & enemy.
+
+**Example Request:**
+
+```http
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a/turn
+```
+
+**Success Responses:**
+
+- Enemy Attack:
+
+    ```http
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+        "ok": true,
+        "data": {
+            "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+            "state": "DECIDE_TURN",
+            "partner": {
+                "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+                "name": "Pikachu",
+                "battle_stats": {
+                    "init_health": 100,
+                    "health": 80,
+                    "attack": 25,
+                    "defense": 5,
+                    "speed": 10,
+                },
+                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            },
+            "enemy": {
+                "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+                "name": "Charmander",
+                "battle_stats": {
+                    "init_health": 100,
+                    "health": 100,
+                    "attack": 30,
+                    "defense": 4,
+                    "speed": 10,
+                },
+                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            }
+        },
+        "ts": 1644934528
+    }
+    ```
+
+- Player Turn:
+
+    ```http
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+        "ok": true,
+        "data": {
+            "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+            "state": "PLAYER_TURN",
+            "partner": {
+                "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+                "name": "Pikachu",
+                "battle_stats": {
+                    "init_health": 100,
+                    "health": 100,
+                    "attack": 25,
+                    "defense": 5,
+                    "speed": 10,
+                },
+                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            },
+            "enemy": {
+                "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+                "name": "Charmander",
+                "battle_stats": {
+                    "init_health": 100,
+                    "health": 100,
+                    "attack": 30,
+                    "defense": 4,
+                    "speed": 10,
+                },
+                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            }
+        },
+        "ts": 1644934528
+    }
+    ```
 
 [Back to Top](#http-api)
 
