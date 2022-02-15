@@ -284,7 +284,8 @@ Available values for the `state` are following:
 
 - `DECIDE_TURN` => client should call [Decide Turn](#decide-turn) endpoint
 - `PLAYER_TURN` => client should call either [Attack](#attack) or [Surrender](#surrender)
-- `FINISHED` => battle is already finished, either pokemon partner or enemy win the battle, the value of field `winner` will be set on the response data
+- `WIN` => player won the battle, client should clear the battle scene
+- `LOSE` => enemy won the battle, client should clear the battle scene
 
 **Example Request:**
 
@@ -302,8 +303,7 @@ Content-Type: application/json
     "ok": true,
     "data": {
         "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
-        "state": "FINISHED",
-        "winner": "ENEMY", // value of winner being set because the battle state is `FINISHED`
+        "state": "LOSE",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
             "name": "Pikachu",
@@ -441,6 +441,54 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
 
 PUT: `/games/{game_id}/battles/{battle_id}/attack`
 
+This endpoint is used for inflicting damage to enemy. The resulted `state` of this action is `WIN`, `LOSE`, or `DECIDE_TURN`.
+
+**Example Request:**
+
+```http
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a/attack
+```
+
+**Success Response:**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "ok": true,
+    "data": {
+        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "state": "DECIDE_TURN",
+        "partner": {
+            "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+            "name": "Pikachu",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 100,
+                "attack": 25,
+                "defense": 5,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+        },
+        "enemy": {
+            "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+            "name": "Charmander",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 84,
+                "attack": 30,
+                "defense": 4,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        }
+    },
+    "ts": 1644934528
+}
+```
+
 [Back to Top](#http-api)
 
 ---
@@ -448,6 +496,54 @@ PUT: `/games/{game_id}/battles/{battle_id}/attack`
 ## Surrender
 
 PUT: `/games/{game_id}/battles/{battle_id}/surrender`
+
+This endpoint is used by player to surrender current battle. The resulted `state` for this action is `LOSE`.
+
+**Example Request:**
+
+```http
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a/surrender
+```
+
+**Success Response:**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "ok": true,
+    "data": {
+        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "state": "LOSE",
+        "partner": {
+            "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+            "name": "Pikachu",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 100,
+                "attack": 25,
+                "defense": 5,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+        },
+        "enemy": {
+            "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+            "name": "Charmander",
+            "battle_stats": {
+                "init_health": 100,
+                "health": 84,
+                "attack": 30,
+                "defense": 4,
+                "speed": 10,
+            },
+            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        }
+    },
+    "ts": 1644934528
+}
+```
 
 [Back to Top](#http-api)
 
