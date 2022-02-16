@@ -44,7 +44,7 @@ Content-Type: application/json
                     "defense": 5,
                     "speed": 10,
                 },
-                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
             }
         ]
     },
@@ -100,7 +100,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
         }
     },
     "ts": 1644934528
@@ -162,7 +162,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
         },
         "created_at": 1644934528,
         "battle_won": 0,
@@ -249,7 +249,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -261,7 +261,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
         }
     },
     "ts": 1644934528
@@ -314,7 +314,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -326,7 +326,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
         }
     },
     "ts": 1644934528
@@ -374,7 +374,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
                     "defense": 5,
                     "speed": 10,
                 },
-                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
             },
             "enemy": {
                 "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -386,7 +386,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
                     "defense": 4,
                     "speed": 10,
                 },
-                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
             }
         },
         "ts": 1644934528
@@ -414,7 +414,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
                     "defense": 5,
                     "speed": 10,
                 },
-                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
             },
             "enemy": {
                 "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -426,7 +426,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
                     "defense": 4,
                     "speed": 10,
                 },
-                "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
             }
         },
         "ts": 1644934528
@@ -470,7 +470,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -482,7 +482,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
         }
     },
     "ts": 1644934528
@@ -526,7 +526,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -538,7 +538,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
         }
     },
     "ts": 1644934528
