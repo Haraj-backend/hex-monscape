@@ -216,7 +216,7 @@ Content-Type: application/json
 
 ## Start Battle
 
-POST: `/games/{game_id}/battles`
+PUT: `/games/{game_id}/battle`
 
 This endpoint is used for initializing new battle for given game. The enemy that will be faced by player will be randomized by the system.
 
@@ -225,7 +225,7 @@ Everytime player finish from battle, health point for pokemon partner will be se
 **Example Request:**
 
 ```http
-POST /games/640dd7ef-be61-437d-a8ea-f12383185949/battles
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles
 ```
 
 **Success Response:**
@@ -237,7 +237,7 @@ Content-Type: application/json
 {
     "ok": true,
     "data": {
-        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
         "state": "DECIDE_TURN",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
@@ -274,7 +274,7 @@ Content-Type: application/json
 
 ## Get Battle Info
 
-GET: `/games/{game_id}/battles/{battle_id}`
+GET: `/games/{game_id}/battle`
 
 This endpoint is used for getting battle info for specified battle id. It is useful for displaying current battle info.
 
@@ -302,7 +302,7 @@ Content-Type: application/json
 {
     "ok": true,
     "data": {
-        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
         "state": "LOSE",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
@@ -339,7 +339,7 @@ Content-Type: application/json
 
 ## Decide Turn
 
-PUT: `/games/{game_id}/battles/{battle_id}/turn`
+PUT: `/games/{game_id}/battle/turn`
 
 This endpoint is used for deciding whether it is player or enemy turn to attack. If it is enemy turn, the pokemon partner will take some damage from enemy.
 
@@ -348,7 +348,7 @@ Turn is being randomized based on speed stats from both pokemon partner & enemy.
 **Example Request:**
 
 ```http
-PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a/turn
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
 ```
 
 **Success Responses:**
@@ -362,7 +362,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
     {
         "ok": true,
         "data": {
-            "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+            "game_id": "640dd7ef-be61-437d-a8ea-f12383185949"
             "state": "DECIDE_TURN",
             "partner": {
                 "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
@@ -402,7 +402,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
     {
         "ok": true,
         "data": {
-            "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+            "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
             "state": "PLAYER_TURN",
             "partner": {
                 "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
@@ -439,14 +439,14 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-
 
 ## Attack
 
-PUT: `/games/{game_id}/battles/{battle_id}/attack`
+PUT: `/games/{game_id}/battle/attack`
 
 This endpoint is used for inflicting damage to enemy. The resulted `state` of this action is `WIN`, `LOSE`, or `DECIDE_TURN`.
 
 **Example Request:**
 
 ```http
-PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a/attack
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/attack
 ```
 
 **Success Response:**
@@ -458,7 +458,7 @@ Content-Type: application/json
 {
     "ok": true,
     "data": {
-        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
         "state": "DECIDE_TURN",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
@@ -495,14 +495,14 @@ Content-Type: application/json
 
 ## Surrender
 
-PUT: `/games/{game_id}/battles/{battle_id}/surrender`
+PUT: `/games/{game_id}/battle/surrender`
 
 This endpoint is used by player to surrender current battle. The resulted `state` for this action is `LOSE`.
 
 **Example Request:**
 
 ```http
-PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles/0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a/surrender
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/surrender
 ```
 
 **Success Response:**
@@ -514,7 +514,7 @@ Content-Type: application/json
 {
     "ok": true,
     "data": {
-        "id": "0f4d64d4-fd2d-4da6-bb6c-488fb4e60c2a",
+        "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
         "state": "LOSE",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
