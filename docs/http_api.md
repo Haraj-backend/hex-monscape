@@ -262,6 +262,10 @@ Content-Type: application/json
                 "speed": 10,
             },
             "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        },
+        "last_damage": {
+            "partner": 0,
+            "enemy": 0 
         }
     },
     "ts": 1644934528
@@ -327,6 +331,10 @@ Content-Type: application/json
                 "speed": 10,
             },
             "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        },
+        "last_damage": {
+            "partner": 100,
+            "enemy": 0 
         }
     },
     "ts": 1644934528
@@ -368,8 +376,8 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                 "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
                 "name": "Pikachu",
                 "battle_stats": {
-                    "health": 100,
-                    "max_health": 80,
+                    "health": 80,
+                    "max_health": 100,
                     "attack": 25,
                     "defense": 5,
                     "speed": 10,
@@ -387,6 +395,10 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                     "speed": 10,
                 },
                 "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            },
+            "last_damage": {
+                "partner": 20,
+                "enemy": 0 
             }
         },
         "ts": 1644934528
@@ -427,6 +439,10 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                     "speed": 10,
                 },
                 "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            },
+            "last_damage": {
+                "partner": 0,
+                "enemy": 0 
             }
         },
         "ts": 1644934528
@@ -476,13 +492,17 @@ Content-Type: application/json
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
             "name": "Charmander",
             "battle_stats": {
-                "health": 100,
-                "max_health": 84,
+                "health": 84,
+                "max_health": 100,
                 "attack": 30,
                 "defense": 4,
                 "speed": 10,
             },
             "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        },
+        "last_damage": {
+            "partner": 0,
+            "enemy": 16
         }
     },
     "ts": 1644934528
@@ -532,13 +552,17 @@ Content-Type: application/json
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
             "name": "Charmander",
             "battle_stats": {
-                "health": 100,
-                "max_health": 84,
+                "health": 84,
+                "max_health": 100,
                 "attack": 30,
                 "defense": 4,
                 "speed": 10,
             },
             "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+        },
+        "last_damage": {
+            "partner": 0,
+            "enemy": 0 
         }
     },
     "ts": 1644934528
