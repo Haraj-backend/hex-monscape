@@ -4,9 +4,9 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>760</x>
-      <y>280</y>
-      <w>295</w>
+      <x>795</x>
+      <y>345</y>
+      <w>215</w>
       <h>105</h>
     </coordinates>
     <panel_attributes>battling.Battle
@@ -22,14 +22,14 @@
 +EnemyAttack(): error
 +IsEnded(): bool
 +DecideTurn(): battling.State
-_+NewBattle(gameID: string, partner, enemy: entity.Pokemon): (*battling.Battle, error)_</panel_attributes>
+_+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>605</x>
-      <y>120</y>
+      <x>600</x>
+      <y>185</y>
       <w>180</w>
       <h>65</h>
     </coordinates>
@@ -47,8 +47,8 @@ _+NewBattle(gameID: string, partner, enemy: entity.Pokemon): (*battling.Battle, 
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>850</x>
-      <y>125</y>
+      <x>845</x>
+      <y>190</y>
       <w>65</w>
       <h>55</h>
     </coordinates>
@@ -64,8 +64,8 @@ _+NewBattle(gameID: string, partner, enemy: entity.Pokemon): (*battling.Battle, 
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>780</x>
-      <y>150</y>
+      <x>775</x>
+      <y>215</y>
       <w>80</w>
       <h>15</h>
     </coordinates>
@@ -75,8 +75,8 @@ _+NewBattle(gameID: string, partner, enemy: entity.Pokemon): (*battling.Battle, 
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1120</x>
-      <y>285</y>
+      <x>1080</x>
+      <y>355</y>
       <w>75</w>
       <h>30</h>
     </coordinates>
@@ -89,19 +89,19 @@ _+NewBattle(gameID: string, partner, enemy: entity.Pokemon): (*battling.Battle, 
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1050</x>
-      <y>295</y>
-      <w>80</w>
+      <x>1005</x>
+      <y>365</y>
+      <w>85</w>
       <h>15</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1120</x>
-      <y>325</y>
+      <x>1080</x>
+      <y>400</y>
       <w>110</w>
       <h>60</h>
     </coordinates>
@@ -118,19 +118,19 @@ _+LOSE: battling.State_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1050</x>
-      <y>355</y>
-      <w>80</w>
+      <x>1005</x>
+      <y>430</y>
+      <w>85</w>
       <h>15</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>775</x>
-      <y>440</y>
+      <x>770</x>
+      <y>505</y>
       <w>260</w>
       <h>75</h>
     </coordinates>
@@ -143,14 +143,14 @@ _+LOSE: battling.State_</panel_attributes>
 +DecideTurn(ctx: context.Context, gameID: string): (*battling.Battle, error)
 +Attack(ctx: context.Context, gameID: string): (*battling.Battle, error)
 +Surrender(ctx: context.Context, gameID: string): (*battling.Battle, error)
-_+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attributes>
+_+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>895</x>
-      <y>380</y>
+      <x>890</x>
+      <y>445</y>
       <w>15</w>
       <h>70</h>
     </coordinates>
@@ -160,8 +160,8 @@ _+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attr
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1095</x>
-      <y>460</y>
+      <x>1090</x>
+      <y>525</y>
       <w>255</w>
       <h>40</h>
     </coordinates>
@@ -175,8 +175,8 @@ _+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attr
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1030</x>
-      <y>470</y>
+      <x>1025</x>
+      <y>535</y>
       <w>75</w>
       <h>15</h>
     </coordinates>
@@ -186,8 +186,8 @@ _+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attr
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>745</x>
-      <y>180</y>
+      <x>740</x>
+      <y>245</y>
       <w>165</w>
       <h>110</h>
     </coordinates>
@@ -197,9 +197,9 @@ _+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attr
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>395</x>
-      <y>275</y>
-      <w>280</w>
+      <x>420</x>
+      <y>340</y>
+      <w>215</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>playing.Game
@@ -212,14 +212,14 @@ _+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attr
 +Scenario: playing.Scenario
 --
 +GetNextScenario(): playing.Scenario
-_+NewGame(playerName: string, partner: entity.Pokemon): (*playing.Game, error)_</panel_attributes>
+_+NewGame(cfg: playing.GameConfig): (*playing.Game, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>225</x>
-      <y>285</y>
+      <x>220</x>
+      <y>350</y>
       <w>115</w>
       <h>60</h>
     </coordinates>
@@ -236,30 +236,30 @@ _+END_GAME: playing.Scenario_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>335</x>
-      <y>315</y>
-      <w>70</w>
+      <x>330</x>
+      <y>380</y>
+      <w>100</w>
       <h>15</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>520</x>
-      <y>180</y>
-      <w>130</w>
+      <x>525</x>
+      <y>245</y>
+      <w>120</w>
       <h>105</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>240.0;10.0;10.0;190.0</additional_attributes>
+    <additional_attributes>220.0;10.0;10.0;190.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>365</x>
-      <y>440</y>
+      <x>360</x>
+      <y>505</y>
       <w>330</w>
       <h>65</h>
     </coordinates>
@@ -271,14 +271,14 @@ _+END_GAME: playing.Scenario_</panel_attributes>
 +NewGame(ctx: context.Context, playerName: string, partnerID: string): (*playing.Game, error)
 +GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
 +GetNextScenario(ctx: context.Context, gameID: string): (*playing.Game, error)
-_+NewService(storage: playing.Storage): (*playing.Service, error)_</panel_attributes>
+_+NewService(cfg: playing.ServiceConfig): (*playing.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>520</x>
-      <y>350</y>
+      <x>515</x>
+      <y>415</y>
       <w>15</w>
       <h>100</h>
     </coordinates>
@@ -288,8 +288,8 @@ _+NewService(storage: playing.Storage): (*playing.Service, error)_</panel_attrib
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>55</x>
-      <y>455</y>
+      <x>50</x>
+      <y>520</y>
       <w>250</w>
       <h>40</h>
     </coordinates>
@@ -303,8 +303,8 @@ _+NewService(storage: playing.Storage): (*playing.Service, error)_</panel_attrib
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>300</x>
-      <y>465</y>
+      <x>295</x>
+      <y>530</y>
       <w>75</w>
       <h>15</h>
     </coordinates>
@@ -314,12 +314,12 @@ _+NewService(storage: playing.Storage): (*playing.Service, error)_</panel_attrib
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>535</y>
-      <w>305</w>
+      <x>40</x>
+      <y>600</y>
+      <w>260</w>
       <h>65</h>
     </coordinates>
-    <panel_attributes>storage.PlayInMemStorage
+    <panel_attributes>storage.PlayStorage
 --
 -data: map[string]playing.Game
 -partners: []entity.Pokemon
@@ -327,29 +327,29 @@ _+NewService(storage: playing.Storage): (*playing.Service, error)_</panel_attrib
 +GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
 +SaveGame(ctx: context.Context, game: playing.Game): error
 +GetPartners(ctx: context.Context): ([]entity.Pokemon, error)
-_+NewPlayInMemStorage(partners: []entity.Pokemon): (*storage.PlayInMemStorage, error)_</panel_attributes>
+_+NewPlayStorage(cfg: storage.PlayStorageConfig): (*storage.PlayStorage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>490</y>
+      <x>165</x>
+      <y>555</y>
       <w>15</w>
-      <h>50</h>
+      <h>55</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>1065</x>
-      <y>535</y>
-      <w>320</w>
+      <y>600</y>
+      <w>295</w>
       <h>65</h>
     </coordinates>
-    <panel_attributes>storage.BattleInMemStorage
+    <panel_attributes>storage.BattleStorage
 --
 -data: map[string]battling.Battle
 -enemies: []entity.Pokemon
@@ -357,14 +357,14 @@ _+NewPlayInMemStorage(partners: []entity.Pokemon): (*storage.PlayInMemStorage, e
 +GetBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
 +SaveBattle(ctx: context.Context, b: battling.Battle): error
 +GetEnemies(ctx: context.Context): ([]entity.Pokemon, error)
-_+NewBattleInMemStorage(enemies: []entity.Pokemon): (*storage.BattleInMemStorage, error)_</panel_attributes>
+_+NewBattleStorage(cfg: storage.BattleStorageConfig): (*storage.BattleStorage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1215</x>
-      <y>495</y>
+      <x>1210</x>
+      <y>560</y>
       <w>15</w>
       <h>50</h>
     </coordinates>
@@ -374,8 +374,8 @@ _+NewBattleInMemStorage(enemies: []entity.Pokemon): (*storage.BattleInMemStorage
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>590</x>
-      <y>590</y>
+      <x>585</x>
+      <y>680</y>
       <w>240</w>
       <h>120</h>
     </coordinates>
@@ -394,29 +394,215 @@ _+NewBattleInMemStorage(enemies: []entity.Pokemon): (*storage.BattleInMemStorage
 -serveDecideTurn(w: http.ResponseWriter, r: *http.Request)
 -serveAttack(w: http.ResponseWriter, r: *http.Request)
 -serveSurrender(w: http.ResponseWriter, r: *http.Request)
-_+NewAPI(ps: playing.Service, bs: battle.Service): (*rest.API, error)_</panel_attributes>
+_+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>645</x>
+      <y>855</y>
+      <w>105</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>rest.APIConfig
+--
++PlayService: playing.Service
++BattleService: battle.Service
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>695</x>
+      <y>795</y>
+      <w>15</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>615</x>
+      <y>565</y>
+      <w>15</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>785</x>
+      <y>575</y>
+      <w>15</w>
+      <h>115</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>105</x>
+      <y>705</y>
+      <w>135</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>storage.PlayStorageConfig
+--
++PokemonPartners: []entity.Pokemon
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>165</x>
+      <y>660</y>
+      <w>15</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1150</x>
+      <y>705</y>
+      <w>130</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>storage.BattleStorageConfig
+--
++PossibleEnemies: []entity.Pokemon
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1210</x>
+      <y>660</y>
+      <w>15</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>475</x>
+      <y>610</y>
+      <w>95</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>playing.ServiceConfig
+--
++Storage: playing.Storage
+--
++Validate(): error</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>515</x>
-      <y>500</y>
-      <w>120</w>
-      <h>100</h>
+      <y>565</y>
+      <w>15</w>
+      <h>55</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>220.0;180.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>880</x>
+      <y>610</y>
+      <w>95</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>battling.ServiceConfig
+--
++Storage: battling.Storage
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>785</x>
-      <y>510</y>
-      <w>125</w>
-      <h>90</h>
+      <x>920</x>
+      <y>575</y>
+      <w>15</w>
+      <h>45</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;160.0;230.0;10.0</additional_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>945</x>
+      <y>255</y>
+      <w>95</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>battling.BattleConfig
+--
++GameID: string
++Partner: entity.Pokemon
++Enemy: entity.Pokemon
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>985</x>
+      <y>300</y>
+      <w>15</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>415</x>
+      <y>255</y>
+      <w>95</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>playing.GameConfig
+--
++PlayerName: string
++Partner: entity.Pokemon
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>290</y>
+      <w>15</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
   </element>
 </diagram>
