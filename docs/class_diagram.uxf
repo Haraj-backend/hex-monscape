@@ -132,7 +132,7 @@ _+LOSE: battling.State_</panel_attributes>
       <x>775</x>
       <y>440</y>
       <w>260</w>
-      <h>65</h>
+      <h>75</h>
     </coordinates>
     <panel_attributes>battling.Service
 --
@@ -142,7 +142,8 @@ _+LOSE: battling.State_</panel_attributes>
 +GetBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
 +DecideTurn(ctx: context.Context, gameID: string): (*battling.Battle, error)
 +Attack(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+Surrender(ctx: context.Context, gameID: string): (*battling.Battle, error)</panel_attributes>
++Surrender(ctx: context.Context, gameID: string): (*battling.Battle, error)
+_+NewService(storage: battling.Storage): (*battling.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -260,7 +261,7 @@ _+END_GAME: playing.Scenario_</panel_attributes>
       <x>365</x>
       <y>440</y>
       <w>330</w>
-      <h>55</h>
+      <h>65</h>
     </coordinates>
     <panel_attributes>playing.Service
 --
@@ -269,7 +270,8 @@ _+END_GAME: playing.Scenario_</panel_attributes>
 +GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
 +NewGame(ctx: context.Context, playerName: string, partnerID: string): (*playing.Game, error)
 +GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
-+GetNextScenario(ctx: context.Context, gameID: string): (*playing.Game, error)</panel_attributes>
++GetNextScenario(ctx: context.Context, gameID: string): (*playing.Game, error)
+_+NewService(storage: playing.Storage): (*playing.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -375,7 +377,7 @@ _+NewBattleInMemStorage(enemies: []entity.Pokemon): (*storage.BattleInMemStorage
       <x>590</x>
       <y>590</y>
       <w>240</w>
-      <h>115</h>
+      <h>120</h>
     </coordinates>
     <panel_attributes>rest.API
 --
@@ -391,29 +393,30 @@ _+NewBattleInMemStorage(enemies: []entity.Pokemon): (*storage.BattleInMemStorage
 -serveGetBattleInfo(w: http.ResponseWriter, r: *http.Request)
 -serveDecideTurn(w: http.ResponseWriter, r: *http.Request)
 -serveAttack(w: http.ResponseWriter, r: *http.Request)
--serveSurrender(w: http.ResponseWriter, r: *http.Request)</panel_attributes>
+-serveSurrender(w: http.ResponseWriter, r: *http.Request)
+_+NewAPI(ps: playing.Service, bs: battle.Service): (*rest.API, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>515</x>
-      <y>490</y>
+      <y>500</y>
       <w>120</w>
-      <h>110</h>
+      <h>100</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>220.0;200.0;10.0;10.0</additional_attributes>
+    <additional_attributes>220.0;180.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>785</x>
-      <y>500</y>
+      <y>510</y>
       <w>125</w>
-      <h>100</h>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;180.0;230.0;10.0</additional_attributes>
+    <additional_attributes>10.0;160.0;230.0;10.0</additional_attributes>
   </element>
 </diagram>
