@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/riandyrn/pokebattle/internal/domain/entity"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestValidateGameConfig(t *testing.T) {
@@ -108,11 +109,30 @@ func TestNewGame(t *testing.T) {
 }
 
 func TestAdvanceScenario(t *testing.T) {
-	// TODO
+	// initialize new game
+	game := initNewGame()
+	// test scenario
+	scenarios := []Scenario{BATTLE_1, BATTLE_2, BATTLE_3, END_GAME}
+	for i := 0; i < len(scenarios); i++ {
+		// not won any battle, scenario should be same as previous
+		game.AdvanceScenario()
+		require.Equal(t, scenarios[i], game.Scenario, "scenario should not advancing")
+		if i == len(scenarios)-1 {
+			continue
+		}
+		// won battle, scenario should be advancing
+		game.IncBattleWon()
+		game.AdvanceScenario()
+		require.Equal(t, scenarios[i+1], game.Scenario, "scenario is not advancing")
+	}
 }
 
 func TestIncBattleWon(t *testing.T) {
-	// TODO
+	game := initNewGame()
+	initBattleWon := game.BattleWon
+
+	game.IncBattleWon()
+	require.Equal(t, initBattleWon+1, game.BattleWon, "mismatch number of battle won")
 }
 
 func newSamplePokemon() *entity.Pokemon {
@@ -129,4 +149,13 @@ func newSamplePokemon() *entity.Pokemon {
 		},
 		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
 	}
+}
+
+func initNewGame() *Game {
+	game, _ := NewGame(GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    newSamplePokemon(),
+		CreatedAt:  time.Now().Unix(),
+	})
+	return game
 }
