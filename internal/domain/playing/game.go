@@ -16,18 +16,18 @@ const (
 )
 
 type Game struct {
-	ID         string         `json:"id"`
-	PlayerName string         `json:"player_name"`
-	Partner    entity.Pokemon `json:"partner"`
-	CreatedAt  int64          `json:"created_at"`
-	BattleWon  int            `json:"battle_won"`
-	Scenario   Scenario       `json:"scenario"`
+	ID         string          `json:"id"`
+	PlayerName string          `json:"player_name"`
+	Partner    *entity.Pokemon `json:"partner"`
+	CreatedAt  int64           `json:"created_at"`
+	BattleWon  int             `json:"battle_won"`
+	Scenario   Scenario        `json:"scenario"`
 }
 
 type GameConfig struct {
-	PlayerName string         `validate:"nonzero"`
-	Partner    entity.Pokemon `validate:"nonzero"`
-	CreatedAt  int64          `validate:"nonzero"`
+	PlayerName string          `validate:"nonzero"`
+	Partner    *entity.Pokemon `validate:"nonnil"`
+	CreatedAt  int64           `validate:"nonzero"`
 }
 
 func (c GameConfig) Validate() error {
