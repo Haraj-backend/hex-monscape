@@ -99,6 +99,7 @@ func (s *Service) AdvanceScenario(ctx context.Context, gameID string) (*Game, er
 	return game, nil
 }
 
+// NewService returns new instance of Service.
 func NewService(cfg ServiceConfig) (*Service, error) {
 	err := cfg.Validate()
 	if err != nil {
