@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/riandyrn/pokebattle/internal/domain/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/domain/entity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

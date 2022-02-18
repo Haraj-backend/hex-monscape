@@ -1,4 +1,4 @@
-module github.com/riandyrn/pokebattle
+module github.com/Haraj-backend/hex-pokebattle
 
 go 1.15
 
