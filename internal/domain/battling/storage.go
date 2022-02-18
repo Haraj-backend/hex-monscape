@@ -14,6 +14,7 @@ type BattleStorage interface {
 
 type GameStorage interface {
 	GetGame(ctx context.Context, gameID string) (*playing.Game, error)
+	SaveGame(ctx context.Context, game playing.Game) error
 }
 
 type PokemonStorage interface {

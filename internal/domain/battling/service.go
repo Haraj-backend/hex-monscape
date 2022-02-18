@@ -90,22 +90,77 @@ func (s *Service) getBattle(ctx context.Context, gameID string) (*playing.Game, 
 // - LOSE => partner has been attacked by enemy and already lose
 // - PARTNER_TURN => it is partner turn, client may commence attack or surrender
 func (s *Service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
-	// TODO
-	return nil, nil
+	battle, err := s.GetBattle(ctx, gameID)
+	if err != nil {
+		return nil, err
+	}
+	if battle.State != DECIDE_TURN {
+		return nil, ErrInvalidBattleState
+	}
+	_, err = battle.DecideTurn()
+	if err != nil {
+		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+	}
+	if battle.State == ENEMY_TURN {
+		err = battle.EnemyAttack()
+		if err != nil {
+			return nil, fmt.Errorf("unable to make enemy attack due: %w", err)
+		}
+	}
+	err = s.battleStorage.SaveBattle(ctx, *battle)
+	if err != nil {
+		return nil, fmt.Errorf("unable to save battle due: %w", err)
+	}
+	return battle, nil
 }
 
 // Attack is used for executing attack to enemy. The possible battle state outcome
 // is DECIDE_TURN or WIN.
 func (s *Service) Attack(ctx context.Context, gameID string) (*Battle, error) {
-	// TODO
-	return nil, nil
+	game, battle, err := s.getBattle(ctx, gameID)
+	if err != nil {
+		return nil, err
+	}
+	if battle.State != PARTNER_TURN {
+		return nil, ErrInvalidBattleState
+	}
+	err = battle.PartnerAttack()
+	if err != nil {
+		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+	}
+	err = s.battleStorage.SaveBattle(ctx, *battle)
+	if err != nil {
+		return nil, fmt.Errorf("unable to save battle due: %w", err)
+	}
+	if battle.State == WIN {
+		game.IncBattleWon()
+		err = s.gameStorage.SaveGame(ctx, *game)
+		if err != nil {
+			return nil, fmt.Errorf("unable to save game due: %w", err)
+		}
+	}
+	return battle, nil
 }
 
 // Surrender is used for executing surrender action. Battle will immediately ended
 // with player losing the battle.
 func (s *Service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
-	// TODO
-	return nil, nil
+	battle, err := s.GetBattle(ctx, gameID)
+	if err != nil {
+		return nil, err
+	}
+	if battle.State != PARTNER_TURN {
+		return nil, ErrInvalidBattleState
+	}
+	err = battle.PartnerSurrender()
+	if err != nil {
+		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+	}
+	err = s.battleStorage.SaveBattle(ctx, *battle)
+	if err != nil {
+		return nil, fmt.Errorf("unable to save battle due: %w", err)
+	}
+	return battle, nil
 }
 
 type ServiceConfig struct {
