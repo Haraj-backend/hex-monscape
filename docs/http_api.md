@@ -287,7 +287,7 @@ In the response, there is a field called `state`. It is represents what action s
 Available values for the `state` are following:
 
 - `DECIDE_TURN` => client should call [Decide Turn](#decide-turn) endpoint
-- `PLAYER_TURN` => client should call either [Attack](#attack) or [Surrender](#surrender)
+- `PARTNER_TURN` => client should call either [Attack](#attack) or [Surrender](#surrender)
 - `WIN` => player won the battle, client should clear the battle scene
 - `LOSE` => enemy won the battle, client should clear the battle scene
 
@@ -340,6 +340,40 @@ Content-Type: application/json
     "ts": 1644934528
 }
 ```
+
+**Specific Error Responses:**
+
+- Battle Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_BATTLE_NOT_FOUND",
+        "msg": "battle is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when ongoing battle is not found for given game id.
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
 
 [Back to Top](#http-api)
 
@@ -449,6 +483,56 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
     }
     ```
 
+**Specific Error Responses:**
+
+- Battle Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_BATTLE_NOT_FOUND",
+        "msg": "battle is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when ongoing battle is not found for given game id.
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
+
+- Invalid Battle State (`409`)
+
+    ```http
+    HTTP/1.1 409 Conflict
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_INVALID_BATTLE_STATE",
+        "msg": "invalid battle state",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when battle state when client executing action is invalid.
+
 [Back to Top](#http-api)
 
 ---
@@ -509,6 +593,56 @@ Content-Type: application/json
 }
 ```
 
+**Specific Error Responses:**
+
+- Battle Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_BATTLE_NOT_FOUND",
+        "msg": "battle is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when ongoing battle is not found for given game id.
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
+
+- Invalid Battle State (`409`)
+
+    ```http
+    HTTP/1.1 409 Conflict
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_INVALID_BATTLE_STATE",
+        "msg": "invalid battle state",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when battle state when client executing action is invalid.
+
 [Back to Top](#http-api)
 
 ---
@@ -568,6 +702,56 @@ Content-Type: application/json
     "ts": 1644934528
 }
 ```
+
+**Specific Error Responses:**
+
+- Battle Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_BATTLE_NOT_FOUND",
+        "msg": "battle is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when ongoing battle is not found for given game id.
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
+
+- Invalid Battle State (`409`)
+
+    ```http
+    HTTP/1.1 409 Conflict
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_INVALID_BATTLE_STATE",
+        "msg": "invalid battle state",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when battle state when client executing action is invalid.
 
 [Back to Top](#http-api)
 
