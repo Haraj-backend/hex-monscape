@@ -6,6 +6,8 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/render"
 	"gopkg.in/validator.v2"
 )
 
@@ -16,6 +18,10 @@ type API struct {
 
 func (a *API) GetHandler() http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(render.SetContentType(render.ContentTypeJSON))
 	r.Get("/partners", a.serveGetAvailablePartners)
 	r.Route("/games", func(r chi.Router) {
 		r.Post("/", a.serveNewGame)
