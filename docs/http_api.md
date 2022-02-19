@@ -172,6 +172,24 @@ Content-Type: application/json
 }
 ```
 
+**Specific Errors:**
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
+
 [Back to Top](#http-api)
 
 ---
@@ -180,7 +198,7 @@ Content-Type: application/json
 
 GET: `/games/{game_id}/scenario`
 
-This endpoint is used for determining what next scenario to execute given current game status. It should be called everytime after a battle is done.
+This endpoint is used for determining what next scenario to execute given current game status. It should be called after every battle is done.
 
 Possible scenarios:
 
@@ -209,6 +227,24 @@ Content-Type: application/json
     "ts": 1644934528
 }
 ```
+
+**Specific Errors:**
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
 
 [Back to Top](#http-api)
 
@@ -271,6 +307,40 @@ Content-Type: application/json
     "ts": 1644934528
 }
 ```
+
+**Specific Errors:**
+
+- Game Not Found (`404`)
+
+    ```http
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_GAME_NOT_FOUND",
+        "msg": "game is not found",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when game is not found.
+
+- Invalid Battle State (`409`)
+
+    ```http
+    HTTP/1.1 409 Conflict
+    Content-Type: application/json
+
+    {
+        "ok": false,
+        "err": "ERR_INVALID_BATTLE_STATE",
+        "msg": "invalid battle state",
+        "ts": 1644934528
+    }
+    ```
+
+    Client receive this error when battle state when client executing action is invalid.
 
 [Back to Top](#http-api)
 
@@ -341,7 +411,7 @@ Content-Type: application/json
 }
 ```
 
-**Specific Error Responses:**
+**Specific Errors:**
 
 - Battle Not Found (`404`)
 
@@ -483,7 +553,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
     }
     ```
 
-**Specific Error Responses:**
+**Specific Errors:**
 
 - Battle Not Found (`404`)
 
@@ -593,7 +663,7 @@ Content-Type: application/json
 }
 ```
 
-**Specific Error Responses:**
+**Specific Errors:**
 
 - Battle Not Found (`404`)
 
@@ -703,7 +773,7 @@ Content-Type: application/json
 }
 ```
 
-**Specific Error Responses:**
+**Specific Errors:**
 
 - Battle Not Found (`404`)
 
