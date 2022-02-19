@@ -1,0 +1,38 @@
+[
+    {
+        "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+        "name": "Pikachu",
+        "battle_stats": {
+            "health": 100,
+            "max_health": 100,
+            "attack": 25,
+            "defense": 5,
+            "speed": 15
+        },
+        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+    },
+    {
+        "id": "0f9b84b6-a768-4ba9-8800-207740fc993d",
+        "name": "Bulbasaur",
+        "battle_stats": {
+            "health": 100,
+            "max_health": 100,
+            "attack": 20,
+            "defense": 15,
+            "speed": 10
+        },
+        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png"
+    },
+    {
+        "id": "85db0102-212d-4ac8-932c-a0e876a29a85",
+        "name": "Charmander",
+        "battle_stats": {
+            "health": 100,
+            "max_health": 100,
+            "attack": 25,
+            "defense": 5,
+            "speed": 20
+        },
+        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+    }
+]

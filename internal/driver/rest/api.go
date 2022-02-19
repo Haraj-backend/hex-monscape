@@ -14,8 +14,8 @@ import (
 )
 
 type API struct {
-	playingService  playing.Service
-	battlingService battling.Service
+	playingService  *playing.Service
+	battlingService *battling.Service
 }
 
 func (a *API) GetHandler() http.Handler {
@@ -185,8 +185,8 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 }
 
 type APIConfig struct {
-	PlayingService  playing.Service  `validate:"nonnil"`
-	BattlingService battling.Service `validate:"nonnil"`
+	PlayingService  *playing.Service  `validate:"nonnil"`
+	BattlingService *battling.Service `validate:"nonnil"`
 }
 
 func (c APIConfig) Validate() error {
