@@ -5,7 +5,7 @@
     <id>UMLClass</id>
     <coordinates>
       <x>1035</x>
-      <y>190</y>
+      <y>225</y>
       <w>215</w>
       <h>105</h>
     </coordinates>
@@ -29,7 +29,7 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
     <id>UMLClass</id>
     <coordinates>
       <x>835</x>
-      <y>30</y>
+      <y>65</y>
       <w>185</w>
       <h>65</h>
     </coordinates>
@@ -48,7 +48,7 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
     <id>UMLClass</id>
     <coordinates>
       <x>1085</x>
-      <y>35</y>
+      <y>70</y>
       <w>65</w>
       <h>55</h>
     </coordinates>
@@ -65,7 +65,7 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
     <id>Relation</id>
     <coordinates>
       <x>1015</x>
-      <y>60</y>
+      <y>95</y>
       <w>80</w>
       <h>15</h>
     </coordinates>
@@ -76,7 +76,7 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
     <id>UMLClass</id>
     <coordinates>
       <x>1320</x>
-      <y>200</y>
+      <y>235</y>
       <w>75</w>
       <h>30</h>
     </coordinates>
@@ -90,7 +90,7 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
     <id>Relation</id>
     <coordinates>
       <x>1245</x>
-      <y>210</y>
+      <y>245</y>
       <w>85</w>
       <h>15</h>
     </coordinates>
@@ -101,15 +101,16 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
     <id>UMLClass</id>
     <coordinates>
       <x>1320</x>
-      <y>245</y>
+      <y>280</y>
       <w>110</w>
-      <h>60</h>
+      <h>65</h>
     </coordinates>
     <panel_attributes>battling.State
 --
 string
 --
 _+DECIDE_TURN: battling.State_
+_+ENEMY_TURN: battling.State_
 _+PLAYER_TURN: battling.State_
 _+WIN: battling.State_
 _+LOSE: battling.State_</panel_attributes>
@@ -119,7 +120,7 @@ _+LOSE: battling.State_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1245</x>
-      <y>275</y>
+      <y>310</y>
       <w>85</w>
       <h>15</h>
     </coordinates>
@@ -130,7 +131,7 @@ _+LOSE: battling.State_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1010</x>
-      <y>340</y>
+      <y>375</y>
       <w>260</w>
       <h>90</h>
     </coordinates>
@@ -152,7 +153,7 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>1130</x>
-      <y>290</y>
+      <y>325</y>
       <w>15</w>
       <h>60</h>
     </coordinates>
@@ -163,7 +164,7 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
     <id>UMLClass</id>
     <coordinates>
       <x>1295</x>
-      <y>550</y>
+      <y>585</y>
       <w>255</w>
       <h>30</h>
     </coordinates>
@@ -177,7 +178,7 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>1265</x>
-      <y>425</y>
+      <y>460</y>
       <w>160</w>
       <h>135</h>
     </coordinates>
@@ -188,7 +189,7 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>980</x>
-      <y>90</y>
+      <y>125</y>
       <w>165</w>
       <h>110</h>
     </coordinates>
@@ -199,11 +200,11 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
     <id>UMLClass</id>
     <coordinates>
       <x>660</x>
-      <y>185</y>
+      <y>220</y>
       <w>215</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>playing.Game
+    <panel_attributes>entity.Game
 --
 +ID: string
 +PlayerName: string
@@ -214,14 +215,14 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
 --
 +AdvanceScenario(): playing.Scenario
 +IncBattleWon()
-_+NewGame(cfg: playing.GameConfig): (*playing.Game, error)_</panel_attributes>
+_+NewGame(cfg: playing.GameConfig): (*entity.Game, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>460</x>
-      <y>195</y>
+      <y>230</y>
       <w>115</w>
       <h>60</h>
     </coordinates>
@@ -239,7 +240,7 @@ _+END_GAME: playing.Scenario_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>570</x>
-      <y>225</y>
+      <y>260</y>
       <w>100</w>
       <h>15</h>
     </coordinates>
@@ -250,7 +251,7 @@ _+END_GAME: playing.Scenario_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>765</x>
-      <y>90</y>
+      <y>125</y>
       <w>120</w>
       <h>105</h>
     </coordinates>
@@ -261,7 +262,7 @@ _+END_GAME: playing.Scenario_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>600</x>
-      <y>340</y>
+      <y>375</y>
       <w>330</w>
       <h>75</h>
     </coordinates>
@@ -271,9 +272,9 @@ _+END_GAME: playing.Scenario_</panel_attributes>
 -partnerStorage: playing.PartnerStorage
 --
 +GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
-+NewGame(ctx: context.Context, playerName: string, partnerID: string): (*playing.Game, error)
-+GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
-+AdvanceScenario(ctx: context.Context, gameID: string): (*playing.Game, error)
++NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++AdvanceScenario(ctx: context.Context, gameID: string): (*entity.Game, error)
 _+NewService(cfg: playing.ServiceConfig): (*playing.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -281,7 +282,7 @@ _+NewService(cfg: playing.ServiceConfig): (*playing.Service, error)_</panel_attr
     <id>Relation</id>
     <coordinates>
       <x>755</x>
-      <y>270</y>
+      <y>305</y>
       <w>15</w>
       <h>80</h>
     </coordinates>
@@ -292,21 +293,21 @@ _+NewService(cfg: playing.ServiceConfig): (*playing.Service, error)_</panel_attr
     <id>UMLClass</id>
     <coordinates>
       <x>345</x>
-      <y>455</y>
+      <y>490</y>
       <w>250</w>
       <h>30</h>
     </coordinates>
     <panel_attributes>&lt;&lt;playing.GameStorage&gt;&gt;
 --
-+GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
-+SaveGame(ctx: context.Context, game: playing.Game): error</panel_attributes>
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>460</x>
-      <y>380</y>
+      <y>415</y>
       <w>150</w>
       <h>85</h>
     </coordinates>
@@ -317,16 +318,16 @@ _+NewService(cfg: playing.ServiceConfig): (*playing.Service, error)_</panel_attr
     <id>UMLClass</id>
     <coordinates>
       <x>345</x>
-      <y>535</y>
+      <y>570</y>
       <w>250</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>storage.game.Storage
 --
--data: map[string]playing.Game
+-data: map[string]entity.Game
 --
-+GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
-+SaveGame(ctx: context.Context, game: playing.Game): error
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error
 _+New(): *storage.game.Storage_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -334,7 +335,7 @@ _+New(): *storage.game.Storage_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>460</x>
-      <y>480</y>
+      <y>515</y>
       <w>15</w>
       <h>65</h>
     </coordinates>
@@ -345,7 +346,7 @@ _+New(): *storage.game.Storage_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1295</x>
-      <y>635</y>
+      <y>670</y>
       <w>255</w>
       <h>50</h>
     </coordinates>
@@ -362,7 +363,7 @@ _+New(): *storage.battle.Storage_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1415</x>
-      <y>575</y>
+      <y>610</y>
       <w>15</w>
       <h>70</h>
     </coordinates>
@@ -373,7 +374,7 @@ _+New(): *storage.battle.Storage_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>825</x>
-      <y>525</y>
+      <y>560</y>
       <w>240</w>
       <h>120</h>
     </coordinates>
@@ -399,7 +400,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>880</x>
-      <y>700</y>
+      <y>735</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -415,7 +416,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>935</x>
-      <y>640</y>
+      <y>675</y>
       <w>15</w>
       <h>70</h>
     </coordinates>
@@ -426,7 +427,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>855</x>
-      <y>410</y>
+      <y>445</y>
       <w>15</w>
       <h>125</h>
     </coordinates>
@@ -437,7 +438,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1025</x>
-      <y>425</y>
+      <y>460</y>
       <w>15</w>
       <h>110</h>
     </coordinates>
@@ -448,7 +449,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>685</x>
-      <y>455</y>
+      <y>490</y>
       <w>145</w>
       <h>40</h>
     </coordinates>
@@ -464,7 +465,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>755</x>
-      <y>410</y>
+      <y>445</y>
       <w>15</w>
       <h>55</h>
     </coordinates>
@@ -475,7 +476,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1095</x>
-      <y>470</y>
+      <y>505</y>
       <w>160</w>
       <h>50</h>
     </coordinates>
@@ -492,7 +493,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1170</x>
-      <y>425</y>
+      <y>460</y>
       <w>15</w>
       <h>55</h>
     </coordinates>
@@ -503,7 +504,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1185</x>
-      <y>100</y>
+      <y>135</y>
       <w>95</w>
       <h>50</h>
     </coordinates>
@@ -520,7 +521,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1225</x>
-      <y>145</y>
+      <y>180</y>
       <w>15</w>
       <h>55</h>
     </coordinates>
@@ -531,7 +532,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>655</x>
-      <y>90</y>
+      <y>125</y>
       <w>95</w>
       <h>50</h>
     </coordinates>
@@ -548,7 +549,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>695</x>
-      <y>135</y>
+      <y>170</y>
       <w>15</w>
       <h>60</h>
     </coordinates>
@@ -559,7 +560,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>0</x>
-      <y>360</y>
+      <y>395</y>
       <w>270</w>
       <h>30</h>
     </coordinates>
@@ -573,7 +574,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>265</x>
-      <y>370</y>
+      <y>405</y>
       <w>345</w>
       <h>15</h>
     </coordinates>
@@ -584,21 +585,21 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1575</x>
-      <y>350</y>
+      <y>385</y>
       <w>250</w>
       <h>30</h>
     </coordinates>
     <panel_attributes>&lt;&lt;battling.GameStorage&gt;&gt;
 --
-+GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
-+SaveGame(ctx: context.Context, game: playing.Game): error</panel_attributes>
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1265</x>
-      <y>360</y>
+      <y>395</y>
       <w>320</w>
       <h>15</h>
     </coordinates>
@@ -609,7 +610,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1610</x>
-      <y>460</y>
+      <y>495</y>
       <w>240</w>
       <h>25</h>
     </coordinates>
@@ -622,7 +623,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1265</x>
-      <y>395</y>
+      <y>430</y>
       <w>355</w>
       <h>90</h>
     </coordinates>
@@ -633,7 +634,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>0</x>
-      <y>455</y>
+      <y>490</y>
       <w>270</w>
       <h>65</h>
     </coordinates>
@@ -652,7 +653,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>125</x>
-      <y>385</y>
+      <y>420</y>
       <w>15</w>
       <h>80</h>
     </coordinates>
@@ -663,7 +664,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>UMLClass</id>
     <coordinates>
       <x>80</x>
-      <y>565</y>
+      <y>600</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -679,7 +680,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>125</x>
-      <y>515</y>
+      <y>550</y>
       <w>15</w>
       <h>60</h>
     </coordinates>
@@ -690,7 +691,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>UMLClass</id>
     <coordinates>
       <x>1600</x>
-      <y>540</y>
+      <y>575</y>
       <w>270</w>
       <h>65</h>
     </coordinates>
@@ -709,7 +710,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>UMLClass</id>
     <coordinates>
       <x>1680</x>
-      <y>655</y>
+      <y>690</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -725,7 +726,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>1725</x>
-      <y>600</y>
+      <y>635</y>
       <w>15</w>
       <h>65</h>
     </coordinates>
@@ -736,7 +737,7 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>Relation</id>
     <coordinates>
       <x>1725</x>
-      <y>480</y>
+      <y>515</y>
       <w>15</w>
       <h>70</h>
     </coordinates>
@@ -747,16 +748,16 @@ _+New(cfg: storage.pokemon.Config): (*storage.pokemon.Storage, error)_</panel_at
     <id>UMLClass</id>
     <coordinates>
       <x>1895</x>
-      <y>340</y>
+      <y>375</y>
       <w>250</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>storage.game.Storage
 --
--data: map[string]playing.Game
+-data: map[string]entity.Game
 --
-+GetGame(ctx: context.Context, gameID: string): (*playing.Game, error)
-+SaveGame(ctx: context.Context, game: playing.Game): error
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error
 _+New(): *storage.game.Storage_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -764,7 +765,7 @@ _+New(): *storage.game.Storage_</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1820</x>
-      <y>360</y>
+      <y>395</y>
       <w>85</w>
       <h>15</h>
     </coordinates>
