@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
@@ -18,7 +17,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
 )
 
-const defaultPort = "9186"
+const addr = ":9186"
 
 func main() {
 	// initialize pokemon storage
@@ -78,13 +77,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)
 	}
-	// define port, we need to set it as env for Heroku deployment
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
 	// initialize server
-	addr := ":" + port
 	server := &http.Server{
 		Addr:        addr,
 		Handler:     api.GetHandler(),
