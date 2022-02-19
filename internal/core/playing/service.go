@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"gopkg.in/validator.v2"
 )
 

@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/playing"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
 	"gopkg.in/validator.v2"
 )
 

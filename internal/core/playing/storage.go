@@ -3,7 +3,7 @@ package playing
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 )
 
 type GameStorage interface {

@@ -3,8 +3,8 @@ package rest
 import (
 	"net/http"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/battling"
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/playing"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
 	"github.com/go-chi/chi/v5"
 	"gopkg.in/validator.v2"
 )

@@ -3,8 +3,8 @@ package battling
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/playing"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
 )
 
 type BattleStorage interface {

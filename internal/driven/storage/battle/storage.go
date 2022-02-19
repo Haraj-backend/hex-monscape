@@ -3,7 +3,7 @@ package battle
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/domain/battling"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
 )
 
 type BattleStorage struct{}
