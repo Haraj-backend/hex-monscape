@@ -194,11 +194,11 @@ Content-Type: application/json
 
 ---
 
-## Get Next Scenario
+## Get Scenario
 
 GET: `/games/{game_id}/scenario`
 
-This endpoint is used for determining what next scenario to execute given current game status. It should be called after every battle is done.
+This endpoint is used for determining what scenario should be executed by client. It should be called after every battle is done.
 
 Possible scenarios:
 
@@ -474,7 +474,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
     {
         "ok": true,
         "data": {
-            "game_id": "640dd7ef-be61-437d-a8ea-f12383185949"
+            "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
             "state": "DECIDE_TURN",
             "partner": {
                 "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",

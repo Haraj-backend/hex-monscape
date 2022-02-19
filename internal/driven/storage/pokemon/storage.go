@@ -37,8 +37,8 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 }
 
 type Config struct {
-	Partners []entity.Pokemon `validation:"min=1"`
-	Enemies  []entity.Pokemon `validation:"min=1"`
+	Partners []entity.Pokemon `validate:"min=1"`
+	Enemies  []entity.Pokemon `validate:"min=1"`
 }
 
 func (c Config) Validate() error {

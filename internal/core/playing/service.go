@@ -72,24 +72,6 @@ func (s *Service) GetGame(ctx context.Context, gameID string) (*Game, error) {
 	return game, nil
 }
 
-// AdvanceScenario is used for advancing scenario for given game id. Returns the advanced
-// game instance upon success. When given game id is not found returns `ErrGameNotFound`.
-func (s *Service) AdvanceScenario(ctx context.Context, gameID string) (*Game, error) {
-	// get game instance
-	game, err := s.GetGame(ctx, gameID)
-	if err != nil {
-		return nil, err
-	}
-	// advance game scenario
-	game.AdvanceScenario()
-	// save game instance
-	err = s.gameStorage.SaveGame(ctx, *game)
-	if err != nil {
-		return nil, fmt.Errorf("unable to save game to storage due: %w", err)
-	}
-	return game, nil
-}
-
 type ServiceConfig struct {
 	GameStorage    GameStorage    `validate:"nonnil"`
 	PartnerStorage PartnerStorage `validate:"nonnil"`

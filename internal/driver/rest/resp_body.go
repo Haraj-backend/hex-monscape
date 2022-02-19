@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/render"
 )
 
-type Response struct {
+type RespBody struct {
 	StatusCode int         `json:"-"`
 	OK         bool        `json:"ok"`
 	Data       interface{} `json:"data,omitempty"`
@@ -17,26 +17,26 @@ type Response struct {
 	Timestamp  int64       `json:"ts"`
 }
 
-func (rb *Response) Render(w http.ResponseWriter, r *http.Request) error {
+func (rb *RespBody) Render(w http.ResponseWriter, r *http.Request) error {
 	render.Status(r, rb.StatusCode)
 	rb.Timestamp = time.Now().Unix()
 	return nil
 }
 
-func NewSuccessResp(data interface{}) Response {
-	return Response{
+func NewSuccessResp(data interface{}) *RespBody {
+	return &RespBody{
 		StatusCode: http.StatusOK,
 		OK:         true,
 		Data:       data,
 	}
 }
 
-func NewErrorResp(err error) *Response {
+func NewErrorResp(err error) *RespBody {
 	var restErr *Error
 	if !errors.As(err, &restErr) {
 		restErr = NewInternalServerError(err.Error())
 	}
-	return &Response{
+	return &RespBody{
 		StatusCode: restErr.StatusCode,
 		OK:         false,
 		Err:        restErr.Err,

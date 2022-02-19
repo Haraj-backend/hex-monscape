@@ -53,9 +53,11 @@ func (g *Game) AdvanceScenario() Scenario {
 	return g.Scenario
 }
 
-// IncBattleWon is used for incrementing number of battle won
+// IncBattleWon is used for incrementing number of battle won then advancing
+// the scenario
 func (g *Game) IncBattleWon() {
 	g.BattleWon++
+	g.AdvanceScenario()
 }
 
 func NewGame(cfg GameConfig) (*Game, error) {

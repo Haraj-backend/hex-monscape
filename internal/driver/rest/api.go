@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
@@ -27,7 +29,7 @@ func (a *API) GetHandler() http.Handler {
 		r.Post("/", a.serveNewGame)
 		r.Route("/{game_id}", func(r chi.Router) {
 			r.Get("/", a.serveGetGameDetails)
-			r.Get("/scenario", a.serveGetNextScenario)
+			r.Get("/scenario", a.serveGetScenario)
 			r.Route("/battle", func(r chi.Router) {
 				r.Put("/", a.serveStartBattle)
 				r.Get("/", a.serveGetBattleInfo)
@@ -41,39 +43,145 @@ func (a *API) GetHandler() http.Handler {
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	partners, err := a.playingService.GetAvailablePartners(r.Context())
+	if err != nil {
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(map[string]interface{}{
+		"partners": partners,
+	}))
 }
 
 func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	var rb newGameRespBody
+	err := json.NewDecoder(r.Body).Decode(&rb)
+	if err != nil {
+		render.Render(w, r, NewErrorResp(NewBadRequestError(err.Error())))
+		return
+	}
+	err = rb.Validate()
+	if err != nil {
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	game, err := a.playingService.NewGame(r.Context(), rb.PlayerName, rb.PartnerID)
+	if err != nil {
+		if errors.Is(err, playing.ErrPartnerNotFound) {
+			err = NewPartnerNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(game))
 }
 
 func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	gameID := chi.URLParam(r, "game_id")
+	game, err := a.playingService.GetGame(r.Context(), gameID)
+	if err != nil {
+		if errors.Is(err, playing.ErrGameNotFound) {
+			err = NewGameNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(game))
 }
 
-func (a *API) serveGetNextScenario(w http.ResponseWriter, r *http.Request) {
-	// TODO
+func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
+	gameID := chi.URLParam(r, "game_id")
+	game, err := a.playingService.GetGame(r.Context(), gameID)
+	if err != nil {
+		if errors.Is(err, playing.ErrGameNotFound) {
+			err = NewGameNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(map[string]interface{}{
+		"scenario": game.Scenario,
+	}))
 }
 
 func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	gameID := chi.URLParam(r, "game_id")
+	battle, err := a.battlingService.StartBattle(r.Context(), gameID)
+	if err != nil {
+		switch err {
+		case battling.ErrGameNotFound:
+			err = NewGameNotFoundError()
+		case battling.ErrInvalidBattleState:
+			err = NewInvalidBattleStateError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(battle))
 }
 
 func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	gameID := chi.URLParam(r, "game_id")
+	battle, err := a.battlingService.GetBattle(r.Context(), gameID)
+	if err != nil {
+		switch err {
+		case battling.ErrGameNotFound:
+			err = NewGameNotFoundError()
+		case battling.ErrBattleNotFound:
+			err = NewBattleNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(battle))
 }
 
 func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	gameID := chi.URLParam(r, "game_id")
+	battle, err := a.battlingService.DecideTurn(r.Context(), gameID)
+	if err != nil {
+		switch err {
+		case battling.ErrGameNotFound:
+			err = NewGameNotFoundError()
+		case battling.ErrBattleNotFound:
+			err = NewBattleNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(battle))
 }
 
 func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	gameID := chi.URLParam(r, "game_id")
+	battle, err := a.battlingService.Attack(r.Context(), gameID)
+	if err != nil {
+		switch err {
+		case battling.ErrGameNotFound:
+			err = NewGameNotFoundError()
+		case battling.ErrBattleNotFound:
+			err = NewBattleNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(battle))
 }
 
 func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	gameID := chi.URLParam(r, "game_id")
+	battle, err := a.battlingService.Surrender(r.Context(), gameID)
+	if err != nil {
+		switch err {
+		case battling.ErrGameNotFound:
+			err = NewGameNotFoundError()
+		case battling.ErrBattleNotFound:
+			err = NewBattleNotFoundError()
+		}
+		render.Render(w, r, NewErrorResp(err))
+		return
+	}
+	render.Render(w, r, NewSuccessResp(battle))
 }
 
 type APIConfig struct {

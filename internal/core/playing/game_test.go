@@ -121,7 +121,7 @@ func TestAdvanceScenario(t *testing.T) {
 			continue
 		}
 		// won battle, scenario should be advancing
-		game.IncBattleWon()
+		game.BattleWon++
 		game.AdvanceScenario()
 		require.Equal(t, scenarios[i+1], game.Scenario, "scenario is not advancing")
 	}
@@ -130,9 +130,11 @@ func TestAdvanceScenario(t *testing.T) {
 func TestIncBattleWon(t *testing.T) {
 	game := initNewGame()
 	initBattleWon := game.BattleWon
+	initGameScenario := game.Scenario
 
 	game.IncBattleWon()
 	require.Equal(t, initBattleWon+1, game.BattleWon, "mismatch number of battle won")
+	require.NotEqual(t, initGameScenario, game.Scenario, "scenario is not advancing")
 }
 
 func newSamplePokemon() *entity.Pokemon {

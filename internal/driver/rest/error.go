@@ -40,6 +40,14 @@ func NewBadRequestError(msg string) *Error {
 	}
 }
 
+func NewPartnerNotFoundError() *Error {
+	return &Error{
+		StatusCode: http.StatusNotFound,
+		Err:        "ERR_PARTNER_NOT_FOUND",
+		Message:    "given `partner_id` is not found",
+	}
+}
+
 func NewGameNotFoundError() *Error {
 	return &Error{
 		StatusCode: http.StatusNotFound,

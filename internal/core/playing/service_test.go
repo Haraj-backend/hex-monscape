@@ -123,25 +123,6 @@ func TestServiceGetGame(t *testing.T) {
 	}
 }
 
-func TestServiceAdvanceScenario(t *testing.T) {
-	// initialize new service
-	svc, partners := newNewService()
-	// create new game
-	partner := partners[0]
-	game, _ := svc.NewGame(context.Background(), "Riandy R.N", partner.ID)
-	// won battle 3 times, this should trigger condition to advance game scenario
-	for i := 0; i < 3; i++ {
-		game.IncBattleWon()
-	}
-	svc.gameStorage.SaveGame(context.Background(), *game)
-	// advance scenario
-	advGame, _ := svc.AdvanceScenario(context.Background(), game.ID)
-	require.NotEqual(t, game.Scenario, advGame.Scenario, "scenario still equal")
-	// game in storage should be advanced as well
-	storedGame, _ := svc.gameStorage.GetGame(context.Background(), game.ID)
-	require.Equal(t, *advGame, *storedGame, "mismatch game")
-}
-
 type mockGameStorage struct {
 	data map[string]Game
 }
