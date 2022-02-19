@@ -31,7 +31,7 @@ func (s *Service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 
 // NewGame is used for initiating new game in storage. If the given `partnerID` not found in storage,
 // it returns `ErrPartnerNotFound`. Upon success it returns game instance that being saved on storage.
-func (s *Service) NewGame(ctx context.Context, playerName string, partnerID string) (*Game, error) {
+func (s *Service) NewGame(ctx context.Context, playerName string, partnerID string) (*entity.Game, error) {
 	// get partner instance
 	partner, err := s.partnerStorage.GetPartner(ctx, partnerID)
 	if err != nil {
@@ -41,12 +41,12 @@ func (s *Service) NewGame(ctx context.Context, playerName string, partnerID stri
 		return nil, ErrPartnerNotFound
 	}
 	// initiate new game instance
-	cfg := GameConfig{
+	cfg := entity.GameConfig{
 		PlayerName: playerName,
 		Partner:    partner,
 		CreatedAt:  time.Now().Unix(),
 	}
-	game, err := NewGame(cfg)
+	game, err := entity.NewGame(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("unable to initialize game instance due: %w", err)
 	}
@@ -60,7 +60,7 @@ func (s *Service) NewGame(ctx context.Context, playerName string, partnerID stri
 
 // GetGame returns game instance from storage from given game id. Upon game is not found, it returns
 // `ErrGameNotFound`.
-func (s *Service) GetGame(ctx context.Context, gameID string) (*Game, error) {
+func (s *Service) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	// get game instance from storage
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {

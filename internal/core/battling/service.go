@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"gopkg.in/validator.v2"
 )
 
@@ -64,7 +64,7 @@ func (s *Service) GetBattle(ctx context.Context, gameID string) (*Battle, error)
 	return battle, err
 }
 
-func (s *Service) getBattle(ctx context.Context, gameID string) (*playing.Game, *Battle, error) {
+func (s *Service) getBattle(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)

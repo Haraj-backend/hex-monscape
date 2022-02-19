@@ -9,10 +9,10 @@ import (
 type GameStorage interface {
 	// GetGame returns game instance for given gameID from storage. Returns nil
 	// when given gameID is not found in database.
-	GetGame(ctx context.Context, gameID string) (*Game, error)
+	GetGame(ctx context.Context, gameID string) (*entity.Game, error)
 
 	// Save is used for saving game instance in storage.
-	SaveGame(ctx context.Context, game Game) error
+	SaveGame(ctx context.Context, game entity.Game) error
 }
 
 type PartnerStorage interface {

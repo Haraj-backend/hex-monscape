@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
 )
 
 type BattleStorage interface {
@@ -13,8 +12,8 @@ type BattleStorage interface {
 }
 
 type GameStorage interface {
-	GetGame(ctx context.Context, gameID string) (*playing.Game, error)
-	SaveGame(ctx context.Context, game playing.Game) error
+	GetGame(ctx context.Context, gameID string) (*entity.Game, error)
+	SaveGame(ctx context.Context, game entity.Game) error
 }
 
 type PokemonStorage interface {

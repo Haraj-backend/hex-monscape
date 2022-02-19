@@ -124,10 +124,10 @@ func TestServiceGetGame(t *testing.T) {
 }
 
 type mockGameStorage struct {
-	data map[string]Game
+	data map[string]entity.Game
 }
 
-func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*Game, error) {
+func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	game, ok := gs.data[gameID]
 	if !ok {
 		return nil, nil
@@ -135,14 +135,14 @@ func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*Game, e
 	return &game, nil
 }
 
-func (gs *mockGameStorage) SaveGame(ctx context.Context, game Game) error {
+func (gs *mockGameStorage) SaveGame(ctx context.Context, game entity.Game) error {
 	gs.data[game.ID] = game
 	return nil
 }
 
 func newMockGameStorage() *mockGameStorage {
 	return &mockGameStorage{
-		data: map[string]Game{},
+		data: map[string]entity.Game{},
 	}
 }
 
