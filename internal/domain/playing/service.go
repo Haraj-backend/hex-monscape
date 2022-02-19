@@ -15,15 +15,6 @@ var (
 	ErrPartnerNotFound = errors.New("partner is not found")
 )
 
-type ServiceConfig struct {
-	GameStorage    GameStorage    `validate:"nonnil"`
-	PartnerStorage PartnerStorage `validate:"nonnil"`
-}
-
-func (c ServiceConfig) Validate() error {
-	return validator.Validate(c)
-}
-
 type Service struct {
 	gameStorage    GameStorage
 	partnerStorage PartnerStorage
@@ -97,6 +88,15 @@ func (s *Service) AdvanceScenario(ctx context.Context, gameID string) (*Game, er
 		return nil, fmt.Errorf("unable to save game to storage due: %w", err)
 	}
 	return game, nil
+}
+
+type ServiceConfig struct {
+	GameStorage    GameStorage    `validate:"nonnil"`
+	PartnerStorage PartnerStorage `validate:"nonnil"`
+}
+
+func (c ServiceConfig) Validate() error {
+	return validator.Validate(c)
 }
 
 // NewService returns new instance of Service.
