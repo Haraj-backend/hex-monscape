@@ -12,7 +12,7 @@ Available endpoints for this API:
 - [Attack](#attack)
 - [Surrender](#surrender)
 
-## Get Availaible Pokemon Partner
+## Get Availaible Pokemon Partners
 
 GET: `/partners`
 
