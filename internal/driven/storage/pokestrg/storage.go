@@ -1,4 +1,4 @@
-package pokemon
+package pokestrg
 
 import (
 	"context"
