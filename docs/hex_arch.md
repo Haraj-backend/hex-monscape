@@ -90,8 +90,21 @@ As for the examples for `Driven Adapters` are:
 
 ## DDD Relation
 
+Domain-Driven Design (DDD) & Hexagonal Architecture is commonly paired together. Some people even used the terms interchangeably.
+
+In reality, DDD & Hexagonal Architecture are two separate things. DDD is an approach to spot out application components from business model perspective, while Hexagonal Architecture give our application a structure. 
+
+DDD basically provides a way to define application core for Hexagonal Architecture. But it is not a must for us to use DDD when implementing Hexagonal Architecture.
+
 [Back to Top](#hexagonal-architecture)
 
 ## References
+
+- https://alistair.cockburn.us/hexagonal-architecture/
+- https://blog.octo.com/en/hexagonal-architecture-three-principles-and-an-implementation-example/
+- https://www.youtube.com/watch?v=oL6JBUk6tj0
+- https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3
+- https://medium.com/ssense-tech/hexagonal-architecture-there-are-always-two-sides-to-every-story-bc0780ed7d9c
+- https://medium.com/ssense-tech/domain-driven-design-everything-you-always-wanted-to-know-about-it-but-were-afraid-to-ask-a85e7b74497a
 
 [Back to Top](#hexagonal-architecture)
