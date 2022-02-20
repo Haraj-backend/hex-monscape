@@ -15,13 +15,25 @@ var (
 	ErrPartnerNotFound = errors.New("partner is not found")
 )
 
-type Service struct {
+type Service interface {
+	// GetAvailablePartners returns pokemons that available to be selected as player partner.
+	GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error)
+
+	// NewGame is used for initiating new game in storage. If the given `partnerID` not found in storage,
+	// it returns `ErrPartnerNotFound`. Upon success it returns game instance that being saved on storage.
+	NewGame(ctx context.Context, playerName string, partnerID string) (*entity.Game, error)
+
+	// GetGame returns game instance from storage from given game id. Upon game is not found, it returns
+	// `ErrGameNotFound`.
+	GetGame(ctx context.Context, gameID string) (*entity.Game, error)
+}
+
+type service struct {
 	gameStorage    GameStorage
 	partnerStorage PartnerStorage
 }
 
-// GetAvailablePartners returns pokemons that available to be selected as player partner.
-func (s *Service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
 	partners, err := s.partnerStorage.GetAvailablePartners(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get available partners due: %w", err)
@@ -29,9 +41,7 @@ func (s *Service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 	return partners, nil
 }
 
-// NewGame is used for initiating new game in storage. If the given `partnerID` not found in storage,
-// it returns `ErrPartnerNotFound`. Upon success it returns game instance that being saved on storage.
-func (s *Service) NewGame(ctx context.Context, playerName string, partnerID string) (*entity.Game, error) {
+func (s *service) NewGame(ctx context.Context, playerName string, partnerID string) (*entity.Game, error) {
 	// get partner instance
 	partner, err := s.partnerStorage.GetPartner(ctx, partnerID)
 	if err != nil {
@@ -58,9 +68,7 @@ func (s *Service) NewGame(ctx context.Context, playerName string, partnerID stri
 	return game, nil
 }
 
-// GetGame returns game instance from storage from given game id. Upon game is not found, it returns
-// `ErrGameNotFound`.
-func (s *Service) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+func (s *service) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	// get game instance from storage
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
@@ -81,13 +89,13 @@ func (c ServiceConfig) Validate() error {
 	return validator.Validate(c)
 }
 
-// NewService returns new instance of Service.
-func NewService(cfg ServiceConfig) (*Service, error) {
+// NewService returns new instance of service.
+func NewService(cfg ServiceConfig) (Service, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, err
 	}
-	s := &Service{
+	s := &service{
 		gameStorage:    cfg.GameStorage,
 		partnerStorage: cfg.PartnerStorage,
 	}

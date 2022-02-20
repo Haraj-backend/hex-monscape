@@ -15,8 +15,8 @@ func TestNewService(t *testing.T) {
 	partnerStorage := newMockPartnerStorage(nil)
 	// define function for validating new game instance
 	validateGame := func(t *testing.T, svc Service, cfg ServiceConfig) {
-		assert.Equal(t, cfg.GameStorage, svc.gameStorage)
-		assert.Equal(t, cfg.PartnerStorage, svc.partnerStorage)
+		assert.Equal(t, cfg.GameStorage, svc.(*service).gameStorage)
+		assert.Equal(t, cfg.PartnerStorage, svc.(*service).partnerStorage)
 	}
 	// define test cases
 	testCases := []struct {
@@ -57,7 +57,7 @@ func TestNewService(t *testing.T) {
 			if svc == nil {
 				return
 			}
-			validateGame(t, *svc, testcase.Config)
+			validateGame(t, svc, testcase.Config)
 		})
 	}
 }
@@ -81,7 +81,7 @@ func TestServiceNewGame(t *testing.T) {
 	require.NoError(t, err, "unexpected error")
 	// validate returned game with stored game, this is to make sure the game
 	// is also stored on storage
-	storedGame, err := svc.gameStorage.GetGame(context.Background(), game.ID)
+	storedGame, err := svc.(*service).gameStorage.GetGame(context.Background(), game.ID)
 	require.NoError(t, err, "unexpected error")
 	require.Equal(t, *game, *storedGame, "mismatch game")
 }
@@ -174,7 +174,7 @@ func newMockPartnerStorage(partners []entity.Pokemon) *mockPartnerStorage {
 	return &mockPartnerStorage{partnerMap: data}
 }
 
-func newNewService() (*Service, []entity.Pokemon) {
+func newNewService() (Service, []entity.Pokemon) {
 	// generate partners
 	partners := []entity.Pokemon{
 		{
