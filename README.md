@@ -6,15 +6,27 @@ It is intended to become Solutions Team reference when they want to implement we
 
 To learn more about API for this game check out [HTTP API](./docs/http_api.md) doc.
 
-To learn how to create web app using Hexagonal Architecture check out [Project Methodology](./docs/project_method.md) doc. 
+To learn the methodology of how to create web app using Hexagonal Architecture, check out [Project Methodology](./docs/project_method.md) doc. 
 
 ## Game Concept
 
 The game concept is pretty simple, player just need to choose his/her pokemon partner & won battle for 3 times to beat the game.
 
+Here is the flowchart of the game:
+
+<p align="center">
+    <img src="./docs/game_flow.svg" alt="Game Flow" height="400" />
+</p>
+
+Here is the flowchart for each battle in the game:
+
+<p align="center">
+    <img src="./docs/battle_flow.svg" alt="Battle Flow" height="400" />
+</p>
+
 ## How to Run
 
-This app is powered using docker. So make sure to install it before running below command:
+This app is powered by docker. So make sure to install it before running below command:
 
 ```bash
 > make run
