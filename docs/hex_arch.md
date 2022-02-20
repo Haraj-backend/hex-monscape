@@ -15,7 +15,7 @@ From these principles we can infer 4 constructing parts of Hexagonal Architectur
 - [Ports](#ports) => Interface that define how actors could interact with application core 
 - [Adapters](#adapters) => Responsible for transforming request from actor to core & vice versa. Implement ports.
 
-![Hexagonal Architecture Diagram](hex_diagram.svg)
+![Hexagonal Architecture Diagram](hex_diagram.png)
 
 Understanding these entities is crucial for understanding the implementation of Hexagonal Architecture. Each of them will be explained thoroughly in the upcoming sections.
 
