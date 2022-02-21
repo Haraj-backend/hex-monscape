@@ -55,6 +55,9 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	if err != nil && !errors.Is(err, ErrBattleNotFound) {
 		return nil, err
 	}
+	if err != nil && game == nil {
+		return nil, fmt.Errorf("unable to start battle due: %w", err)
+	}
 	if battle != nil {
 		return nil, ErrInvalidBattleState
 	}
@@ -99,7 +102,7 @@ func (s *service) getBattle(ctx context.Context, gameID string) (*entity.Game, *
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get battle due: %w", err)
 	}
-	if battle == nil || battle.IsEnded() {
+	if battle != nil && battle.IsEnded() {
 		return nil, nil, ErrBattleNotFound
 	}
 	return game, battle, nil
