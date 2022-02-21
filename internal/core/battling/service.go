@@ -17,15 +17,39 @@ var (
 	ErrInvalidBattleState = errors.New("invalid battle state")
 )
 
-type Service struct {
+type Service interface {
+	// StartBattle is used for starting new battle for given game id. Battle could only
+	// be started when there is no previous battle or it is already ended.
+	StartBattle(ctx context.Context, gameID string) (*Battle, error)
+
+	// GetBattle returns ongoing battle for given game id.
+	GetBattle(ctx context.Context, gameID string) (*Battle, error)
+
+	// DecideTurn is used for deciding turn for the battle. There are 3 possible outcome
+	// battle states from this action:
+	//
+	// - DECIDE_TURN => partner has been attacked by enemy but still not lose, so the state
+	// 					returned back to DECIDE_TURN
+	// - LOSE => partner has been attacked by enemy and already lose
+	// - PARTNER_TURN => it is partner turn, client may commence attack or surrender
+	DecideTurn(ctx context.Context, gameID string) (*Battle, error)
+
+	// Attack is used for executing attack to enemy. The possible battle state outcome
+	// is DECIDE_TURN or WIN.
+	Attack(ctx context.Context, gameID string) (*Battle, error)
+
+	// Surrender is used for executing surrender action. Battle will immediately ended
+	// with player losing the battle.
+	Surrender(ctx context.Context, gameID string) (*Battle, error)
+}
+
+type service struct {
 	gameStorage    GameStorage
 	battleStorage  BattleStorage
 	pokemonStorage PokemonStorage
 }
 
-// StartBattle is used for starting new battle for given game id. Battle could only
-// be started when there is no previous battle or it is already ended.
-func (s *Service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
 	// get existing battle, make sure there is no ongoing battle
 	game, battle, err := s.getBattle(ctx, gameID)
 	if err != nil && !errors.Is(err, ErrBattleNotFound) {
@@ -58,13 +82,12 @@ func (s *Service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	return battle, nil
 }
 
-// GetBattle returns ongoing battle for given game id.
-func (s *Service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
 	_, battle, err := s.getBattle(ctx, gameID)
 	return battle, err
 }
 
-func (s *Service) getBattle(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
+func (s *service) getBattle(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)
@@ -82,14 +105,7 @@ func (s *Service) getBattle(ctx context.Context, gameID string) (*entity.Game, *
 	return game, battle, nil
 }
 
-// DecideTurn is used for deciding turn for the battle. There are 3 possible outcome
-// battle states from this action:
-//
-// - DECIDE_TURN => partner has been attacked by enemy but still not lose, so the state
-// 					returned back to DECIDE_TURN
-// - LOSE => partner has been attacked by enemy and already lose
-// - PARTNER_TURN => it is partner turn, client may commence attack or surrender
-func (s *Service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -114,9 +130,7 @@ func (s *Service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 	return battle, nil
 }
 
-// Attack is used for executing attack to enemy. The possible battle state outcome
-// is DECIDE_TURN or WIN.
-func (s *Service) Attack(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	game, battle, err := s.getBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -142,9 +156,7 @@ func (s *Service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	return battle, nil
 }
 
-// Surrender is used for executing surrender action. Battle will immediately ended
-// with player losing the battle.
-func (s *Service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -173,13 +185,13 @@ func (c ServiceConfig) Validate() error {
 	return validator.Validate(c)
 }
 
-// NewService returns new instance of Service.
-func NewService(cfg ServiceConfig) (*Service, error) {
+// NewService returns new instance of service.
+func NewService(cfg ServiceConfig) (Service, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, err
 	}
-	svc := &Service{
+	svc := &service{
 		gameStorage:    cfg.GameStorage,
 		battleStorage:  cfg.BattleStorage,
 		pokemonStorage: cfg.PokemonStorage,
