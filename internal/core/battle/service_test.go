@@ -3,6 +3,7 @@ package battle
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/stretchr/testify/assert"
@@ -68,23 +69,221 @@ func TestNewService(t *testing.T) {
 }
 
 func TestServiceStartBattle(t *testing.T) {
-	// TODO
+	gameStorage := newMockGameStorage()
+	battleStorage := newMockBattleStorage()
+	pokemonStorage := newMockPokemonStorage()
+
+	enemy := newSamplePokemon()
+	pokemonStorage.enemyMap[enemy.ID] = *enemy
+
+	partner := newSamplePokemon()
+	game, err := entity.NewGame(entity.GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    partner,
+		CreatedAt:  time.Now().Unix(),
+	})
+	if err != nil {
+		t.Fatalf("unable to init new game, due: %v", err)
+	}
+
+	err = gameStorage.SaveGame(context.Background(), *game)
+	if err != nil {
+		t.Fatalf("unable to save game, due: %v", err)
+	}
+
+	svc, err := NewService(ServiceConfig{
+		GameStorage:    gameStorage,
+		BattleStorage:  battleStorage,
+		PokemonStorage: pokemonStorage,
+	})
+	if err != nil {
+		t.Fatalf("unable to init new service, due: %v", err)
+	}
+	battle, err := svc.StartBattle(context.Background(), game.ID)
+	if err != nil {
+		t.Fatalf("unable to start battle, due: %v", err)
+	}
+	assert.Equal(t, game.ID, battle.GameID, "gameID is not valid")
+	assert.Equal(t, enemy.ID, battle.Enemy.ID, "enemyID is not valid")
 }
 
 func TestServiceGetBattle(t *testing.T) {
-	// TODO
+	battleStorage := newMockBattleStorage()
+	gameStorage := newMockGameStorage()
+	pokemonStorage := newMockPokemonStorage()
+
+	partner := newSamplePokemon()
+	game, err := entity.NewGame(entity.GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    partner,
+		CreatedAt:  time.Now().Unix(),
+	})
+	if err != nil {
+		t.Fatalf("unable to init new game, due: %v", err)
+	}
+
+	battle, _ := NewBattle(BattleConfig{
+		GameID:  game.ID,
+		Partner: partner,
+		Enemy:   newSamplePokemon(),
+	})
+
+	err = gameStorage.SaveGame(context.Background(), *game)
+	if err != nil {
+		t.Fatalf("unable to save game, due: %v", err)
+	}
+	err = battleStorage.SaveBattle(context.Background(), *battle)
+	if err != nil {
+		t.Fatalf("unable to save battle, due: %v", err)
+	}
+
+	svc, err := NewService(ServiceConfig{
+		GameStorage:    gameStorage,
+		BattleStorage:  battleStorage,
+		PokemonStorage: pokemonStorage,
+	})
+	if err != nil {
+		t.Fatalf("unable to init new service, due: %v", err)
+	}
+	newBattle, err := svc.GetBattle(context.Background(), battle.GameID)
+	if err != nil {
+		t.Fatalf("unable to get battle, due: %v", err)
+	}
+	assert.Equal(t, battle, newBattle, "battle is not valid")
 }
 
 func TestServiceDecideTurn(t *testing.T) {
-	// TODO
+	battleStorage := newMockBattleStorage()
+	gameStorage := newMockGameStorage()
+	pokemonStorage := newMockPokemonStorage()
+
+	partner := newSamplePokemon()
+	game, err := entity.NewGame(entity.GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    partner,
+		CreatedAt:  time.Now().Unix(),
+	})
+	if err != nil {
+		t.Fatalf("unable to init new game, due: %v", err)
+	}
+
+	battle, _ := NewBattle(BattleConfig{
+		GameID:  game.ID,
+		Partner: partner,
+		Enemy:   newSamplePokemon(),
+	})
+
+	err = gameStorage.SaveGame(context.Background(), *game)
+	if err != nil {
+		t.Fatalf("unable to save game, due: %v", err)
+	}
+	err = battleStorage.SaveBattle(context.Background(), *battle)
+	if err != nil {
+		t.Fatalf("unable to save battle, due: %v", err)
+	}
+
+	svc, err := NewService(ServiceConfig{
+		GameStorage:    gameStorage,
+		BattleStorage:  battleStorage,
+		PokemonStorage: pokemonStorage,
+	})
+	if err != nil {
+		t.Fatalf("unable to init new service, due: %v", err)
+	}
+	_, err = svc.DecideTurn(context.Background(), battle.GameID)
+	if err != nil {
+		t.Fatalf("unable to decide turn, due: %v", err)
+	}
 }
 
 func TestServiceAttack(t *testing.T) {
-	// TODO
+	battleStorage := newMockBattleStorage()
+	gameStorage := newMockGameStorage()
+	pokemonStorage := newMockPokemonStorage()
+
+	partner := newSamplePokemon()
+	game, err := entity.NewGame(entity.GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    partner,
+		CreatedAt:  time.Now().Unix(),
+	})
+	if err != nil {
+		t.Fatalf("unable to init new game, due: %v", err)
+	}
+
+	battle, _ := NewBattle(BattleConfig{
+		GameID:  game.ID,
+		Partner: partner,
+		Enemy:   newSamplePokemon(),
+	})
+	battle.State = PARTNER_TURN
+
+	err = gameStorage.SaveGame(context.Background(), *game)
+	if err != nil {
+		t.Fatalf("unable to save game, due: %v", err)
+	}
+	err = battleStorage.SaveBattle(context.Background(), *battle)
+	if err != nil {
+		t.Fatalf("unable to save battle, due: %v", err)
+	}
+
+	svc, err := NewService(ServiceConfig{
+		GameStorage:    gameStorage,
+		BattleStorage:  battleStorage,
+		PokemonStorage: pokemonStorage,
+	})
+	if err != nil {
+		t.Fatalf("unable to init new service, due: %v", err)
+	}
+	_, err = svc.Attack(context.Background(), battle.GameID)
+	if err != nil {
+		t.Fatalf("unable to attack, due: %v", err)
+	}
 }
 
 func TestServiceSurrender(t *testing.T) {
-	// TODO
+	battleStorage := newMockBattleStorage()
+	gameStorage := newMockGameStorage()
+	pokemonStorage := newMockPokemonStorage()
+
+	partner := newSamplePokemon()
+	game, err := entity.NewGame(entity.GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    partner,
+		CreatedAt:  time.Now().Unix(),
+	})
+	if err != nil {
+		t.Fatalf("unable to init new game, due: %v", err)
+	}
+
+	battle, _ := NewBattle(BattleConfig{
+		GameID:  game.ID,
+		Partner: partner,
+		Enemy:   newSamplePokemon(),
+	})
+	battle.State = PARTNER_TURN
+
+	err = gameStorage.SaveGame(context.Background(), *game)
+	if err != nil {
+		t.Fatalf("unable to save game, due: %v", err)
+	}
+	err = battleStorage.SaveBattle(context.Background(), *battle)
+	if err != nil {
+		t.Fatalf("unable to save battle, due: %v", err)
+	}
+
+	svc, err := NewService(ServiceConfig{
+		GameStorage:    gameStorage,
+		BattleStorage:  battleStorage,
+		PokemonStorage: pokemonStorage,
+	})
+	if err != nil {
+		t.Fatalf("unable to init new service, due: %v", err)
+	}
+	_, err = svc.Surrender(context.Background(), battle.GameID)
+	if err != nil {
+		t.Fatalf("unable to surrender, due: %v", err)
+	}
 }
 
 type mockGameStorage struct {
@@ -149,15 +348,4 @@ func newMockPokemonStorage() *mockPokemonStorage {
 	return &mockPokemonStorage{
 		enemyMap: map[string]entity.Pokemon{},
 	}
-}
-
-func newNewService() Service {
-	// initialize service
-	cfg := ServiceConfig{
-		GameStorage:    newMockGameStorage(),
-		BattleStorage:  newMockBattleStorage(),
-		PokemonStorage: newMockPokemonStorage(),
-	}
-	svc, _ := NewService(cfg)
-	return svc
 }
