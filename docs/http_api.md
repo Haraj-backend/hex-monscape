@@ -111,19 +111,19 @@ Content-Type: application/json
 
 - Partner Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_PARTNER_NOT_FOUND",
-        "msg": "given `partner_id` is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_PARTNER_NOT_FOUND",
+      "msg": "given `partner_id` is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    This error will be received by client when given `partner_id` is not found.
+  This error will be received by client when given `partner_id` is not found.
 
 [Back to Top](#http-api)
 
@@ -176,19 +176,19 @@ Content-Type: application/json
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 [Back to Top](#http-api)
 
@@ -232,19 +232,19 @@ Content-Type: application/json
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 [Back to Top](#http-api)
 
@@ -261,7 +261,7 @@ Everytime player finish from battle, health point for pokemon partner will be se
 **Example Request:**
 
 ```http
-PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battles
+PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle
 ```
 
 **Success Response:**
@@ -301,7 +301,7 @@ Content-Type: application/json
         },
         "last_damage": {
             "partner": 0,
-            "enemy": 0 
+            "enemy": 0
         }
     },
     "ts": 1644934528
@@ -312,35 +312,35 @@ Content-Type: application/json
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 - Invalid Battle State (`409`)
 
-    ```http
-    HTTP/1.1 409 Conflict
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 409 Conflict
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_INVALID_BATTLE_STATE",
-        "msg": "invalid battle state",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_INVALID_BATTLE_STATE",
+      "msg": "invalid battle state",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when battle state when client executing action is invalid.
+  Client receive this error when battle state when client executing action is invalid.
 
 [Back to Top](#http-api)
 
@@ -404,7 +404,7 @@ Content-Type: application/json
         },
         "last_damage": {
             "partner": 100,
-            "enemy": 0 
+            "enemy": 0
         }
     },
     "ts": 1644934528
@@ -415,35 +415,35 @@ Content-Type: application/json
 
 - Battle Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_BATTLE_NOT_FOUND",
-        "msg": "battle is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_BATTLE_NOT_FOUND",
+      "msg": "battle is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when ongoing battle is not found for given game id.
+  Client receive this error when ongoing battle is not found for given game id.
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 [Back to Top](#http-api)
 
@@ -467,141 +467,141 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
 
 - Enemy Attack:
 
-    ```http
-    HTTP/1.1 200 OK
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 200 OK
+  Content-Type: application/json
 
-    {
-        "ok": true,
-        "data": {
-            "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
-            "state": "DECIDE_TURN",
-            "partner": {
-                "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-                "name": "Pikachu",
-                "battle_stats": {
-                    "health": 80,
-                    "max_health": 100,
-                    "attack": 25,
-                    "defense": 5,
-                    "speed": 10,
-                },
-                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
-            },
-            "enemy": {
-                "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
-                "name": "Charmander",
-                "battle_stats": {
-                    "health": 100,
-                    "max_health": 100,
-                    "attack": 30,
-                    "defense": 4,
-                    "speed": 10,
-                },
-                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
-            },
-            "last_damage": {
-                "partner": 20,
-                "enemy": 0 
-            }
-        },
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": true,
+      "data": {
+          "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
+          "state": "DECIDE_TURN",
+          "partner": {
+              "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+              "name": "Pikachu",
+              "battle_stats": {
+                  "health": 80,
+                  "max_health": 100,
+                  "attack": 25,
+                  "defense": 5,
+                  "speed": 10,
+              },
+              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+          },
+          "enemy": {
+              "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+              "name": "Charmander",
+              "battle_stats": {
+                  "health": 100,
+                  "max_health": 100,
+                  "attack": 30,
+                  "defense": 4,
+                  "speed": 10,
+              },
+              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+          },
+          "last_damage": {
+              "partner": 20,
+              "enemy": 0
+          }
+      },
+      "ts": 1644934528
+  }
+  ```
 
 - Player Turn:
 
-    ```http
-    HTTP/1.1 200 OK
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 200 OK
+  Content-Type: application/json
 
-    {
-        "ok": true,
-        "data": {
-            "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
-            "state": "PLAYER_TURN",
-            "partner": {
-                "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-                "name": "Pikachu",
-                "battle_stats": {
-                    "health": 100,
-                    "max_health": 100,
-                    "attack": 25,
-                    "defense": 5,
-                    "speed": 10,
-                },
-                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
-            },
-            "enemy": {
-                "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
-                "name": "Charmander",
-                "battle_stats": {
-                    "health": 100,
-                    "max_health": 100,
-                    "attack": 30,
-                    "defense": 4,
-                    "speed": 10,
-                },
-                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
-            },
-            "last_damage": {
-                "partner": 0,
-                "enemy": 0 
-            }
-        },
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": true,
+      "data": {
+          "game_id": "640dd7ef-be61-437d-a8ea-f12383185949",
+          "state": "PARTNER_TURN",
+          "partner": {
+              "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+              "name": "Pikachu",
+              "battle_stats": {
+                  "health": 100,
+                  "max_health": 100,
+                  "attack": 25,
+                  "defense": 5,
+                  "speed": 10,
+              },
+              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+          },
+          "enemy": {
+              "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
+              "name": "Charmander",
+              "battle_stats": {
+                  "health": 100,
+                  "max_health": 100,
+                  "attack": 30,
+                  "defense": 4,
+                  "speed": 10,
+              },
+              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+          },
+          "last_damage": {
+              "partner": 0,
+              "enemy": 0
+          }
+      },
+      "ts": 1644934528
+  }
+  ```
 
 **Specific Errors:**
 
 - Battle Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_BATTLE_NOT_FOUND",
-        "msg": "battle is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_BATTLE_NOT_FOUND",
+      "msg": "battle is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when ongoing battle is not found for given game id.
+  Client receive this error when ongoing battle is not found for given game id.
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 - Invalid Battle State (`409`)
 
-    ```http
-    HTTP/1.1 409 Conflict
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 409 Conflict
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_INVALID_BATTLE_STATE",
-        "msg": "invalid battle state",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_INVALID_BATTLE_STATE",
+      "msg": "invalid battle state",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when battle state when client executing action is invalid.
+  Client receive this error when battle state when client executing action is invalid.
 
 [Back to Top](#http-api)
 
@@ -667,51 +667,51 @@ Content-Type: application/json
 
 - Battle Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_BATTLE_NOT_FOUND",
-        "msg": "battle is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_BATTLE_NOT_FOUND",
+      "msg": "battle is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when ongoing battle is not found for given game id.
+  Client receive this error when ongoing battle is not found for given game id.
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 - Invalid Battle State (`409`)
 
-    ```http
-    HTTP/1.1 409 Conflict
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 409 Conflict
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_INVALID_BATTLE_STATE",
-        "msg": "invalid battle state",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_INVALID_BATTLE_STATE",
+      "msg": "invalid battle state",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when battle state when client executing action is invalid.
+  Client receive this error when battle state when client executing action is invalid.
 
 [Back to Top](#http-api)
 
@@ -766,7 +766,7 @@ Content-Type: application/json
         },
         "last_damage": {
             "partner": 0,
-            "enemy": 0 
+            "enemy": 0
         }
     },
     "ts": 1644934528
@@ -777,51 +777,51 @@ Content-Type: application/json
 
 - Battle Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_BATTLE_NOT_FOUND",
-        "msg": "battle is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_BATTLE_NOT_FOUND",
+      "msg": "battle is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when ongoing battle is not found for given game id.
+  Client receive this error when ongoing battle is not found for given game id.
 
 - Game Not Found (`404`)
 
-    ```http
-    HTTP/1.1 404 Not Found
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 404 Not Found
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_GAME_NOT_FOUND",
-        "msg": "game is not found",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_GAME_NOT_FOUND",
+      "msg": "game is not found",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when game is not found.
+  Client receive this error when game is not found.
 
 - Invalid Battle State (`409`)
 
-    ```http
-    HTTP/1.1 409 Conflict
-    Content-Type: application/json
+  ```http
+  HTTP/1.1 409 Conflict
+  Content-Type: application/json
 
-    {
-        "ok": false,
-        "err": "ERR_INVALID_BATTLE_STATE",
-        "msg": "invalid battle state",
-        "ts": 1644934528
-    }
-    ```
+  {
+      "ok": false,
+      "err": "ERR_INVALID_BATTLE_STATE",
+      "msg": "invalid battle state",
+      "ts": 1644934528
+  }
+  ```
 
-    Client receive this error when battle state when client executing action is invalid.
+  Client receive this error when battle state when client executing action is invalid.
 
 [Back to Top](#http-api)
 

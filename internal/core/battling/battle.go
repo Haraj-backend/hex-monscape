@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/google/uuid"
 	"gopkg.in/validator.v2"
 )
 
@@ -138,7 +137,7 @@ func NewBattle(cfg BattleConfig) (*Battle, error) {
 		return nil, err
 	}
 	b := &Battle{
-		GameID:     uuid.NewString(),
+		GameID:     cfg.GameID,
 		State:      DECIDE_TURN,
 		Partner:    cfg.Partner,
 		Enemy:      cfg.Enemy,
