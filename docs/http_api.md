@@ -350,7 +350,7 @@ Content-Type: application/json
 
 GET: `/games/{game_id}/battle`
 
-This endpoint is used for getting battle info for specified battle id. It is useful for displaying current battle info.
+This endpoint is used for getting battle info for specified battle id. It is useful for display current battle info.
 
 In the response, there is a field called `state`. It is represents what action should be taken by the client in the battle.
 
