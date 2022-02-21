@@ -25,10 +25,10 @@ Core is the place where we put application business logic & its dependencies (in
 
 Sometimes it is not easy to determine what code should goes to the core. In such situation try to analyze the business requirements of our application. Try to understand the context of what our application should be done in order to fulfil the requirements. The "what our application should be done" is basically our business logic.
 
-In the case of Hex PokeBattle, everything under `/internal/core` is the core of our application. In there we divide the business logic into two packages: `playing` & `battling`. The reason why we divide it like that is because there are two usage context in our app:
+In the case of Hex PokeBattle, everything under `/internal/core` is the core of our application. In there we divide the business logic into two packages: `play` & `battle`. The reason why we divide it like that is because there are two usage context in our app:
 
-- `Playing context` => This is where the player starting new game and progressing the game itself
-- `Battling context` => This is where the player battle enemy with his/her pokemon partner
+- `Play context` => This is where the player starting new game and progressing the game itself
+- `Battle context` => This is where the player battle enemy with his/her pokemon partner
 
 As for `entity` package it contains the entities that being shared across the logic context such as `Pokemon` & `Game`.
 
@@ -58,14 +58,14 @@ There are 2 types of ports:
 
 In the case of Hex PokeBattle, the examples for `Driver Ports` are:
 
-- `battling.Service`
-- `playing.Service`
+- `battle.Service`
+- `play.Service`
 
 As for the examples for `Driven Ports` are:
 
-- `battling.BattleStorage`
-- `battling.GameStorage`
-- `battling.PokemonStorage`
+- `battle.BattleStorage`
+- `battle.GameStorage`
+- `battle.PokemonStorage`
 
 [Back to Top](#hexagonal-architecture)
 

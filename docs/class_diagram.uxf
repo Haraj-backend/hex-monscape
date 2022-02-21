@@ -9,20 +9,20 @@
       <w>172</w>
       <h>84</h>
     </coordinates>
-    <panel_attributes>battling.Battle
+    <panel_attributes>battle.Battle
 --
 +GameID: string
-+State: battling.State
++State: battle.State
 +Partner: *entity.Pokemon
 +Enemy: *entity.pokemon
-+LastDamage: battling.LastDamage
++LastDamage: battle.LastDamage
 --
 +PartnerAttack(): error
 +PartnerSurrender(): error
 +EnemyAttack(): error
 +IsEnded(): bool
-+DecideTurn(): battling.State
-_+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attributes>
++DecideTurn(): battle.State
+_+NewBattle(cfg: battle.BattleConfig): (*battle.Battle, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -33,7 +33,7 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
       <w>60</w>
       <h>24</h>
     </coordinates>
-    <panel_attributes>battling.LastDamage
+    <panel_attributes>battle.LastDamage
 --
 +Partner: int
 +Enemy: int</panel_attributes>
@@ -58,15 +58,15 @@ _+NewBattle(cfg: battling.BattleConfig): (*battling.Battle, error)_</panel_attri
       <w>88</w>
       <h>52</h>
     </coordinates>
-    <panel_attributes>battling.State
+    <panel_attributes>battle.State
 --
 string
 --
-_+DECIDE_TURN: battling.State_
-_+ENEMY_TURN: battling.State_
-_+PLAYER_TURN: battling.State_
-_+WIN: battling.State_
-_+LOSE: battling.State_</panel_attributes>
+_+DECIDE_TURN: battle.State_
+_+ENEMY_TURN: battle.State_
+_+PLAYER_TURN: battle.State_
+_+WIN: battle.State_
+_+LOSE: battle.State_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -88,18 +88,18 @@ _+LOSE: battling.State_</panel_attributes>
       <w>208</w>
       <h>72</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battling.Service&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.Service&gt;&gt;
 --
--gameStorage: battling.GameStorage
--battleStorage: battling.BattleStorage
--pokemonStorage: battling.PokemonStorage
+-gameStorage: battle.GameStorage
+-battleStorage: battle.BattleStorage
+-pokemonStorage: battle.PokemonStorage
 --
-+StartBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+GetBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+DecideTurn(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+Attack(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+Surrender(ctx: context.Context, gameID: string): (*battling.Battle, error)
-_+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_attributes>
++StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++DecideTurn(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Attack(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Surrender(ctx: context.Context, gameID: string): (*battle.Battle, error)
+_+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -121,10 +121,10 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
       <w>204</w>
       <h>24</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battling.BattleStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.BattleStorage&gt;&gt;
 --
-+GetBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+SaveBattle(ctx: context.Context, b: battling.Battle): error</panel_attributes>
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++SaveBattle(ctx: context.Context, b: battle.Battle): error</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -164,11 +164,11 @@ _+NewService(cfg: battling.ServiceConfig): (*battling.Service, error)_</panel_at
 +Partner: *entity.Pokemon
 +CreatedAt: int64
 +BattleWon: int
-+Scenario: playing.Scenario
++Scenario: play.Scenario
 --
-+AdvanceScenario(): playing.Scenario
++AdvanceScenario(): play.Scenario
 +IncBattleWon()
-_+NewGame(cfg: playing.GameConfig): (*entity.Game, error)_</panel_attributes>
+_+NewGame(cfg: play.GameConfig): (*entity.Game, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -179,14 +179,14 @@ _+NewGame(cfg: playing.GameConfig): (*entity.Game, error)_</panel_attributes>
       <w>92</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>playing.Scenario
+    <panel_attributes>play.Scenario
 --
 string
 --
-_+BATTLE_1: playing.Scenario_
-_+BATTLE_2: playing.Scenario_
-_+BATTLE_3: playing.Scenario_
-_+END_GAME: playing.Scenario_</panel_attributes>
+_+BATTLE_1: play.Scenario_
+_+BATTLE_2: play.Scenario_
+_+BATTLE_3: play.Scenario_
+_+END_GAME: play.Scenario_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -219,13 +219,13 @@ _+END_GAME: playing.Scenario_</panel_attributes>
       <w>260</w>
       <h>44</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;playing.Service&gt;&gt;
+    <panel_attributes>&lt;&lt;play.Service&gt;&gt;
 --
 +GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
 +NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +AdvanceScenario(ctx: context.Context, gameID: string): (*entity.Game, error)
-_+NewService(cfg: playing.ServiceConfig): (playing.Service, error)_</panel_attributes>
+_+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -247,7 +247,7 @@ _+NewService(cfg: playing.ServiceConfig): (playing.Service, error)_</panel_attri
       <w>200</w>
       <h>24</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;playing.GameStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;play.GameStorage&gt;&gt;
 --
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +SaveGame(ctx: context.Context, game: entity.Game): error</panel_attributes>
@@ -302,10 +302,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
     </coordinates>
     <panel_attributes>battlestrg.Storage
 --
--data: map[string]battling.Battle
+-data: map[string]battle.Battle
 --
-+GetBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+SaveBattle(ctx: context.Context, b: battling.Battle): error
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++SaveBattle(ctx: context.Context, b: battle.Battle): error
 _+New(): *battlestrg.Storage_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -330,8 +330,8 @@ _+New(): *battlestrg.Storage_</panel_attributes>
     </coordinates>
     <panel_attributes>rest.API
 --
--playingService: playing.Service
--battlingService: battling.Service
+-playService: play.Service
+-battleService: battle.Service
 --
 +GetHandler(): http.Handler
 -serveGetAvailablePartner(w: http.ResponseWriter, r: *http.Request)
@@ -356,8 +356,8 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>rest.APIConfig
 --
-+PlayingService: playing.Service
-+BattlingService: battling.Service
++PlayingService: play.Service
++BattleService: battle.Service
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -392,10 +392,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>116</w>
       <h>32</h>
     </coordinates>
-    <panel_attributes>playing.ServiceConfig
+    <panel_attributes>play.ServiceConfig
 --
-+GameStorage: playing.GameStorage
-+PartnerStorage: playing.PartnerStorage
++GameStorage: play.GameStorage
++PartnerStorage: play.PartnerStorage
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -408,11 +408,11 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>128</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>battling.ServiceConfig
+    <panel_attributes>battle.ServiceConfig
 --
-+GameStorage: battling.GameStorage
-+BattleStorage: battling.BattleStorage
-+PokemonStorage: battling.PokemonStorage
++GameStorage: battle.GameStorage
++BattleStorage: battle.BattleStorage
++PokemonStorage: battle.PokemonStorage
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -436,7 +436,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>76</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>battling.BattleConfig
+    <panel_attributes>battle.BattleConfig
 --
 +GameID: string
 +Partner: entity.Pokemon
@@ -464,7 +464,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>76</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>playing.GameConfig
+    <panel_attributes>play.GameConfig
 --
 +PlayerName: string
 +Partner: entity.Pokemon
@@ -492,7 +492,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>216</w>
       <h>24</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;playing.PartnerStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;play.PartnerStorage&gt;&gt;
 --
 +GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
 +GetPartner(ctx: context.Context, partnerID: string): (*entity.Pokemon, error)</panel_attributes>
@@ -517,7 +517,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>200</w>
       <h>24</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battling.GameStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.GameStorage&gt;&gt;
 --
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +SaveGame(ctx: context.Context, game: entity.Game): error</panel_attributes>
@@ -542,7 +542,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>192</w>
       <h>20</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battling.PokemonStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.PokemonStorage&gt;&gt;
 --
 +GetPossibleEnemies(ctx: context.Context): ([]entity.Pokemon, error)</panel_attributes>
     <additional_attributes/>
@@ -719,10 +719,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
       <w>260</w>
       <h>52</h>
     </coordinates>
-    <panel_attributes>playing.service
+    <panel_attributes>play.service
 --
--gameStorage: playing.GameStorage
--partnerStorage: playing.PartnerStorage
+-gameStorage: play.GameStorage
+-partnerStorage: play.PartnerStorage
 --
 +GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
 +NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
@@ -749,17 +749,17 @@ _+New(): *gamestrg.Storage_</panel_attributes>
       <w>208</w>
       <h>64</h>
     </coordinates>
-    <panel_attributes>battling.service
+    <panel_attributes>battle.service
 --
--gameStorage: battling.GameStorage
--battleStorage: battling.BattleStorage
--pokemonStorage: battling.PokemonStorage
+-gameStorage: battle.GameStorage
+-battleStorage: battle.BattleStorage
+-pokemonStorage: battle.PokemonStorage
 --
-+StartBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+GetBattle(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+DecideTurn(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+Attack(ctx: context.Context, gameID: string): (*battling.Battle, error)
-+Surrender(ctx: context.Context, gameID: string): (*battling.Battle, error)</panel_attributes>
++StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++DecideTurn(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Attack(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Surrender(ctx: context.Context, gameID: string): (*battle.Battle, error)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

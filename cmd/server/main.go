@@ -8,13 +8,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/playing"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/battlestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
 )
 
 const addr = ":9186"
@@ -52,27 +53,27 @@ func main() {
 	gameStorage := gamestrg.New()
 	// initialize battle storage
 	battleStorage := battlestrg.New()
-	// initialize playing service
-	playingService, err := playing.NewService(playing.ServiceConfig{
+	// initialize play service
+	playService, err := play.NewService(play.ServiceConfig{
 		GameStorage:    gameStorage,
 		PartnerStorage: pokemonStorage,
 	})
 	if err != nil {
-		log.Fatalf("unable to initialize playing service due: %v", err)
+		log.Fatalf("unable to initialize play service due: %v", err)
 	}
-	// initialize battling service
-	battlingService, err := battling.NewService(battling.ServiceConfig{
+	// initialize battle service
+	battleService, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
 		PokemonStorage: pokemonStorage,
 	})
 	if err != nil {
-		log.Fatalf("unable to initialize battling service due: %v", err)
+		log.Fatalf("unable to initialize battle service due: %v", err)
 	}
 	// initialize rest api
 	api, err := rest.NewAPI(rest.APIConfig{
-		PlayingService:  playingService,
-		BattlingService: battlingService,
+		PlayingService: playService,
+		BattleService:  battleService,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)

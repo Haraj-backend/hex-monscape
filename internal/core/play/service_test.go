@@ -1,4 +1,4 @@
-package playing
+package play
 
 import (
 	"context"
