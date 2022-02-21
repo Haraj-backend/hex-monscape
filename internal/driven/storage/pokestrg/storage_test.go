@@ -29,7 +29,7 @@ func TestGetAvailablePartners(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get available partners from storage, due: %v", err)
 	}
-	require.Equal(t, newPartners, partners, "partners is not equal")
+	require.Equal(t, partners, newPartners, "partners is not equal")
 }
 
 func TestGetPartner(t *testing.T) {
@@ -47,7 +47,7 @@ func TestGetPartner(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get partner from storage, due: %v", err)
 	}
-	require.Equal(t, newPartner, partner, "partner is not equal")
+	require.Equal(t, partner, newPartner, "partner is not equal")
 }
 
 func TestGetPossibleEnemies(t *testing.T) {
@@ -67,7 +67,7 @@ func TestGetPossibleEnemies(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get possible enemies from storage, due: %v", err)
 	}
-	require.Equal(t, newEnemies, enemies, "enemies is not equal")
+	require.Equal(t, enemies, newEnemies, "enemies is not equal")
 }
 
 func newSamplePokemon() *entity.Pokemon {

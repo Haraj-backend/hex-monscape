@@ -22,7 +22,7 @@ func TestGetGame(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get game, due: %v", err)
 	}
-	require.Equal(t, newGame, game, "game is not equal")
+	require.Equal(t, game, newGame, "game is not equal")
 }
 
 func TestSaveGame(t *testing.T) {
@@ -36,7 +36,7 @@ func TestSaveGame(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get game, due: %v", err)
 	}
-	require.Equal(t, newGame, game, "game is not equal")
+	require.Equal(t, game, newGame, "game is not equal")
 }
 
 func newSamplePokemon() *entity.Pokemon {

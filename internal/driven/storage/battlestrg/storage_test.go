@@ -23,7 +23,7 @@ func TestGetBattle(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get battle, due: %v", err)
 	}
-	require.Equal(t, newBattle, battle, "battle is not equal")
+	require.Equal(t, battle, newBattle, "battle is not equal")
 }
 
 func TestSaveBattle(t *testing.T) {
@@ -37,7 +37,7 @@ func TestSaveBattle(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to get battle, due: %v", err)
 	}
-	require.Equal(t, newBattle, battle, "battle is not equal")
+	require.Equal(t, battle, newBattle, "battle is not equal")
 }
 
 func initNewBattle() *battle.Battle {
