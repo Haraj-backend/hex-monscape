@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
@@ -40,8 +40,8 @@ func TestSaveBattle(t *testing.T) {
 	require.Equal(t, newBattle, battle, "battle is not equal")
 }
 
-func initNewBattle() *battling.Battle {
-	game, _ := battling.NewBattle(battling.BattleConfig{
+func initNewBattle() *battle.Battle {
+	game, _ := battle.NewBattle(battle.BattleConfig{
 		GameID:  "b1c87c5c-2ac3-471d-9880-4812552ee15d",
 		Partner: newSamplePokemon(),
 		Enemy:   newSamplePokemon(),
