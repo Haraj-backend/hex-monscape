@@ -14,7 +14,6 @@ import (
 func TestGetAvailablePartners(t *testing.T) {
 	partners := []entity.Pokemon{
 		*newSamplePokemon(),
-		*newSamplePokemon(),
 	}
 	strg, err := New(Config{
 		Partners: partners,

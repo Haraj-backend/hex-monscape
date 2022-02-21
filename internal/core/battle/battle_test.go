@@ -52,21 +52,136 @@ func TestNewBattle(t *testing.T) {
 }
 
 func TestPartnerAttack(t *testing.T) {
-	// TODO
 	battle := initNewBattle()
-	battle.PartnerAttack()
+	// define test cases
+	testCases := []struct {
+		Name    string
+		State   State
+		IsError bool
+	}{
+		{
+			Name:    "Validate State PARTNER_TURN",
+			State:   PARTNER_TURN,
+			IsError: false,
+		},
+		{
+			Name:    "Validate State DECIDE_TURN",
+			State:   DECIDE_TURN,
+			IsError: true,
+		},
+		{
+			Name:    "Validate State WIN",
+			State:   WIN,
+			IsError: true,
+		},
+	}
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battle.State = testCase.State
+			err := battle.PartnerAttack()
+			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+		})
+	}
 }
 
 func TestPartnerSurrender(t *testing.T) {
-	// TODO
+	battle := initNewBattle()
+	// define test cases
+	testCases := []struct {
+		Name    string
+		State   State
+		IsError bool
+	}{
+		{
+			Name:    "Validate State PARTNER_TURN",
+			State:   PARTNER_TURN,
+			IsError: false,
+		},
+		{
+			Name:    "Validate State DECIDE_TURN",
+			State:   DECIDE_TURN,
+			IsError: true,
+		},
+		{
+			Name:    "Validate State WIN",
+			State:   WIN,
+			IsError: true,
+		},
+	}
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battle.State = testCase.State
+			err := battle.PartnerAttack()
+			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+		})
+	}
 }
 
 func TestEnemyAttack(t *testing.T) {
-	// TODO
+	battle := initNewBattle()
+	// define test cases
+	testCases := []struct {
+		Name    string
+		State   State
+		IsError bool
+	}{
+		{
+			Name:    "Validate State PARTNER_TURN",
+			State:   PARTNER_TURN,
+			IsError: false,
+		},
+		{
+			Name:    "Validate State DECIDE_TURN",
+			State:   DECIDE_TURN,
+			IsError: true,
+		},
+		{
+			Name:    "Validate State WIN",
+			State:   WIN,
+			IsError: true,
+		},
+	}
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battle.State = testCase.State
+			err := battle.PartnerAttack()
+			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+		})
+	}
 }
 
 func TestIsEnded(t *testing.T) {
-	// TODO
+	battle := initNewBattle()
+	// define test cases
+	// define test cases
+	testCases := []struct {
+		Name     string
+		State    State
+		Expected bool
+	}{
+		{
+			Name:     "Battle is Not Ended",
+			State:    PARTNER_TURN,
+			Expected: false,
+		},
+		{
+			Name:     "Battle is Ended",
+			State:    WIN,
+			Expected: true,
+		},
+	}
+
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battle.State = testCase.State
+			actual := battle.IsEnded()
+			assert.Equal(t, testCase.Expected, actual, "unexpected dead")
+		})
+	}
 }
 
 func TestDecideTurn(t *testing.T) {
