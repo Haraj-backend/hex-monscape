@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,400;0,700;1,400&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Exo", sans-serif;
+}
+
+#app {
+  @apply flex items-center justify-center;
+  min-height: 100vh;
+}
+
+#game-wrapper {
+  @apply w-app h-app overflow-hidden;
+  @apply border-2 border-gray-900 rounded-lg shadow-xl;
+  @apply bg-cover;
+}
+
+h1.game-title {
+  @apply text-6xl font-bold;
+}
+
+.game-initial-actions {
+  @apply flex flex-col gap-y-6;
+  @apply mt-[90px];
+}
+
+span.player-name {
+  @apply font-bold;
+}

@@ -1,38 +1,38 @@
 [
-    {
-        "id": "5e1ab413-415a-4326-8e39-0f56f8a66054",
-        "name": "Ivysaur",
-        "battle_stats": {
-            "health": 150,
-            "max_health": 150,
-            "attack": 25,
-            "defense": 20,
-            "speed": 12
-        },
-        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/002.png"
+  {
+    "id": "5e1ab413-415a-4326-8e39-0f56f8a66054",
+    "name": "Ivysaur",
+    "battle_stats": {
+      "health": 150,
+      "max_health": 150,
+      "attack": 25,
+      "defense": 20,
+      "speed": 12
     },
-    {
-        "id": "c2ca1953-2376-489e-8e34-8bb48957f140",
-        "name": "Charmeleon",
-        "battle_stats": {
-            "health": 150,
-            "max_health": 150,
-            "attack": 30,
-            "defense": 5,
-            "speed": 21
-        },
-        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/002.png"
+    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/002.png"
+  },
+  {
+    "id": "c2ca1953-2376-489e-8e34-8bb48957f140",
+    "name": "Charmeleon",
+    "battle_stats": {
+      "health": 150,
+      "max_health": 150,
+      "attack": 30,
+      "defense": 5,
+      "speed": 21
     },
-    {
-        "id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
-        "name": "Squirtle",
-        "battle_stats": {
-            "health": 100,
-            "max_health": 100,
-            "attack": 20,
-            "defense": 10,
-            "speed": 15
-        },
-        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png"
-    }
+    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/005.png"
+  },
+  {
+    "id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+    "name": "Squirtle",
+    "battle_stats": {
+      "health": 100,
+      "max_health": 100,
+      "attack": 20,
+      "defense": 10,
+      "speed": 15
+    },
+    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png"
+  }
 ]
