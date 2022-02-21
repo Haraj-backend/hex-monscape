@@ -14,11 +14,11 @@ import (
 func TestGetGame(t *testing.T) {
 	strg := New()
 	game := initNewGame()
-	err := strg.SaveGame(context.TODO(), *game)
+	err := strg.SaveGame(context.Background(), *game)
 	if err != nil {
 		t.Fatalf("unable to save game, due: %v", err)
 	}
-	newGame, err := strg.GetGame(context.TODO(), game.ID)
+	newGame, err := strg.GetGame(context.Background(), game.ID)
 	if err != nil {
 		t.Fatalf("unable to get game, due: %v", err)
 	}
@@ -28,11 +28,11 @@ func TestGetGame(t *testing.T) {
 func TestSaveGame(t *testing.T) {
 	strg := New()
 	game := initNewGame()
-	err := strg.SaveGame(context.TODO(), *game)
+	err := strg.SaveGame(context.Background(), *game)
 	if err != nil {
 		t.Fatalf("unable to save game, due: %v", err)
 	}
-	newGame, err := strg.GetGame(context.TODO(), game.ID)
+	newGame, err := strg.GetGame(context.Background(), game.ID)
 	if err != nil {
 		t.Fatalf("unable to get game, due: %v", err)
 	}

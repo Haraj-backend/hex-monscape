@@ -15,11 +15,11 @@ import (
 func TestGetBattle(t *testing.T) {
 	strg := New()
 	battle := initNewBattle()
-	err := strg.SaveBattle(context.TODO(), *battle)
+	err := strg.SaveBattle(context.Background(), *battle)
 	if err != nil {
 		t.Fatalf("unable to save battle, due: %v", err)
 	}
-	newBattle, err := strg.GetBattle(context.TODO(), battle.GameID)
+	newBattle, err := strg.GetBattle(context.Background(), battle.GameID)
 	if err != nil {
 		t.Fatalf("unable to get battle, due: %v", err)
 	}
@@ -29,11 +29,11 @@ func TestGetBattle(t *testing.T) {
 func TestSaveBattle(t *testing.T) {
 	strg := New()
 	battle := initNewBattle()
-	err := strg.SaveBattle(context.TODO(), *battle)
+	err := strg.SaveBattle(context.Background(), *battle)
 	if err != nil {
 		t.Fatalf("unable to save battle, due: %v", err)
 	}
-	newBattle, err := strg.GetBattle(context.TODO(), battle.GameID)
+	newBattle, err := strg.GetBattle(context.Background(), battle.GameID)
 	if err != nil {
 		t.Fatalf("unable to get battle, due: %v", err)
 	}
