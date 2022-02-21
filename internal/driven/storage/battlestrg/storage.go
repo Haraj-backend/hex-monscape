@@ -3,14 +3,14 @@ package battlestrg
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battling"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 )
 
 type Storage struct {
-	data map[string]battling.Battle
+	data map[string]battle.Battle
 }
 
-func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battling.Battle, error) {
+func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	b, ok := s.data[gameID]
 	if !ok {
 		return nil, nil
@@ -18,11 +18,11 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battling.Battl
 	return &b, nil
 }
 
-func (s *Storage) SaveBattle(ctx context.Context, b battling.Battle) error {
+func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	s.data[b.GameID] = b
 	return nil
 }
 
 func New() *Storage {
-	return &Storage{data: make(map[string]battling.Battle)}
+	return &Storage{data: make(map[string]battle.Battle)}
 }
