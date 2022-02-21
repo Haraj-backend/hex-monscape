@@ -1,3 +1,14 @@
+FROM node:lts-alpine3.15 as frontend_build
+WORKDIR /web
+
+COPY ./cmd/server/web .
+
+# FRONTEND_MODE define .env | .env.staging | .env.production that will be used
+ARG FRONTEND_MODE="production" 
+
+RUN yarn install
+RUN yarn build:${FRONTEND_MODE}
+
 FROM golang:1.17.7-alpine3.15 as build
 WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
 
@@ -13,5 +24,8 @@ FROM alpine:3.15
 RUN apk add ca-certificates tzdata
 COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server .
 COPY ./cmd/server .
+
+# Copy compiled frontned to current directory
+COPY --from=frontend_build /web .
 
 ENTRYPOINT [ "./server" ]

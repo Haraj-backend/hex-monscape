@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -12,6 +15,11 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
+)
+
+const (
+	publicDir = "/dist"
+	indexFile = "index.html"
 )
 
 type API struct {
@@ -40,7 +48,27 @@ func (a *API) GetHandler() http.Handler {
 			})
 		})
 	})
+	// serve the frontend in SPA mode
+	r.NotFound(a.serveWebFrontend)
 	return r
+}
+
+func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
+	fileName := filepath.Clean(r.URL.Path)
+	if fileName != "index.html" && !strings.Contains(fileName, "assets") {
+		fileName = "assets" + fileName
+	}
+	p := filepath.Join(publicDir, fileName)
+
+	if info, err := os.Stat(p); err != nil {
+		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
+		return
+	} else if info.IsDir() {
+		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
+		return
+	}
+
+	http.ServeFile(w, r, p)
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
