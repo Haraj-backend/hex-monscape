@@ -1,5 +1,4 @@
 import PokebattleHTTP from "../composables/http_client";
-import { useStore } from "../store";
 
 const additionalData = {
   Pikachu: {
@@ -31,10 +30,4 @@ export const getAvailablePartners = async () => {
   });
 
   return partners;
-};
-
-export const getChoosenPartners = () => {
-  // check whether partner data already exist,
-  // if not, just fetch from the server and match
-  // partner ID from store to currently fetched partners
 };

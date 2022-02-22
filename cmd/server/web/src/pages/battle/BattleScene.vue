@@ -6,10 +6,12 @@ import PokebattleHTTP from "../../composables/http_client"
 import { turnStates } from "../../entity/game"
 
 import HealthBar from './components/HealthBar.vue'
+import ControlButton from "./components/ControlButton.vue"
 
 export default {
     components: {
-        HealthBar
+        HealthBar,
+        ControlButton
     },
     setup() {
         const store = useStore()
@@ -44,8 +46,8 @@ export default {
                 controlState.partnerTurn = false
 
                 controlState.message = controlState.previousTurn === turnStates.DECIDE_TURN
-                    ? `Enemy attack!<br/>You got ${battleData.last_damage.Partner} damage`
-                    : `Attack the enemy!<br/>You inflicted ${battleData.last_damage.Enemy} damage`
+                    ? `Enemy attack!<br/><span class='text-2xl'>You got ${battleData.last_damage.partner} damage</span>`
+                    : `Attack the enemy!<br/><span class='text-2xl'>You inflicted ${battleData.last_damage.enemy} damage</span>`
                 setTimeout(() => {
                     controlState.enemyAttack = false
                     controlState.message = 'Decide turn...'
@@ -127,7 +129,7 @@ export default {
 <template>
     <div class="flex flex-col px-16 py-12">
         <!-- Battle scene -->
-        <div class="battle-scene-wrapper flex justify-between">
+        <div class="battle-scene-wrapper">
             <!-- Partner -->
             <div class="partner-scene">
                 <div class="top-part">
@@ -171,62 +173,54 @@ export default {
         </div>
 
         <!-- Battle control -->
-        <div
-            class="battle-control-wrapper flex flex-col w-full items-center justify-center gap-y-4 mt-20"
-        >
-            <!-- Win or lose status -->
-            <div
-                class="flex flex-col items-center gap-y-4"
+        <div class="battle-control-wrapper">
+            <!-- Battle ends, Win or lose status -->
+            <template
                 v-if="battleState.state === turnStates.WIN || battleState.state === turnStates.LOSE"
             >
-                <div
-                    class="control-description w-[800px] bg-white py-12 shadow-[0_6px_0_rgba(0,0,0,.15)] rounded-lg text-center text-5xl italic"
-                >
+                <div class="control-description">
                     <p
                         class="font-bold"
                     >{{ battleState.state === turnStates.WIN ? 'YOU WIN!' : 'YOU LOSE...' }}</p>
                 </div>
-                <button
-                    @click="exitBattle"
-                    class="control-button bg-orange-500 w-[400px] py-4 shadow-[0_4px_0_rgba(0,0,0,.2)] rounded-lg text-center text-white font-bold"
-                >Exit</button>
-            </div>
+                <ControlButton @click="exitBattle" type="general" label="Exit" />
+            </template>
 
             <!-- Battle still ongoing -->
             <template v-else>
-                <div
-                    class="control-description w-[800px] bg-white py-12 shadow-[0_6px_0_rgba(0,0,0,.15)] rounded-lg text-center text-5xl italic"
-                >
+                <div class="control-description">
                     <p v-html="controlState.message"></p>
                 </div>
-                <template
+                <ControlButton
                     v-if="controlState.turn === turnStates.DECIDE_TURN && !controlState.enemyAttack"
-                >
-                    <button
-                        @click="decideTurn"
-                        class="control-button bg-orange-500 w-[400px] py-4 shadow-[0_4px_0_rgba(0,0,0,.2)] rounded-lg text-center"
-                    >Continue</button>
-                </template>
-                <template
+                    @click="decideTurn"
+                    type="general"
+                    label="Continue"
+                />
+                <div
                     v-else-if="controlState.turn === turnStates.PARTNER_TURN && controlState.partnerTurn"
+                    class="flex gap-x-4"
                 >
-                    <div class="flex gap-x-4">
-                        <button
-                            @click="attack"
-                            class="control-button bg-red-500 w-[400px] py-4 shadow-[0_4px_0_rgba(0,0,0,.2)] rounded-lg text-center text-white font-bold"
-                        >Attack</button>
-                        <button
-                            @click="surrender"
-                            class="control-button bg-white w-[400px] py-4 shadow-[0_4px_0_rgba(0,0,0,.2)] rounded-lg text-center"
-                        >Surrender</button>
-                    </div>
-                </template>
+                    <ControlButton @click="attack" type="attack" label="Attack" />
+                    <ControlButton @click="surrender" type="surrender" label="Surrender" />
+                </div>
             </template>
         </div>
     </div>
 </template>
 
 <style scoped>
+.battle-scene-wrapper {
+    @apply flex justify-between;
+}
+.battle-control-wrapper {
+    @apply flex flex-col w-full items-center justify-center gap-y-4 mt-20;
+}
+.control-description {
+    @apply w-[800px] bg-white py-12;
+    @apply shadow-[0_6px_0_rgba(0,0,0,.15)] rounded-lg;
+    @apply text-center text-5xl italic;
+}
 .partner-name,
 .enemy-name {
     @apply mt-2 text-xl;

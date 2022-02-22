@@ -25,8 +25,8 @@ export default {
 
         const newGame = async () => {
             const r = await client.newGame({
-                PlayerName: store.playerName,
-                PartnerID: store.partnerData.id
+                player_name: store.playerName,
+                partner_id: store.partnerData.id
             })
             if (r.ok) {
                 store.setTheGame(r.data)
