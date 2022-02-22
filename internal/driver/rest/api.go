@@ -114,6 +114,8 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 			err = NewGameNotFoundError()
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
+		case battle.ErrInvalidBattleState:
+			err = NewInvalidBattleStateError()
 		}
 		render.Render(w, r, NewErrorResp(err))
 		return
@@ -130,6 +132,8 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 			err = NewGameNotFoundError()
 		case battle.ErrBattleNotFound:
 			err = NewBattleNotFoundError()
+		case battle.ErrInvalidBattleState:
+			err = NewInvalidBattleStateError()
 		}
 		render.Render(w, r, NewErrorResp(err))
 		return
@@ -146,6 +150,8 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 			err = NewGameNotFoundError()
 		case battle.ErrBattleNotFound:
 			err = NewBattleNotFoundError()
+		case battle.ErrInvalidBattleState:
+			err = NewInvalidBattleStateError()
 		}
 		render.Render(w, r, NewErrorResp(err))
 		return
@@ -162,6 +168,8 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 			err = NewGameNotFoundError()
 		case battle.ErrBattleNotFound:
 			err = NewBattleNotFoundError()
+		case battle.ErrInvalidBattleState:
+			err = NewInvalidBattleStateError()
 		}
 		render.Render(w, r, NewErrorResp(err))
 		return
@@ -178,6 +186,8 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 			err = NewGameNotFoundError()
 		case battle.ErrBattleNotFound:
 			err = NewBattleNotFoundError()
+		case battle.ErrInvalidBattleState:
+			err = NewInvalidBattleStateError()
 		}
 		render.Render(w, r, NewErrorResp(err))
 		return
