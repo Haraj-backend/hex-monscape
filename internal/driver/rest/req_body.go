@@ -2,12 +2,12 @@ package rest
 
 import "gopkg.in/validator.v2"
 
-type newGameRespBody struct {
-	PlayerName string `validate:"nonzero"`
-	PartnerID  string `validate:"nonzero"`
+type newGameReqBody struct {
+	PlayerName string `json:"player_name" validate:"nonzero"`
+	PartnerID  string `json:"partner_id" validate:"nonzero"`
 }
 
-func (rb newGameRespBody) Validate() error {
+func (rb newGameReqBody) Validate() error {
 	err := validator.Validate(rb)
 	if err != nil {
 		return NewBadRequestError(err.Error())

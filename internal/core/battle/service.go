@@ -110,6 +110,9 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get battle due: %w", err)
 	}
+	if battle != nil && battle.IsEnded() {
+		battle = nil
+	}
 	return game, battle, nil
 }
 

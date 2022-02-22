@@ -55,7 +55,7 @@ func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) 
 }
 
 func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
-	var rb newGameRespBody
+	var rb newGameReqBody
 	err := json.NewDecoder(r.Body).Decode(&rb)
 	if err != nil {
 		render.Render(w, r, NewErrorResp(NewBadRequestError(err.Error())))
