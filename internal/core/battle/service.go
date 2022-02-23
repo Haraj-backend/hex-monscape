@@ -61,6 +61,8 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	if battle != nil {
 		return nil, ErrInvalidBattleState
 	}
+	// reset partner battle stats
+	game.Partner.ResetBattleStats()
 	// get possible enemies, choose it randomly
 	enemies, err := s.pokemonStorage.GetPossibleEnemies(ctx)
 	if err != nil {
