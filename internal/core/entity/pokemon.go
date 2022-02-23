@@ -9,6 +9,12 @@ type Pokemon struct {
 	AvatarURL   string      `json:"avatar_url"`
 }
 
+// ResetBattleStats is used to reset partner health
+// after lost or surrender from the battle
+func (p *Pokemon) ResetBattleStats() {
+	p.BattleStats.Health = p.BattleStats.MaxHealth
+}
+
 func (p Pokemon) IsDead() bool {
 	return p.BattleStats.Health <= 0
 }
