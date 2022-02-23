@@ -1,5 +1,6 @@
 import * as VueRouter from "vue-router";
 import WelcomeScreen from "./pages/welcome-screen/WelcomeScreen.vue";
+import AboutScreen from "./pages/welcome-screen/AboutScreen.vue";
 import LoungeScreen from "./pages/lounge-screen/LoungeScreen.vue";
 import NGPlayerName from "./pages/new-game/PlayerName.vue";
 import NGChoosePartner from "./pages/new-game/ChoosePartner.vue";
@@ -11,6 +12,12 @@ const routes = [
     path: "/",
     name: "welcome-screen",
     component: WelcomeScreen,
+    beforeEnter: gameStateMiddleware,
+  },
+  {
+    path: "/about",
+    name: "about-screen",
+    component: AboutScreen,
     beforeEnter: gameStateMiddleware,
   },
   {
