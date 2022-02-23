@@ -52,15 +52,19 @@ export default {
             const resp = await client.getGameDetails(currentGameData.value.id)
             if (resp.ok) {
                 store.setTheGame(resp.data)
+            } else {
+                // reset the game and battle data from client storage
+                // redirect to welcome screen
+                store.setTheGame(null)
+                store.setTheBattle(null)
+                router.push({ name: 'welcome-screen' })
             }
         }
 
         onMounted(() => {
             // update the game data if win
             // request game details
-            if (battleState.value && battleState.value.state === turnStates.WIN) {
-                getGameDetails()
-            }
+            getGameDetails()
         })
 
         return {

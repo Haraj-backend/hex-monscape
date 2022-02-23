@@ -78,20 +78,28 @@ export const useStore = defineStore("main", {
     },
 
     setTheGame(gameData) {
-      this.gameData = Object.assign(
-        {},
-        {
-          id: gameData.id,
-          createdAt: gameData.created_at,
-          battleWon: gameData.battle_won,
-          scenario: gameData.scenario,
-        }
-      );
+      if (!gameData) {
+        this.gameData = null;
+      } else {
+        this.gameData = Object.assign(
+          {},
+          {
+            id: gameData.id,
+            createdAt: gameData.created_at,
+            battleWon: gameData.battle_won,
+            scenario: gameData.scenario,
+          }
+        );
+      }
       this.updateLS();
     },
 
     setTheBattle(battleData) {
-      this.battleState = Object.assign({}, battleData);
+      if (!battleData) {
+        this.battleState = null;
+      } else {
+        this.battleState = Object.assign({}, battleData);
+      }
       this.updateLS();
     },
 
