@@ -51,12 +51,12 @@ type service struct {
 
 func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
 	// get existing battle, make sure there is no ongoing battle
-	game, battle, err := s.getBattle(ctx, gameID)
-	if err != nil && !errors.Is(err, ErrBattleNotFound) {
-		return nil, err
+	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
 	}
-	if err != nil && game == nil {
-		return nil, fmt.Errorf("unable to start battle due: %w", err)
+	if game == nil {
+		return nil, ErrGameNotFound
 	}
 	if battle != nil {
 		return nil, ErrInvalidBattleState
@@ -86,24 +86,32 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 }
 
 func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
-	_, battle, err := s.getBattle(ctx, gameID)
+	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
+	if game == nil {
+		return nil, ErrGameNotFound
+	}
+	if battle == nil {
+		return nil, ErrBattleNotFound
+	}
 	return battle, err
 }
 
-func (s *service) getBattle(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
+// getGameAndBattleInstance returns game & battle for given game id, if game is not found both game
+// and battle will be returned nil. If battle is not found, the battle will be returned nil.
+func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)
 	}
 	if game == nil {
-		return nil, nil, ErrGameNotFound
+		return nil, nil, nil
 	}
 	battle, err := s.battleStorage.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get battle due: %w", err)
 	}
 	if battle != nil && battle.IsEnded() {
-		return nil, nil, ErrBattleNotFound
+		battle = nil
 	}
 	return game, battle, nil
 }
@@ -134,9 +142,15 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 }
 
 func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
-	game, battle, err := s.getBattle(ctx, gameID)
+	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
+	}
+	if game == nil {
+		return nil, ErrGameNotFound
+	}
+	if battle == nil {
+		return nil, ErrBattleNotFound
 	}
 	if battle.State != PARTNER_TURN {
 		return nil, ErrInvalidBattleState
