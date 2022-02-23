@@ -122,6 +122,10 @@ func TestServiceStartBattle(t *testing.T) {
 			if err == nil {
 				assert.Equal(t, game.ID, battle.GameID, "gameID is not valid")
 				assert.Equal(t, enemy.ID, battle.Enemy.ID, "enemyID is not valid")
+
+				storedBattle, err := battleStorage.GetBattle(context.Background(), gameID)
+				assert.NoError(t, err, "unable to get stored battle")
+				assert.Equal(t, battle, storedBattle, "battle stored is not valid")
 			}
 		})
 	}
@@ -235,10 +239,15 @@ func TestServiceDecideTurn(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
 	}
-	_, err = svc.DecideTurn(context.Background(), battle.GameID)
+	battle, err = svc.DecideTurn(context.Background(), battle.GameID)
 	if err != nil {
 		t.Fatalf("unable to decide turn, due: %v", err)
 	}
+
+	storedBattle, err := battleStorage.GetBattle(context.Background(), battle.GameID)
+	assert.NoError(t, err, "unable to get stored battle")
+	assert.Equal(t, battle, storedBattle, "invalid battle stored")
+	assert.Equal(t, DECIDE_TURN, storedBattle.State, "invalid battle state")
 }
 
 func TestServiceAttack(t *testing.T) {
@@ -325,10 +334,13 @@ func TestServiceSurrender(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
 	}
-	_, err = svc.Surrender(context.Background(), battle.GameID)
+	surrenderBattle, err := svc.Surrender(context.Background(), battle.GameID)
 	if err != nil {
 		t.Fatalf("unable to surrender, due: %v", err)
 	}
+	expectedBattle := battle
+	expectedBattle.State = LOSE
+	assert.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
 }
 
 type mockGameStorage struct {

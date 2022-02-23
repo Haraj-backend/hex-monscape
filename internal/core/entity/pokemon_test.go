@@ -48,6 +48,22 @@ func TestIsDead(t *testing.T) {
 			},
 			Expected: true,
 		},
+		{
+			Name: "Pokemon Has Negative Health",
+			Pokemon: Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: BattleStats{
+					Health:    -100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			Expected: true,
+		},
 	}
 
 	// execute test cases

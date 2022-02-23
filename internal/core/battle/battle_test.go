@@ -52,35 +52,75 @@ func TestNewBattle(t *testing.T) {
 }
 
 func TestPartnerAttack(t *testing.T) {
-	battle := initNewBattle()
 	// define test cases
 	testCases := []struct {
-		Name    string
-		State   State
-		IsError bool
+		Name                string
+		State               State
+		Partner             entity.Pokemon
+		Enemy               entity.Pokemon
+		IsError             bool
+		ExpectedEnemyHealth int
 	}{
 		{
-			Name:    "Validate State PARTNER_TURN",
-			State:   PARTNER_TURN,
-			IsError: false,
+			Name:  "Validate State PARTNER_TURN",
+			State: PARTNER_TURN,
+			Partner: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			Enemy: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   50,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			IsError:             false,
+			ExpectedEnemyHealth: 50,
 		},
 		{
 			Name:    "Validate State DECIDE_TURN",
 			State:   DECIDE_TURN,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:    "Validate State WIN",
 			State:   WIN,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 	}
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
+			battle, _ := NewBattle(BattleConfig{
+				GameID:  "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+				Partner: &testCase.Partner,
+				Enemy:   &testCase.Enemy,
+			})
+
 			battle.State = testCase.State
 			err := battle.PartnerAttack()
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			if !testCase.IsError {
+				assert.Equal(t, battle.Enemy.BattleStats.Health, testCase.ExpectedEnemyHealth, "enemy health is not valid")
+			}
 		})
 	}
 }
@@ -113,42 +153,91 @@ func TestPartnerSurrender(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battle.State = testCase.State
-			err := battle.PartnerAttack()
+			err := battle.PartnerSurrender()
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			if !testCase.IsError {
+				assert.Equal(t, LOSE, battle.State)
+			}
 		})
 	}
 }
 
 func TestEnemyAttack(t *testing.T) {
-	battle := initNewBattle()
 	// define test cases
 	testCases := []struct {
-		Name    string
-		State   State
-		IsError bool
+		Name                  string
+		State                 State
+		Partner               entity.Pokemon
+		Enemy                 entity.Pokemon
+		IsError               bool
+		ExpectedPartnerHealth int
 	}{
+		{
+			Name:  "Validate State ENEMY_TURN",
+			State: ENEMY_TURN,
+			Partner: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   50,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			Enemy: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			IsError:               false,
+			ExpectedPartnerHealth: 50,
+		},
 		{
 			Name:    "Validate State PARTNER_TURN",
 			State:   PARTNER_TURN,
-			IsError: false,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
+			IsError: true,
 		},
 		{
 			Name:    "Validate State DECIDE_TURN",
 			State:   DECIDE_TURN,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:    "Validate State WIN",
 			State:   WIN,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 	}
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
+			battle, _ := NewBattle(BattleConfig{
+				GameID:  "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+				Partner: &testCase.Partner,
+				Enemy:   &testCase.Enemy,
+			})
 			battle.State = testCase.State
-			err := battle.PartnerAttack()
+			err := battle.EnemyAttack()
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			if !testCase.IsError {
+				assert.Equal(t, battle.Partner.BattleStats.Health, testCase.ExpectedPartnerHealth, "partner health is not valid")
+			}
 		})
 	}
 }
@@ -156,20 +245,34 @@ func TestEnemyAttack(t *testing.T) {
 func TestIsEnded(t *testing.T) {
 	battle := initNewBattle()
 	// define test cases
-	// define test cases
 	testCases := []struct {
 		Name     string
 		State    State
 		Expected bool
 	}{
 		{
-			Name:     "Battle is Not Ended",
+			Name:     "Validate State PARTNER_TURN",
 			State:    PARTNER_TURN,
 			Expected: false,
 		},
 		{
-			Name:     "Battle is Ended",
+			Name:     "Validate State DECIDE_TURN",
+			State:    DECIDE_TURN,
+			Expected: false,
+		},
+		{
+			Name:     "Validate State ENEMY_TURN",
+			State:    ENEMY_TURN,
+			Expected: false,
+		},
+		{
+			Name:     "Validate State WIN",
 			State:    WIN,
+			Expected: true,
+		},
+		{
+			Name:     "Validate State LOSE",
+			State:    LOSE,
 			Expected: true,
 		},
 	}
@@ -185,35 +288,104 @@ func TestIsEnded(t *testing.T) {
 }
 
 func TestDecideTurn(t *testing.T) {
-	battle := initNewBattle()
 	// define test cases
 	testCases := []struct {
-		Name    string
-		State   State
-		IsError bool
+		Name          string
+		State         State
+		Partner       entity.Pokemon
+		Enemy         entity.Pokemon
+		IsError       bool
+		ExpectedState State
 	}{
 		{
 			Name:    "Validate State PARTNER_TURN",
 			State:   PARTNER_TURN,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
 			IsError: true,
-		},
-		{
-			Name:    "Validate State DECIDE_TURN",
-			State:   DECIDE_TURN,
-			IsError: false,
 		},
 		{
 			Name:    "Validate State WIN",
 			State:   WIN,
+			Partner: *newSamplePokemon(),
+			Enemy:   *newSamplePokemon(),
 			IsError: true,
+		},
+		{
+			Name:  "Validate PARTNER_TURN",
+			State: DECIDE_TURN,
+			Partner: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			Enemy: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     0,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			IsError:       false,
+			ExpectedState: PARTNER_TURN,
+		},
+		{
+			Name:  "Validate ENEMY_TURN",
+			State: DECIDE_TURN,
+			Partner: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     0,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			Enemy: entity.Pokemon{
+				ID:   uuid.NewString(),
+				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+			},
+			IsError:       false,
+			ExpectedState: ENEMY_TURN,
 		},
 	}
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
+			battle, _ := NewBattle(BattleConfig{
+				GameID:  "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+				Partner: &testCase.Partner,
+				Enemy:   &testCase.Enemy,
+			})
 			battle.State = testCase.State
-			_, err := battle.DecideTurn()
+			state, err := battle.DecideTurn()
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			if !testCase.IsError {
+				assert.Equal(t, testCase.ExpectedState, state, "expected state is not valid")
+			}
 		})
 	}
 }
