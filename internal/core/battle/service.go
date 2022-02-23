@@ -193,9 +193,9 @@ func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error)
 }
 
 type ServiceConfig struct {
-	GameStorage    GameStorage    `validator:"nonnil"`
-	BattleStorage  BattleStorage  `validator:"nonnil"`
-	PokemonStorage PokemonStorage `validator:"nonnil"`
+	GameStorage    GameStorage    `validate:"nonnil"`
+	BattleStorage  BattleStorage  `validate:"nonnil"`
+	PokemonStorage PokemonStorage `validate:"nonnil"`
 }
 
 func (c ServiceConfig) Validate() error {
