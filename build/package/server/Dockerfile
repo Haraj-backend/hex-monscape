@@ -22,10 +22,11 @@ RUN go build -o server
 
 FROM alpine:3.15
 RUN apk add ca-certificates tzdata
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server .
-COPY ./cmd/server .
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server/server .
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server/partners.json .
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server/enemies.json .
 
 # Copy compiled frontned to current directory
-COPY --from=frontend_build /web .
+COPY --from=frontend_build /web/dist ./dist
 
 ENTRYPOINT [ "./server" ]
