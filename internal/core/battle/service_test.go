@@ -69,58 +69,71 @@ func TestNewService(t *testing.T) {
 }
 
 func TestServiceStartBattle(t *testing.T) {
-	gameStorage := newMockGameStorage()
-	battleStorage := newMockBattleStorage()
-	pokemonStorage := newMockPokemonStorage()
-
-	enemy := newSamplePokemon()
-	pokemonStorage.enemyMap[enemy.ID] = *enemy
-
 	partner := newSamplePokemon()
-	game, err := entity.NewGame(entity.GameConfig{
+	enemy := newSamplePokemon()
+	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
 		CreatedAt:  time.Now().Unix(),
 	})
-	if err != nil {
-		t.Fatalf("unable to init new game, due: %v", err)
-	}
 
-	err = gameStorage.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
+	testCases := []struct {
+		Name    string
+		Enemy   *entity.Pokemon
+		Game    *entity.Game
+		IsError bool
+	}{
+		{
+			Name:    "Test Get Battle Valid",
+			Enemy:   enemy,
+			Game:    game,
+			IsError: false,
+		},
+		{
+			Name:    "Test Game Not Found",
+			Enemy:   enemy,
+			Game:    nil,
+			IsError: true,
+		},
 	}
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battleStorage := newMockBattleStorage()
+			gameStorage := newMockGameStorage()
+			pokemonStorage := newMockPokemonStorage()
+			if testCase.Enemy != nil {
+				pokemonStorage.enemyMap[testCase.Enemy.ID] = *testCase.Enemy
+			}
+			gameID := ""
 
-	svc, err := NewService(ServiceConfig{
-		GameStorage:    gameStorage,
-		BattleStorage:  battleStorage,
-		PokemonStorage: pokemonStorage,
-	})
-	if err != nil {
-		t.Fatalf("unable to init new service, due: %v", err)
+			if testCase.Game != nil {
+				_ = gameStorage.SaveGame(context.Background(), *testCase.Game)
+				gameID = testCase.Game.ID
+			}
+
+			svc, _ := NewService(ServiceConfig{
+				GameStorage:    gameStorage,
+				BattleStorage:  battleStorage,
+				PokemonStorage: pokemonStorage,
+			})
+			battle, err := svc.StartBattle(context.Background(), gameID)
+			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			if err == nil {
+				assert.Equal(t, game.ID, battle.GameID, "gameID is not valid")
+				assert.Equal(t, enemy.ID, battle.Enemy.ID, "enemyID is not valid")
+			}
+		})
 	}
-	battle, err := svc.StartBattle(context.Background(), game.ID)
-	if err != nil {
-		t.Fatalf("unable to start battle, due: %v", err)
-	}
-	assert.Equal(t, game.ID, battle.GameID, "gameID is not valid")
-	assert.Equal(t, enemy.ID, battle.Enemy.ID, "enemyID is not valid")
 }
 
 func TestServiceGetBattle(t *testing.T) {
-	battleStorage := newMockBattleStorage()
-	gameStorage := newMockGameStorage()
-	pokemonStorage := newMockPokemonStorage()
-
 	partner := newSamplePokemon()
-	game, err := entity.NewGame(entity.GameConfig{
+	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
 		CreatedAt:  time.Now().Unix(),
 	})
-	if err != nil {
-		t.Fatalf("unable to init new game, due: %v", err)
-	}
 
 	battle, _ := NewBattle(BattleConfig{
 		GameID:  game.ID,
@@ -128,28 +141,60 @@ func TestServiceGetBattle(t *testing.T) {
 		Enemy:   newSamplePokemon(),
 	})
 
-	err = gameStorage.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
+	testCases := []struct {
+		Name    string
+		Battle  *Battle
+		Game    *entity.Game
+		IsError bool
+	}{
+		{
+			Name:    "Test Get Battle Valid",
+			Battle:  battle,
+			Game:    game,
+			IsError: false,
+		},
+		{
+			Name:    "Test Game Not Found",
+			Battle:  battle,
+			Game:    nil,
+			IsError: true,
+		},
+		{
+			Name:    "Test Battle Not Found",
+			Battle:  nil,
+			Game:    game,
+			IsError: true,
+		},
 	}
-	err = battleStorage.SaveBattle(context.Background(), *battle)
-	if err != nil {
-		t.Fatalf("unable to save battle, due: %v", err)
-	}
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battleStorage := newMockBattleStorage()
+			gameStorage := newMockGameStorage()
+			pokemonStorage := newMockPokemonStorage()
+			gameID := ""
 
-	svc, err := NewService(ServiceConfig{
-		GameStorage:    gameStorage,
-		BattleStorage:  battleStorage,
-		PokemonStorage: pokemonStorage,
-	})
-	if err != nil {
-		t.Fatalf("unable to init new service, due: %v", err)
+			if testCase.Game != nil {
+				_ = gameStorage.SaveGame(context.Background(), *testCase.Game)
+				gameID = testCase.Game.ID
+			}
+			if testCase.Battle != nil {
+				_ = battleStorage.SaveBattle(context.Background(), *testCase.Battle)
+				gameID = testCase.Battle.GameID
+			}
+
+			svc, _ := NewService(ServiceConfig{
+				GameStorage:    gameStorage,
+				BattleStorage:  battleStorage,
+				PokemonStorage: pokemonStorage,
+			})
+			newBattle, err := svc.GetBattle(context.Background(), gameID)
+			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			if err == nil {
+				assert.Equal(t, battle, newBattle, "battle is not valid")
+			}
+		})
 	}
-	newBattle, err := svc.GetBattle(context.Background(), battle.GameID)
-	if err != nil {
-		t.Fatalf("unable to get battle, due: %v", err)
-	}
-	assert.Equal(t, battle, newBattle, "battle is not valid")
 }
 
 func TestServiceDecideTurn(t *testing.T) {
