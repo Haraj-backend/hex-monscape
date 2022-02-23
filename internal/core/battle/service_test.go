@@ -247,7 +247,6 @@ func TestServiceDecideTurn(t *testing.T) {
 	storedBattle, err := battleStorage.GetBattle(context.Background(), battle.GameID)
 	assert.NoError(t, err, "unable to get stored battle")
 	assert.Equal(t, battle, storedBattle, "invalid battle stored")
-	assert.Equal(t, DECIDE_TURN, storedBattle.State, "invalid battle state")
 }
 
 func TestServiceAttack(t *testing.T) {
