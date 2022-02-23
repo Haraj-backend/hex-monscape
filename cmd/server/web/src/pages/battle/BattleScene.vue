@@ -47,7 +47,12 @@ export default {
             partnerTurn: false,
             message: 'Decide turn...',
         })
+        const shaking = reactive({
+            partner: false,
+            enemy: false
+        })
 
+        // methods
         const updateControlState = (battleData) => {
             // update the store
             store.setTheBattle(battleData)
@@ -57,13 +62,10 @@ export default {
             if (battleData.state === turnStates.DECIDE_TURN) {
                 controlState.enemyAttack = true
                 controlState.partnerTurn = false
-
-                controlState.message = controlState.previousTurn === turnStates.DECIDE_TURN
-                    ? `Enemy attack!<br/><span class='text-2xl'>You got ${battleData.last_damage.partner} damage</span>`
-                    : `Attack the enemy!<br/><span class='text-2xl'>You inflicted ${battleData.last_damage.enemy} damage</span>`
                 setTimeout(() => {
                     controlState.enemyAttack = false
                     controlState.message = 'Decide turn...'
+                    setTimeout(() => decideTurn(), 1000)
                 }, 2 * 1000)
             }
             if (battleData.state === turnStates.PARTNER_TURN) {
@@ -77,8 +79,15 @@ export default {
         // when the state `PARTNER_TURN` then, we should show attack and
         // surrender buttons respectively
         const decideTurn = async () => {
+            shaking.enemy = false
+            shaking.partner = false
             const resp = await client.decideTurn(currentGameID)
             if (resp.ok) {
+                if (resp.data.state === turnStates.DECIDE_TURN) {
+                    controlState.message = `Enemy attack!<br/><span class='text-2xl'>You got ${resp.data.last_damage.partner} damage</span>`
+                    shaking.partner = true
+                }
+
                 updateControlState(resp.data)
             }
         }
@@ -87,6 +96,8 @@ export default {
         const attack = async () => {
             const resp = await client.attack(currentGameID)
             if (resp.ok) {
+                controlState.message = `Attack the enemy!<br/><span class='text-2xl'>You inflicted ${resp.data.last_damage.enemy} damage</span>`
+                shaking.enemy = true
                 updateControlState(resp.data)
             }
         }
@@ -130,6 +141,7 @@ export default {
                 controlState.partnerTurn = true
                 controlState.message = `Your turn`
             }
+            setTimeout(() => decideTurn(), 1000)
         })
 
         return {
@@ -137,6 +149,7 @@ export default {
             battleState,
             controlState,
             battleNumber,
+            shaking,
             decideTurn,
             attack,
             surrender,
@@ -173,6 +186,7 @@ export default {
                 </div>
                 <div class="pokemon-avatar">
                     <img
+                        :class="shaking.partner || battleState.state === turnStates.LOSE ? 'animate-shake' : ''"
                         width="256"
                         height="256"
                         :src="battleState.partner.avatar_url"
@@ -195,6 +209,7 @@ export default {
                 </div>
                 <div class="pokemon-avatar">
                     <img
+                        :class="shaking.enemy || battleState.state === turnStates.WIN ? 'animate-shake' : ''"
                         width="256"
                         height="256"
                         :src="battleState.enemy.avatar_url"
@@ -223,14 +238,8 @@ export default {
                 <div class="control-description">
                     <p v-html="controlState.message"></p>
                 </div>
-                <ControlButton
-                    v-if="controlState.turn === turnStates.DECIDE_TURN && !controlState.enemyAttack"
-                    @click="decideTurn"
-                    type="general"
-                    label="Continue"
-                />
                 <div
-                    v-else-if="controlState.turn === turnStates.PARTNER_TURN && controlState.partnerTurn"
+                    v-if="controlState.turn === turnStates.PARTNER_TURN && controlState.partnerTurn"
                     class="flex gap-x-4"
                 >
                     <ControlButton @click="attack" type="attack" label="Attack" />
@@ -262,6 +271,9 @@ export default {
     @apply text-right;
 }
 
+.pokemon-avatar {
+    @apply flex justify-center mt-44;
+}
 .pokemon-avatar {
     @apply flex justify-center mt-44;
 }
