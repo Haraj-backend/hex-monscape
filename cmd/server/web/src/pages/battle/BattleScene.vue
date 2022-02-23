@@ -3,7 +3,7 @@ import { computed, onMounted, reactive } from "vue"
 import router from "../../routes"
 import { useStore } from "../../store"
 import PokebattleHTTP from "../../composables/http_client"
-import { turnStates } from "../../entity/game"
+import { getGameScenario, turnStates } from "../../entity/game"
 
 import HealthBar from './components/HealthBar.vue'
 import ControlButton from "./components/ControlButton.vue"
@@ -24,6 +24,19 @@ export default {
 
         // get battle state
         const battleState = computed(() => store.getBattleState)
+        const battleNumber = computed(() => {
+            const scenario = getGameScenario(store.getGameData)
+            switch (scenario) {
+                case '1':
+                    return '1st battle'
+                case '2':
+                    return '2nd battle'
+                case '3':
+                    return '3rd battle'
+                default:
+                    return '-'
+            }
+        })
 
         const client = new PokebattleHTTP()
         const currentGameID = store.getBattleState.game_id
@@ -91,7 +104,25 @@ export default {
             router.push({ name: 'lounge-screen', params: { state: 'ongoing' } })
         }
 
+        const newGame = () => {
+            // reset the game
+            store.resetGame()
+            router.push({ name: 'welcome-screen' })
+        }
+
+        const getGameDetails = async () => {
+            const resp = await client.getGameDetails(currentGameID)
+            if (resp.ok) {
+                store.setTheGame(resp.data)
+            } else {
+                // reset the game and battle data from client storage
+                // redirect to welcome screen
+                newGame()
+            }
+        }
+
         onMounted(() => {
+            getGameDetails()
             controlState.turn = battleState.value.state
             if (battleState.value.state === turnStates.PARTNER_TURN) {
                 controlState.previousTurn = turnStates.DECIDE_TURN
@@ -105,6 +136,7 @@ export default {
             turnStates,
             battleState,
             controlState,
+            battleNumber,
             decideTurn,
             attack,
             surrender,
@@ -150,7 +182,7 @@ export default {
             </div>
 
             <div class="middle-part">
-                <div class="battle-description font-bold text-2xl">1st battle</div>
+                <div class="battle-description font-bold text-2xl">{{ battleNumber }}</div>
             </div>
 
             <div class="enemy-scene">

@@ -1,6 +1,6 @@
 <script>
 import { useRouter } from "vue-router"
-import { computed, onMounted, ref } from "vue"
+import { computed, onMounted } from "vue"
 import { useStore } from "../../store"
 import { getGameScenario, turnStates } from "../../entity/game"
 import PartnerCard from "../../components/PartnerCard.vue"
@@ -18,7 +18,6 @@ export default {
 
         // reactive variables
         const currentGameData = computed(() => store.getGameData)
-        const battleState = computed(() => store.getBattleState)
         const gameFinished = computed(() => currentGameData.value.scenario === turnStates.END_GAME)
         const loungeOrder = computed(() => {
             switch (currentGameData.value.scenario) {
@@ -46,7 +45,11 @@ export default {
             }
         }
 
-        const newGame = () => router.push({ name: 'welcome-screen' })
+        const newGame = () => {
+            // reset the game
+            store.resetGame()
+            router.push({ name: 'welcome-screen' })
+        }
 
         const getGameDetails = async () => {
             const resp = await client.getGameDetails(currentGameData.value.id)
@@ -55,9 +58,7 @@ export default {
             } else {
                 // reset the game and battle data from client storage
                 // redirect to welcome screen
-                store.setTheGame(null)
-                store.setTheBattle(null)
-                router.push({ name: 'welcome-screen' })
+                newGame()
             }
         }
 

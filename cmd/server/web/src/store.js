@@ -77,6 +77,12 @@ export const useStore = defineStore("main", {
       this.updateLS(gameCfg);
     },
 
+    resetGame() {
+      this.gameData = null;
+      this.battleState = null;
+      this.updateLS();
+    },
+
     setTheGame(gameData) {
       if (!gameData) {
         this.gameData = null;
