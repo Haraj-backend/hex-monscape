@@ -1,8 +1,5 @@
 # Web UI
 
-Built with Vue 3 + Vite.
+The web UI for Hex Pokebattle game, built with Vue 3 + Vite.
 
-TODO:
-
-1. Fix scenario advanced.
-2. Implement "Finished" page.
+To play the game, simply run `make run` from root folder of the project, then open `http://localhost:9186` in your browser and you're good to go!
