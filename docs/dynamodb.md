@@ -9,12 +9,12 @@ Table that holds records of all available pokemons.
 - `id`, String => identifier of a pokemon
 - `name`, String => name of a pokemon
 - `battle_stats`, Map => holds battle stats related information of a pokemon
-- `battle_stats.max_health`, Number => maximum health (on battle start) of a pokemon
-- `battle_stats.attack`, Number => number of damage that can be inflicted by a pokemon
-- `battle_stats.defense`, Number => number of damage reducer for a pokemon (damage = enemy.attack - your_partner.defense)
-- `battle_stats.speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
+  - `max_health`, Number => maximum health (on battle start) of a pokemon
+  - `attack`, Number => number of damage that can be inflicted by a pokemon
+  - `defense`, Number => number of damage reducer for a pokemon (damage = enemy.attack - your_partner.defense)
+  - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
 - `avatar_url`, String => url for avatar image of a pokemon
-- `type`, String => the pokemon type, valid values: `PARTNER`, `ENEMY`
+- `extra_role`, String, *OPTIONAL* => the pokemon type, valid values: `PARTNER`
 
 **Example Record:**
 
@@ -29,13 +29,13 @@ Table that holds records of all available pokemons.
         "speed": 15
     },
     "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
-    "type": "PARTNER"
+    "extra_role": "PARTNER"
 },
 ```
 
 **Relevant Indexes:**
 - `PRIMARY_KEY` => `id`
-- `GLOBAL_SECONDARY_INDEX` => `type`
+- `extra_role`, GSI => `extra_role`
 
 [Back to Top](#dynamodb-schema)
 
@@ -79,12 +79,13 @@ Table that holds records of running battle for each games
 - `game_id`, String => identifier of a game that the battle resides
 - `state`, String => current state of a battle, valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
 - `partner`, Map => holds information of player's pokemon
-- `partner.health`, Number => remaining health of player's partner
+  - `health`, Number => remaining health of player's partner
 - `enemy`, Map => holds information of enemy's pokemon
-- `enemy.id`, String => identifier of opposite partner
-- `enemy.health`, Number => remaining health of opposite partner
-- `last_damage.partner`, Number => last inflicted damage to player's partner
-- `last_damage.enemy`, Number => last inflicted damage to opposite partner
+  - `id`, String => identifier of opposite partner
+  - `health`, Number => remaining health of opposite partner
+- `last_damage`, Map => holds information related to last damage inflicted
+  - `partner`, Number => last inflicted damage to player's partner
+  - `enemy`, Number => last inflicted damage to opposite partner
 
 **Example Record:**
 
