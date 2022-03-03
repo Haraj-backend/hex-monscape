@@ -79,10 +79,25 @@ Table that holds records of running battle for each games
 - `game_id`, String => identifier of a game that the battle resides
 - `state`, String => current state of a battle, valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
 - `partner`, Map => holds information of player's pokemon
-  - `health`, Number => remaining health of player's partner
+  - `id`, String => identifier of a player's partner
+  - `name`, String => name of a player's partner
+  - `battle_stats`, Map => holds battle stats related information of partner
+    - `health`, Number => remaining health of player's partner
+    - `max_health`, Number => maximum health (on battle start) of the partner
+    - `attack`, Number => number of damage that can be inflicted by the partner
+    - `defense`, Number => number of damage reducer for the partner (damage = enemy.attack - your_partner.defense)
+    - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
+  - `avatar_url`, String => url for avatar image
 - `enemy`, Map => holds information of enemy's pokemon
-  - `id`, String => identifier of opposite partner
-  - `health`, Number => remaining health of opposite partner
+  - `id`, String => identifier of a pokemon
+  - `name`, String => name of a pokemon
+  - `battle_stats`, Map => holds battle stats related information of a pokemon
+  - - `health`, Number => remaining health of the enemy
+    - `max_health`, Number => maximum health (on battle start) of the enemy
+    - `attack`, Number => number of damage that can be inflicted by the enemy
+    - `defense`, Number => number of damage reducer for the enemy (damage = your_partner.attack - enemy.defense)
+    - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
+  - `avatar_url`, String => url for avatar image
 - `last_damage`, Map => holds information related to last damage inflicted
   - `partner`, Number => last inflicted damage to player's partner
   - `enemy`, Number => last inflicted damage to opposite partner
@@ -94,11 +109,29 @@ Table that holds records of running battle for each games
     "game_id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
     "state": "DECIDE_TURN",
     "partner": {
-        "health": 90
+        "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+        "name": "Pikachu",
+        "battle_stats": {
+            "max_health": 100,
+            "attack": 25,
+            "defense": 5,
+            "speed": 15,
+            "health": 75
+        },
+        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
+        "extra_role": "PARTNER"
     },
-    "enemy": {
-        "id": "1eb64af3-713a-4210-8c5a-883312c51fa3",
-        "health": 75
+    "enemy":{
+        "id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+        "name": "Squirtle",
+        "battle_stats": {
+            "max_health": 100,
+            "attack": 20,
+            "defense": 10,
+            "speed": 15,
+            "health": 60
+        },
+        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png"
     },
     "last_damage": {
         "partner": 10,
