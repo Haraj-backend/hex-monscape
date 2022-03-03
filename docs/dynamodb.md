@@ -8,13 +8,13 @@ Table that holds records of all available pokemons.
 
 - `id`, String => identifier of a pokemon
 - `name`, String => name of a pokemon
+- `battle_stats`, Map => holds battle stats related information of a pokemon
 - `battle_stats.max_health`, Number => maximum health (on battle start) of a pokemon
 - `battle_stats.attack`, Number => number of damage that can be inflicted by a pokemon
 - `battle_stats.defense`, Number => number of damage reducer for a pokemon (damage = enemy.attack - your_partner.defense)
 - `battle_stats.speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
 - `avatar_url`, String => url for avatar image of a pokemon
-- `can_be_partner`, Boolean => flag for a pokemon that be able to be choose as a partner
-- `can_be_enemy`, Boolean => flag for a pokemon that be able to become an enemy
+- `type`, String => the pokemon type, valid values: `PARTNER`, `ENEMY`
 
 **Example Record:**
 
@@ -29,13 +29,13 @@ Table that holds records of all available pokemons.
         "speed": 15
     },
     "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
-    "can_be_partner": true,
-    "can_be_enemy": false
+    "type": "PARTNER"
 },
 ```
 
 **Relevant Indexes:**
 - `PRIMARY_KEY` => `id`
+- `GLOBAL_SECONDARY_INDEX` => `type`
 
 [Back to Top](#dynamodb-schema)
 
@@ -49,7 +49,7 @@ Table that holds records of every games that has been/being played
 - `player_name`, String => name of game player
 - `created_at`, Number => unix timestamp representation of a game creation time
 - `battle_won`, Number => number of battle that has been won
-- `scenario`, String => current scenario of the game (BATTLE_1, BATTLE_2, BATTLE_3, END_BATTLE)
+- `scenario`, String => current scenario of the game, valid values: `BATTLE_1`, `BATTLE_2`, `BATTLE_3`, `END_BATTLE`
 - `partner_id`, String => identifier of the player chosen partner
 
 **Example Record:**
@@ -77,8 +77,10 @@ Table that holds records of running battle for each games
 
 **Relevant Fields:**
 - `game_id`, String => identifier of a game that the battle resides
-- `state`, String => current state of a battle (DECIDE_TURN, ENEMY_TURN, PARTNER_TURN, WIN, LOSE)
+- `state`, String => current state of a battle, valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
+- `partner`, Map => holds information of player's pokemon
 - `partner.health`, Number => remaining health of player's partner
+- `enemy`, Map => holds information of enemy's pokemon
 - `enemy.id`, String => identifier of opposite partner
 - `enemy.health`, Number => remaining health of opposite partner
 - `last_damage.partner`, Number => last inflicted damage to player's partner
