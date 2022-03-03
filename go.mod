@@ -3,6 +3,7 @@ module github.com/Haraj-backend/hex-pokebattle
 go 1.15
 
 require (
+	github.com/aws/aws-sdk-go v1.43.10
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/render v1.0.1
 	github.com/google/uuid v1.3.0
