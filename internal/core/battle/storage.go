@@ -26,6 +26,7 @@ type GameStorage interface {
 }
 
 type PokemonStorage interface {
-	// GetPossibleEnemies returns all possible enemies in the game.
+	// GetPossibleEnemies returns all possible enemies in the game. Returns nil
+	// when there is no possible enemies.
 	GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error)
 }
