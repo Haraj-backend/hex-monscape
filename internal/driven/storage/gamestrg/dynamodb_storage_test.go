@@ -63,11 +63,7 @@ func TestSaveGame(t *testing.T) {
 		ID:         "game-id",
 		PlayerName: "Alfat",
 		Partner: &entity.Pokemon{
-			ID:   "partner-id",
-			Name: "Partner Name",
-			BattleStats: entity.BattleStats{
-				Attack: 100,
-			},
+			ID: "partner-id",
 		},
 		BattleWon: 2,
 		Scenario:  entity.BATTLE_3,
@@ -83,7 +79,7 @@ func TestSaveGame(t *testing.T) {
 		t.Error("created object does not match test data ID")
 	}
 
-	if result.Partner.BattleStats.Attack != newGame.Partner.BattleStats.Attack {
+	if result.Partner.ID != newGame.Partner.ID {
 		t.Error("created object does not match test data Partner's Attack BattleStats")
 	}
 
@@ -97,11 +93,7 @@ func TestGetGame(t *testing.T) {
 		ID:         "game-id",
 		PlayerName: "Alfat",
 		Partner: &entity.Pokemon{
-			ID:   "partner-id",
-			Name: "Partner Name",
-			BattleStats: entity.BattleStats{
-				Attack: 100,
-			},
+			ID: "partner-id",
 		},
 		BattleWon: 2,
 		Scenario:  entity.BATTLE_3,
@@ -125,7 +117,7 @@ func TestGetGame(t *testing.T) {
 		t.Errorf("fetched object does not return same ID")
 	}
 
-	if result.Partner.BattleStats.Attack != mockedGame.Partner.BattleStats.Attack {
+	if result.Partner.ID != mockedGame.Partner.ID {
 		t.Error("fetched object does not match test data Partner's Attack BattleStats")
 	}
 
