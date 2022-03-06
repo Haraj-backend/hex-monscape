@@ -2,7 +2,7 @@ package battlestrg
 
 import (
 	"context"
-	"errors"
+	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/aws/aws-sdk-go/aws"
@@ -11,24 +11,25 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 )
 
-var (
-	ErrItemNotFound = errors.New("item cannot be found within table Battles")
-)
-
 const (
-	PrimaryKey = "game_id"
-	TableName  = "Battles"
+	FieldPrimaryKey = "game_id"
+
+	TableName = "Battles"
 )
 
-type DynamoStorage struct {
+var (
+	ErrItemNotFound = fmt.Errorf("item cannot be found within table %s", TableName)
+)
+
+type DynamoDBStorage struct {
 	db dynamodbiface.DynamoDBAPI
 }
 
-func (storage *DynamoStorage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
+func (storage *DynamoDBStorage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	input := dynamodb.GetItemInput{
 		TableName: aws.String(TableName),
 		Key: map[string]*dynamodb.AttributeValue{
-			PrimaryKey: {
+			FieldPrimaryKey: {
 				S: &gameID,
 			},
 		},
@@ -48,7 +49,7 @@ func (storage *DynamoStorage) GetBattle(ctx context.Context, gameID string) (*ba
 	return &battleItem, err
 }
 
-func (storage *DynamoStorage) SaveBattle(ctx context.Context, b battle.Battle) error {
+func (storage *DynamoDBStorage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	marshalledItem, err := dynamodbattribute.MarshalMap(&b)
 	if err != nil {
 		return err
@@ -63,8 +64,8 @@ func (storage *DynamoStorage) SaveBattle(ctx context.Context, b battle.Battle) e
 	return err
 }
 
-func NewDynamoStorage(db dynamodbiface.DynamoDBAPI) *DynamoStorage {
-	return &DynamoStorage{
+func NewDynamoDBStorage(db dynamodbiface.DynamoDBAPI) *DynamoDBStorage {
+	return &DynamoDBStorage{
 		db,
 	}
 }

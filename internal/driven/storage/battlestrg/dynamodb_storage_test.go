@@ -19,7 +19,7 @@ type mockedDynamoDB struct {
 }
 
 func (mock *mockedDynamoDB) GetItemWithContext(ctx context.Context, input *dynamodb.GetItemInput, opts ...request.Option) (*dynamodb.GetItemOutput, error) {
-	primaryKey := input.Key[battlestrg.PrimaryKey]
+	primaryKey := input.Key[battlestrg.FieldPrimaryKey]
 	if primaryKey == nil {
 		return nil, battlestrg.ErrItemNotFound
 	}
@@ -58,7 +58,7 @@ func TestSaveBattle(t *testing.T) {
 		battleMap: battleMap,
 	}
 
-	storage := battlestrg.NewDynamoStorage(&mockedDynamo)
+	storage := battlestrg.NewDynamoDBStorage(&mockedDynamo)
 
 	newBattle := battle.Battle{
 		GameID: "something-id",
@@ -84,7 +84,7 @@ func TestSaveBattle(t *testing.T) {
 
 	result := battleMap[newBattle.GameID]
 	if result.GameID != newBattle.GameID {
-		t.Error("did not store the entity")
+		t.Error("created object does not match test data ID")
 	}
 }
 
@@ -114,7 +114,7 @@ func TestGetBattle(t *testing.T) {
 		battleMap: battleMap,
 	}
 
-	storage := battlestrg.NewDynamoStorage(&mockedDynamo)
+	storage := battlestrg.NewDynamoDBStorage(&mockedDynamo)
 	result, err := storage.GetBattle(context.Background(), "something-id")
 	if err != nil {
 		t.Errorf("function return error: %s", err)
@@ -124,7 +124,7 @@ func TestGetBattle(t *testing.T) {
 		t.Error("fetched object does not return same GameID")
 	}
 
-	if result.State != mockedBattle.State {
-		t.Error("fetched object does not return same State")
+	if result.Partner.BattleStats.Attack != mockedBattle.Partner.BattleStats.Attack {
+		t.Error("fetched object does not return same Partner")
 	}
 }
