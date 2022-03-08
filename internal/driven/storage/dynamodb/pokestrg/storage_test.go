@@ -5,129 +5,74 @@ import (
 	"testing"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/config"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/pokestrg"
-	"github.com/aws/aws-sdk-go/aws/request"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 )
 
-type mockedDynamoDB struct {
-	dynamodbiface.DynamoDBAPI
-	pokemonMap map[pokestrg.Role]map[string]entity.Pokemon
+var pikachu = entity.Pokemon{
+	ID:   "pikachu-id",
+	Name: "Pikachu",
+	BattleStats: entity.BattleStats{
+		MaxHealth: 100,
+		Attack:    25,
+		Defense:   10,
+		Speed:     20,
+	},
+	AvatarURL: "http://avatar.com",
 }
 
-var (
-	pikachu = entity.Pokemon{
-		ID:   "pikachu-id",
-		Name: "Pikachu",
-		BattleStats: entity.BattleStats{
-			MaxHealth: 100,
-			Attack:    25,
-			Defense:   10,
-			Speed:     10,
-		},
-		AvatarURL: "http://avatar.co",
-	}
-
-	bulbasaur = entity.Pokemon{
-		ID:   "bulbasaur-id",
-		Name: "Bulbasaur",
-		BattleStats: entity.BattleStats{
-			MaxHealth: 100,
-			Attack:    25,
-			Defense:   10,
-			Speed:     10,
-		},
-		AvatarURL: "http://avatar.co",
-	}
-
-	databaseMap = map[pokestrg.Role]map[string]entity.Pokemon{
-		pokestrg.PARTNER: {
-			pikachu.ID: pikachu,
-		},
-		pokestrg.ENEMY: {
-			bulbasaur.ID: bulbasaur,
-		},
-	}
-)
-
-func (mock *mockedDynamoDB) QueryWithContext(ctx context.Context, input *dynamodb.QueryInput, opts ...request.Option) (*dynamodb.QueryOutput, error) {
-	roleVal := input.ExpressionAttributeValues["role"]
-	pokemonsMapByRole := mock.pokemonMap[pokestrg.Role(*roleVal.S)]
-
-	resultList := make([]map[string]*dynamodb.AttributeValue, 0)
-	for _, pokemon := range pokemonsMapByRole {
-		item, err := dynamodbattribute.MarshalMap(pokemon)
-		if err != nil {
-			return nil, err
-		}
-
-		resultList = append(resultList, item)
-	}
-
-	output := dynamodb.QueryOutput{
-		Items: resultList,
-	}
-
-	return &output, nil
+var bulbasaur = entity.Pokemon{
+	ID:   "bulbasaur-id",
+	Name: "Bulbasaur",
+	BattleStats: entity.BattleStats{
+		MaxHealth: 100,
+		Attack:    27,
+		Defense:   20,
+		Speed:     10,
+	},
+	AvatarURL: "http://avatar.com",
 }
 
-func (mock *mockedDynamoDB) GetItemWithContext(ctx context.Context, input *dynamodb.GetItemInput, opts ...request.Option) (*dynamodb.GetItemOutput, error) {
-	pokemonID := input.Key[pokestrg.FieldPrimaryKey]
-	extraRole := input.Key[pokestrg.FieldExtraRole]
-
-	pokemon, found := mock.pokemonMap[pokestrg.Role(*extraRole.S)][*pokemonID.S]
-	if !found {
-		return nil, pokestrg.ErrItemNotFound
-	}
-
-	item, err := dynamodbattribute.MarshalMap(pokemon)
-	if err != nil {
-		return nil, err
-	}
-
-	result := dynamodb.GetItemOutput{
-		Item: item,
-	}
-
-	return &result, nil
+var pokeStrgConfig = pokestrg.Config{
+	DynamoDBStorageConfig: config.DynamoDBStorageConfig{
+		DB: config.BuildDynamoDBInstance(),
+	},
+	Partners: []entity.Pokemon{pikachu},
+	Enemies:  []entity.Pokemon{bulbasaur},
 }
 
 func TestGetPartner(t *testing.T) {
-	mockedDynamo := mockedDynamoDB{
-		pokemonMap: databaseMap,
+	storage, err := pokestrg.NewDynamoDBStorage(pokeStrgConfig)
+	if err != nil {
+		t.Fatalf("error creating storage instance %s", err)
 	}
 
-	mockedPartner := databaseMap[pokestrg.PARTNER][pikachu.ID]
-
-	storage := pokestrg.NewDynamoDBStorage(&mockedDynamo)
 	result, err := storage.GetPartner(context.Background(), pikachu.ID)
 	if err != nil {
 		t.Errorf("function return error: %s", err)
 	}
 
-	if result.ID != mockedPartner.ID {
+	if result.ID != pikachu.ID {
 		t.Error("fetched object does not return same ID")
 	}
 
-	if result.BattleStats.MaxHealth != mockedPartner.BattleStats.MaxHealth {
+	if result.BattleStats.Attack != pikachu.BattleStats.Attack {
 		t.Error("fetched object does not return same BattleStats")
 	}
 }
 
 func TestGetPossibleEnemies(t *testing.T) {
-	mockedDynamo := mockedDynamoDB{
-		pokemonMap: databaseMap,
+	storage, err := pokestrg.NewDynamoDBStorage(pokeStrgConfig)
+	if err != nil {
+		t.Fatalf("error creating storage instance %s", err)
 	}
 
-	storage := pokestrg.NewDynamoDBStorage(&mockedDynamo)
 	enemies, err := storage.GetPossibleEnemies(context.Background())
 	if err != nil {
 		t.Errorf("function return error: %s", err)
 	}
 
-	if len(enemies) != len(databaseMap[pokestrg.ENEMY]) {
+	if len(enemies) != 1 {
 		t.Error("fetched enemies count does not match test data")
 	}
 
@@ -137,17 +82,17 @@ func TestGetPossibleEnemies(t *testing.T) {
 }
 
 func TestGetAvailableEnemies(t *testing.T) {
-	mockedDynamo := mockedDynamoDB{
-		pokemonMap: databaseMap,
+	storage, err := pokestrg.NewDynamoDBStorage(pokeStrgConfig)
+	if err != nil {
+		t.Fatalf("error creating storage instance %s", err)
 	}
 
-	storage := pokestrg.NewDynamoDBStorage(&mockedDynamo)
 	partners, err := storage.GetAvailablePartners(context.Background())
 	if err != nil {
 		t.Errorf("function return error: %s", err)
 	}
 
-	if len(partners) != len(databaseMap[pokestrg.PARTNER]) {
+	if len(partners) != 1 {
 		t.Error("fetched partners count does not match test data")
 	}
 

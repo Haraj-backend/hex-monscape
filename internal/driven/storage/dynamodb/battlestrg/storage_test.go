@@ -7,124 +7,58 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/battlestrg"
-	"github.com/aws/aws-sdk-go/aws/request"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/config"
 )
 
-type mockedDynamoDB struct {
-	dynamodbiface.DynamoDBAPI
-	battleMap map[string]battle.Battle
+var testBattle = battle.Battle{
+	GameID: "something-id",
+	State:  battle.DECIDE_TURN,
+	Partner: &entity.Pokemon{
+		ID:   "partner-id",
+		Name: "my-partner",
+	},
+	Enemy: &entity.Pokemon{
+		ID:   "enemy-id",
+		Name: "my-enemy",
+	},
+	LastDamage: battle.LastDamage{
+		Partner: 10,
+		Enemy:   10,
+	},
 }
 
-func (mock *mockedDynamoDB) GetItemWithContext(ctx context.Context, input *dynamodb.GetItemInput, opts ...request.Option) (*dynamodb.GetItemOutput, error) {
-	primaryKey := input.Key[battlestrg.FieldPrimaryKey]
-	if primaryKey == nil {
-		return nil, battlestrg.ErrItemNotFound
-	}
-
-	battleItem, found := mock.battleMap[*primaryKey.S]
-	if !found {
-		return nil, battlestrg.ErrItemNotFound
-	}
-
-	item, err := dynamodbattribute.MarshalMap(battleItem)
-	if err != nil {
-		return nil, err
-	}
-
-	result := dynamodb.GetItemOutput{
-		Item: item,
-	}
-	return &result, nil
-}
-
-func (mock *mockedDynamoDB) PutItemWithContext(ctx context.Context, input *dynamodb.PutItemInput, opts ...request.Option) (*dynamodb.PutItemOutput, error) {
-	battleItem := battle.Battle{}
-
-	err := dynamodbattribute.UnmarshalMap(input.Item, &battleItem)
-	if err != nil {
-		return nil, err
-	}
-
-	mock.battleMap[battleItem.GameID] = battleItem
-	return nil, nil
+var dynamoDBConfig = config.DynamoDBStorageConfig{
+	DB: config.BuildDynamoDBInstance(),
 }
 
 func TestSaveBattle(t *testing.T) {
-	battleMap := make(map[string]battle.Battle)
-	mockedDynamo := mockedDynamoDB{
-		battleMap: battleMap,
+	storage, err := battlestrg.NewDynamoDBStorage(dynamoDBConfig)
+	if err != nil {
+		t.Fatalf("error creating storage instance: %s", err)
 	}
 
-	storage := battlestrg.NewDynamoDBStorage(&mockedDynamo)
-
-	newBattle := battle.Battle{
-		GameID: "something-id",
-		State:  battle.DECIDE_TURN,
-		Partner: &entity.Pokemon{
-			ID:   "partner-id",
-			Name: "my-partner",
-		},
-		Enemy: &entity.Pokemon{
-			ID:   "enemy-id",
-			Name: "my-enemy",
-		},
-		LastDamage: battle.LastDamage{
-			Partner: 10,
-			Enemy:   10,
-		},
-	}
-
-	err := storage.SaveBattle(context.Background(), newBattle)
+	err = storage.SaveBattle(context.Background(), testBattle)
 	if err != nil {
 		t.Errorf("function return error: %s", err)
-	}
-
-	result := battleMap[newBattle.GameID]
-	if result.GameID != newBattle.GameID {
-		t.Error("created object does not match test data ID")
 	}
 }
 
 func TestGetBattle(t *testing.T) {
-	mockedBattle := battle.Battle{
-		GameID: "something-id",
-		State:  battle.DECIDE_TURN,
-		Partner: &entity.Pokemon{
-			ID:   "partner-id",
-			Name: "my-partner",
-		},
-		Enemy: &entity.Pokemon{
-			ID:   "enemy-id",
-			Name: "my-enemy",
-		},
-		LastDamage: battle.LastDamage{
-			Partner: 10,
-			Enemy:   10,
-		},
+	storage, err := battlestrg.NewDynamoDBStorage(dynamoDBConfig)
+	if err != nil {
+		t.Fatalf("error creating storage instance: %s", err)
 	}
 
-	battleMap := map[string]battle.Battle{
-		mockedBattle.GameID: mockedBattle,
-	}
-
-	mockedDynamo := mockedDynamoDB{
-		battleMap: battleMap,
-	}
-
-	storage := battlestrg.NewDynamoDBStorage(&mockedDynamo)
-	result, err := storage.GetBattle(context.Background(), "something-id")
+	result, err := storage.GetBattle(context.Background(), testBattle.GameID)
 	if err != nil {
 		t.Errorf("function return error: %s", err)
 	}
 
-	if result.GameID != mockedBattle.GameID {
+	if result.GameID != testBattle.GameID {
 		t.Error("fetched object does not return same GameID")
 	}
 
-	if result.Partner.BattleStats.Attack != mockedBattle.Partner.BattleStats.Attack {
+	if result.Partner.BattleStats.Attack != testBattle.Partner.BattleStats.Attack {
 		t.Error("fetched object does not return same Partner")
 	}
 }
