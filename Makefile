@@ -9,9 +9,11 @@ test:
 	docker-compose up --build --remove-orphans -d
 
     # waiting for Localstack preparations (DynamoDB tables, etc)
-	sh -c 'sleep 60'
+	sh -c 'sleep 10'
 
 	env DDB_TABLE_BATTLE_NAME="Battles" \
+		DDB_TABLE_GAME_NAME="Games" \
+		DDB_TABLE_POKEMON_NAME="Pokemons" \
 		LOCALSTACK_ENDPOINT="http://localhost:4566" \
 		AWS_REGION=eu-west-1 \
 		go test -count=1 ./...

@@ -67,6 +67,7 @@ func (c Config) Validate() error {
 	return validator.Validate(c)
 }
 
+// New returns new instance of battlestrg dynamoDB Storage
 func New(cfg Config) (*Storage, error) {
 	err := cfg.Validate()
 	if err != nil {
