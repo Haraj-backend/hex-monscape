@@ -7,6 +7,6 @@ services:
       - 4566:4566
     environment:
       - SERVICES=dynamodb
-      - AWS_DEFAULT_REGION=ap-southeast-1
+      - AWS_DEFAULT_REGION=eu-west-1
     volumes:
       - './deploy/local/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh'

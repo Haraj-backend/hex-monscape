@@ -9,9 +9,10 @@ test:
 	docker-compose up --build --remove-orphans -d
 
     # waiting for Localstack preparations (DynamoDB tables, etc)
-	sh -c 'sleep 10'
+	sh -c 'sleep 60'
 
-	env HARAJ_POKEBATTLE_AWS_REGION="ap-southeast-1" \
-		HARAJ_POKEBATTLE_AWS_DYNAMODB_URL="http://localhost:4566" \
+	env DDB_TABLE_BATTLE_NAME="Battles" \
+		LOCALSTACK_ENDPOINT="http://localhost:4566" \
+		AWS_REGION=eu-west-1 \
 		go test -count=1 ./...
 	docker-compose down -v
