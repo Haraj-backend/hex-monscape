@@ -5,73 +5,76 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/config"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"gopkg.in/validator.v2"
 )
 
-const (
-	FieldPrimaryKey = "game_id"
-
-	TableName = "Battles"
-)
-
-type dynamoDBStorage struct {
-	db dynamodbiface.DynamoDBAPI
+type Storage struct {
+	dynamoClient *dynamodb.DynamoDB
+	tableName    string
 }
 
-func (storage *dynamoDBStorage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	key, _ := dynamodbattribute.MarshalMap(map[string]interface{}{
-		FieldPrimaryKey: gameID,
-	})
-
-	input := dynamodb.GetItemInput{
-		TableName: aws.String(TableName),
-		Key:       key,
+func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
+	// construct params
+	key := battleKey{GameID: gameID}
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String(s.tableName),
+		Key:       key.toDDBKey(),
 	}
-
-	output, err := storage.db.GetItemWithContext(ctx, &input)
+	// execute get item
+	output, err := s.dynamoClient.GetItemWithContext(ctx, input)
 	if err != nil {
-		return nil, fmt.Errorf("unable tp get item from %s due to: %w", TableName, err)
+		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
-
-	battleItem := battle.Battle{}
-	err = dynamodbattribute.UnmarshalMap(output.Item, &battleItem)
+	// if item is not found, returns nil as expected by battle interface
+	if len(output.Item) == 0 {
+		return nil, nil
+	}
+	// parse item
+	battle := battle.Battle{}
+	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
 	if err != nil {
-		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", TableName, err)
+		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
-	return &battleItem, nil
+	return &battle, nil
 }
 
-func (storage *dynamoDBStorage) SaveBattle(ctx context.Context, b battle.Battle) error {
-	marshalledItem, _ := dynamodbattribute.MarshalMap(&b)
-
-	input := dynamodb.PutItemInput{
-		TableName: aws.String(TableName),
-		Item:      marshalledItem,
+func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
+	// construct params
+	item, _ := dynamodbattribute.MarshalMap(&b)
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String(s.tableName),
+		Item:      item,
 	}
-
-	_, err := storage.db.PutItemWithContext(ctx, &input)
+	// execute put item
+	_, err := s.dynamoClient.PutItemWithContext(ctx, input)
 	if err != nil {
-		return fmt.Errorf("unable to put item to %s due to: %w", TableName, err)
+		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
 
 	return nil
 }
 
-// NewDynamoDBStorage returns new instance of battlestrg dynamoDBStorage
-func NewDynamoDBStorage(cfg config.DynamoDBStorageConfig) (*dynamoDBStorage, error) {
+type Config struct {
+	DynamoClient *dynamodb.DynamoDB `validate:"nonnil"`
+	TableName    string             `validate:"nonzero"`
+}
+
+func (c Config) Validate() error {
+	return validator.Validate(c)
+}
+
+func New(cfg Config) (*Storage, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, err
 	}
-
-	strg := &dynamoDBStorage{
-		db: cfg.DB,
+	strg := &Storage{
+		dynamoClient: cfg.DynamoClient,
+		tableName:    cfg.TableName,
 	}
-
 	return strg, nil
 }
