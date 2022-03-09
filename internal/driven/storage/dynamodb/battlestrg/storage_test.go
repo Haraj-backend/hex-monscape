@@ -10,7 +10,6 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/shared"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
@@ -112,13 +111,8 @@ func TestGetBattle(t *testing.T) {
 }
 
 func newStorage() (*Storage, error) {
-	awsSess := session.Must(session.NewSessionWithOptions(session.Options{
-		Config: aws.Config{
-			Endpoint: aws.String(os.Getenv(shared.TestConfig.EnvKeyLocalstackEndpoint)),
-		},
-	}))
 	s, err := New(Config{
-		DynamoClient: dynamodb.New(awsSess),
+		DynamoClient: shared.NewLocalTestDDBClient(),
 		TableName:    os.Getenv(shared.TestConfig.EnvKeyBattleTableName),
 	})
 	if err != nil {
