@@ -13,8 +13,8 @@ type PokemonSeeder struct {
 
 func (s PokemonSeeder) toBatchWriteInput(tableName string) *dynamodb.BatchWriteItemInput {
 	writeRequests := make([]*dynamodb.WriteRequest, 0)
-	writeRequests = append(writeRequests, pokemonListToWriteRequests(s.partners, PARTNER)...)
-	writeRequests = append(writeRequests, pokemonListToWriteRequests(s.enemies, ENEMY)...)
+	writeRequests = append(writeRequests, pokemonListToWriteRequests(s.partners, partnerRole)...)
+	writeRequests = append(writeRequests, pokemonListToWriteRequests(s.enemies, enemyRole)...)
 
 	return &dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]*dynamodb.WriteRequest{
@@ -23,7 +23,7 @@ func (s PokemonSeeder) toBatchWriteInput(tableName string) *dynamodb.BatchWriteI
 	}
 }
 
-func pokemonListToWriteRequests(pokemons []entity.Pokemon, role ExtraRole) []*dynamodb.WriteRequest {
+func pokemonListToWriteRequests(pokemons []entity.Pokemon, role extraRole) []*dynamodb.WriteRequest {
 	writeRequests := make([]*dynamodb.WriteRequest, 0)
 
 	for _, pokemon := range pokemons {
