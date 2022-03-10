@@ -124,7 +124,6 @@ func TestGetPossibleEnemies(t *testing.T) {
 
 			enemies, err := storage.GetPossibleEnemies(context.Background())
 			assert.NoError(t, err)
-
 			assert.Equal(t, len(testCase.Enemies), len(enemies))
 
 			if len(testCase.Enemies) == 1 && len(enemies) == 1 {
@@ -166,7 +165,6 @@ func TestGetAvailablePartners(t *testing.T) {
 
 			partners, err := storage.GetAvailablePartners(context.Background())
 			assert.NoError(t, err)
-
 			assert.Equal(t, len(testCase.Partners), len(partners))
 
 			if len(testCase.Partners) == 1 && len(partners) == 1 {
@@ -230,8 +228,10 @@ func getPokemon(dynamoClient *dynamodb.DynamoDB, ID string) (*entity.Pokemon, er
 
 func deletePokemon(dynamoClient *dynamodb.DynamoDB, ID string) error {
 	output, err := dynamoClient.DeleteItem(&dynamodb.DeleteItemInput{
-		Key:          (pokemonKey{ID: ID}).toDDBKey(),
-		TableName:    aws.String(os.Getenv(shared.TestConfig.EnvKeyPokemonTableName)),
+		Key:       (pokemonKey{ID: ID}).toDDBKey(),
+		TableName: aws.String(os.Getenv(shared.TestConfig.EnvKeyPokemonTableName)),
+		// using this to make sure if the item is surely deleted
+		// reference: https://stackoverflow.com/questions/46464303/how-to-determine-if-a-dynamodb-item-was-indeed-deleted
 		ReturnValues: aws.String("ALL_OLD"),
 	})
 	if err != nil {
