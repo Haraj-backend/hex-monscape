@@ -5,6 +5,15 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
+type extraRole string
+
+const (
+	indexExtraRole = "index_extra_role"
+
+	partnerRole extraRole = "PARTNER"
+	enemyRole   extraRole = "ENEMY"
+)
+
 type pokemonKey struct {
 	ID string `json:"id"`
 }
@@ -15,7 +24,7 @@ func (k pokemonKey) toDDBKey() map[string]*dynamodb.AttributeValue {
 }
 
 type pokemonExtraRoleQuery struct {
-	ExtraRole ExtraRole `json:":extra_role"`
+	ExtraRole extraRole `json:":extra_role"`
 }
 
 func (q pokemonExtraRoleQuery) toQueryExpression() *string {

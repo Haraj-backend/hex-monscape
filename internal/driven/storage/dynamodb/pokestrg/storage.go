@@ -11,21 +11,12 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-type ExtraRole string
-
-const (
-	IndexExtraRole = "index_extra_role"
-
-	PARTNER ExtraRole = "PARTNER"
-	ENEMY   ExtraRole = "ENEMY"
-)
-
 type Storage struct {
 	dynamoClient *dynamodb.DynamoDB
 	tableName    string
 }
 
-func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole ExtraRole) ([]entity.Pokemon, error) {
+func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Pokemon, error) {
 	query := pokemonExtraRoleQuery{
 		ExtraRole: extraRole,
 	}
@@ -34,7 +25,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole ExtraRole) ([
 		TableName:                 aws.String(s.tableName),
 		KeyConditionExpression:    query.toQueryExpression(),
 		ExpressionAttributeValues: query.toQueryExpressionValue(),
-		IndexName:                 aws.String(IndexExtraRole),
+		IndexName:                 aws.String(indexExtraRole),
 	}
 
 	output, err := s.dynamoClient.QueryWithContext(ctx, &input)
@@ -56,11 +47,11 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole ExtraRole) ([
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
-	return s.getPokemonsByRole(ctx, PARTNER)
+	return s.getPokemonsByRole(ctx, partnerRole)
 }
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
-	return s.getPokemonsByRole(ctx, ENEMY)
+	return s.getPokemonsByRole(ctx, enemyRole)
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {

@@ -122,12 +122,14 @@ func TestGetPossibleEnemies(t *testing.T) {
 			err := storage.SeedData(context.Background(), &seeder)
 			assert.NoError(t, err)
 
-			enemies, err := storage.GetPossibleEnemies(context.Background())
+			fetchedEnemies, err := storage.GetPossibleEnemies(context.Background())
 			assert.NoError(t, err)
-			assert.Equal(t, len(testCase.Enemies), len(enemies))
 
-			if len(testCase.Enemies) == 1 && len(enemies) == 1 {
-				assert.Equal(t, testCase.Enemies[0], enemies[0])
+			switch len(testCase.Enemies) {
+			case 0:
+				assert.Nil(t, fetchedEnemies)
+			case 1:
+				assert.Equal(t, testCase.Enemies[0], fetchedEnemies[0])
 				deletePokemon(storage.dynamoClient, enemy.ID)
 			}
 		})
@@ -163,12 +165,14 @@ func TestGetAvailablePartners(t *testing.T) {
 			err := storage.SeedData(context.Background(), &seeder)
 			assert.NoError(t, err)
 
-			partners, err := storage.GetAvailablePartners(context.Background())
+			fetchedPartners, err := storage.GetAvailablePartners(context.Background())
 			assert.NoError(t, err)
-			assert.Equal(t, len(testCase.Partners), len(partners))
 
-			if len(testCase.Partners) == 1 && len(partners) == 1 {
-				assert.Equal(t, testCase.Partners[0], partners[0])
+			switch len(testCase.Partners) {
+			case 0:
+				assert.Nil(t, fetchedPartners)
+			case 1:
+				assert.Equal(t, testCase.Partners[0], fetchedPartners[0])
 				deletePokemon(storage.dynamoClient, partner.ID)
 			}
 		})
