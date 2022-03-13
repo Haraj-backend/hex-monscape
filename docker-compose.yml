@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=dynamodb
+      - AWS_DEFAULT_REGION=eu-west-1
+    volumes:
+      - './deploy/local/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh'

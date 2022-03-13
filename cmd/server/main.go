@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/battlestrg"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/gamestrg"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/pokestrg"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/battlestrg"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/gamestrg"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
