@@ -21,7 +21,7 @@ test:
 		go test -count=1 ./...
 	docker-compose down -v
 
-run-ddb:
+run-with-ddb:
 	docker-compose down -v
 
 	env SEED_POKEMON=true \
