@@ -23,6 +23,10 @@ func (s PokemonSeeder) toBatchWriteInput(tableName string) *dynamodb.BatchWriteI
 	}
 }
 
+func (s PokemonSeeder) isEmpty() bool {
+	return (len(s.enemies) + len(s.partners)) == 0
+}
+
 func pokemonListToWriteRequests(pokemons []entity.Pokemon, role extraRole) []*dynamodb.WriteRequest {
 	writeRequests := make([]*dynamodb.WriteRequest, 0)
 

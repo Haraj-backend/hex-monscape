@@ -83,7 +83,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 }
 
 func (s *Storage) SeedData(ctx context.Context, seeder *PokemonSeeder) error {
-	if (len(seeder.enemies) + len(seeder.partners)) == 0 {
+	if seeder.isEmpty() {
 		return nil
 	}
 

@@ -44,3 +44,9 @@ awslocal dynamodb create-table \
         AttributeName=game_id,KeyType=HASH \
     --provisioned-throughput \
         ReadCapacityUnits=1,WriteCapacityUnits=1
+
+if [ "$SEED_POKEMON" == "true" ]
+then
+    awslocal dynamodb batch-write-item --request-item file:///var/partner-batch-write-items.json
+    awslocal dynamodb batch-write-item --request-item file:///var/enemy-batch-write-items.json
+fi
