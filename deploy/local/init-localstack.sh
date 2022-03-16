@@ -45,7 +45,7 @@ awslocal dynamodb create-table \
     --provisioned-throughput \
         ReadCapacityUnits=1,WriteCapacityUnits=1
 
-if [ "$SEED_POKEMON" == "true" ]
+if [ "$DONT_SEED_POKEMON" == "false" ]
 then
     awslocal dynamodb batch-write-item --request-item file:///var/partner-batch-write-items.json
     awslocal dynamodb batch-write-item --request-item file:///var/enemy-batch-write-items.json

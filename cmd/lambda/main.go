@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,32 +12,28 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
 	"github.com/apex/gateway"
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/riandyrn/go-env"
-)
-
-const (
-	addr = ":9186"
-
-	envAwsEndpoint         = "AWS_ENDPOINT"
-	envAwsRegion           = "AWS_REGION"
-	envDDBTableBattleName  = "DDB_TABLE_BATTLE_NAME"
-	envDDBTableGameName    = "DDB_TABLE_GAME_NAME"
-	envDDBTablePokemonName = "DDB_TABLE_POKEMON_NAME"
-	envIsServerMode        = "IS_SERVER_MODE"
-	envSeedPokemon         = "SEED_POKEMON"
+	"github.com/gosidekick/goconfig"
+	_ "github.com/gosidekick/goconfig/yaml"
 )
 
 func main() {
 	log.Printf("Running service...")
 
+	// read config
+	var cfg config
+	goconfig.File = "config.yml"
+	err := goconfig.Parse(&cfg)
+	if err != nil {
+		log.Fatalf("unable to parse config due: %v", err)
+	}
+
 	// initialize aws session
-	awsSess := session.Must(session.NewSession(&aws.Config{
-		Endpoint: aws.String(env.GetString(envAwsEndpoint)),
-		Region:   aws.String(env.GetString(envAwsRegion)),
-	}))
+	awsSess := session.Must(session.NewSession())
+	if cfg.LocalDeployment.Enabled {
+		awsSess.Config.Endpoint = &cfg.LocalDeployment.Endpoint
+	}
 
 	// initialize dynamodb client
 	ddbClient := dynamodb.New(awsSess)
@@ -44,7 +41,7 @@ func main() {
 	// initialize battle storage
 	battleStrg, err := battlestrg.New(battlestrg.Config{
 		DynamoClient: ddbClient,
-		TableName:    env.GetString(envDDBTableBattleName),
+		TableName:    cfg.Dynamo.BattleTable,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize battleStrg due: %v", err)
@@ -53,7 +50,7 @@ func main() {
 	// initialize game storage
 	gameStrg, err := gamestrg.New(gamestrg.Config{
 		DynamoClient: ddbClient,
-		TableName:    env.GetString(envDDBTableGameName),
+		TableName:    cfg.Dynamo.GameTable,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize gameStrg due: %v", err)
@@ -62,7 +59,7 @@ func main() {
 	// initialize pokemon storage
 	pokeStrg, err := pokestrg.New(pokestrg.Config{
 		DynamoClient: ddbClient,
-		TableName:    env.GetString(envDDBTablePokemonName),
+		TableName:    cfg.Dynamo.PokemonTable,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize pokeStrg due: %v", err)
@@ -96,7 +93,7 @@ func main() {
 		log.Fatalf("unable to initialize rest api due: %v", err)
 	}
 
-	err = listenAndServe(env.GetBool(envIsServerMode), addr, api.GetHandler())
+	err = listenAndServe(cfg.LocalDeployment.Enabled, fmt.Sprintf(":%d", cfg.LocalDeployment.Port), api.GetHandler())
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatalf("unable to start server due: %v", err)
 	}

@@ -6,9 +6,9 @@ services:
     ports:
       - 4566:4566
     environment:
-      - SERVICES=dynamodb,lambda
+      - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
-      - SEED_POKEMON
+      - DONT_SEED_POKEMON=${DONT_SEED_POKEMON:-false}
     volumes:
       - './deploy/local/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh'
       - './deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json'
@@ -16,17 +16,15 @@ services:
 
   hex-pokebattle:
     build:
-      dockerfile: ./build/package/lambda/Dockerfile
+      context: .
+      dockerfile: build/package/lambda/Dockerfile
     depends_on:
       - localstack
     ports:
       - 9186:9186
+    volumes:
+      - './cmd/lambda/config.yml:/config.yml'
     environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_ENDPOINT=http://localstack:4566
-      - AWS_REGION
-      - AWS_SECRET_ACCESS_KEY
-      - DDB_TABLE_BATTLE_NAME=Battles
-      - DDB_TABLE_GAME_NAME=Games
-      - DDB_TABLE_POKEMON_NAME=Pokemons
-      - IS_SERVER_MODE=true
+      - AWS_ACCESS_KEY_ID=awslocal
+      - AWS_REGION=eu-west-1
+      - AWS_SECRET_ACCESS_KEY=awslocal
