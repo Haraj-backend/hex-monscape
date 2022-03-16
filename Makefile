@@ -10,7 +10,7 @@ test:
 		docker-compose up --build --remove-orphans -d
 
     # waiting for Localstack preparations (DynamoDB tables, etc)
-	sh -c 'sleep 60'
+	sh -c 'sleep 10'
 
 	env DDB_TABLE_BATTLE_NAME="Battles" \
 		DDB_TABLE_GAME_NAME="Games" \
@@ -23,4 +23,3 @@ test:
 run-with-ddb:
 	docker-compose down -v
 	docker-compose up --build --remove-orphans
-	docker-compose down -v
