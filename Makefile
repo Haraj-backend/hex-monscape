@@ -10,7 +10,7 @@ test:
 		docker-compose up --build --remove-orphans -d
 
     # waiting for Localstack preparations (DynamoDB tables, etc)
-	sh -c 'sleep 60'
+	./wait-localstack.sh -h localhost:4566 -s dynamodb
 
 	env DDB_TABLE_BATTLE_NAME="Battles" \
 		DDB_TABLE_GAME_NAME="Games" \
