@@ -1,0 +1,115 @@
+{
+  "Pokemons": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "b1c87c5c-2ac3-471d-9880-4812552ee15d"
+          },
+          "name": {
+            "S": "Pikachu"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "25"
+              },
+              "defense": {
+                "N": "5"
+              },
+              "speed": {
+                "N": "15"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+          },
+          "extra_role": {
+            "S": "PARTNER"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "0f9b84b6-a768-4ba9-8800-207740fc993d"
+          },
+          "name": {
+            "S": "Bulbasaur"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "20"
+              },
+              "defense": {
+                "N": "15"
+              },
+              "speed": {
+                "N": "10"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png"
+          },
+          "extra_role": {
+            "S": "PARTNER"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "85db0102-212d-4ac8-932c-a0e876a29a85"
+          },
+          "name": {
+            "S": "Charmander"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "25"
+              },
+              "defense": {
+                "N": "5"
+              },
+              "speed": {
+                "N": "20"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+          },
+          "extra_role": {
+            "S": "PARTNER"
+          }
+        }
+      }
+    }
+  ]
+}

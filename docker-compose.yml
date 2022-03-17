@@ -8,5 +8,23 @@ services:
     environment:
       - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
+      - DONT_SEED_POKEMON=${DONT_SEED_POKEMON}
     volumes:
       - './deploy/local/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh'
+      - './deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json'
+      - './deploy/local/partner-batch-write-items.json:/var/partner-batch-write-items.json'
+
+  hex-pokebattle:
+    build:
+      context: .
+      dockerfile: build/package/lambda/Dockerfile
+    depends_on:
+      - localstack
+    ports:
+      - 9186:9186
+    volumes:
+      - './cmd/lambda/config.yml:/config.yml'
+    environment:
+      - AWS_ACCESS_KEY_ID=awslocal
+      - AWS_REGION=eu-west-1
+      - AWS_SECRET_ACCESS_KEY=awslocal

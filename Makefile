@@ -6,10 +6,11 @@ run:
 
 test:
 	docker-compose down -v
-	docker-compose up --build --remove-orphans -d
+	env DONT_SEED_POKEMON=true \
+		docker-compose up --build --remove-orphans -d
 
     # waiting for Localstack preparations (DynamoDB tables, etc)
-	sh -c 'sleep 60'
+	./deploy/local/wait-localstack.sh -h localhost:4566 -s dynamodb
 
 	env DDB_TABLE_BATTLE_NAME="Battles" \
 		DDB_TABLE_GAME_NAME="Games" \
@@ -18,3 +19,7 @@ test:
 		AWS_REGION=eu-west-1 \
 		go test -count=1 ./...
 	docker-compose down -v
+
+run-with-ddb:
+	docker-compose down -v
+	docker-compose up --build --remove-orphans

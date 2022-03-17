@@ -1,0 +1,9 @@
+
+local_deployment:
+  enabled: true
+  endpoint: http://localstack:4566
+  port: 9186
+ddb:
+  battle_table: Battles
+  game_table: Games
+  pokemon_table: Pokemons
