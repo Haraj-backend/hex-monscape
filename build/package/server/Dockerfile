@@ -7,7 +7,7 @@ COPY ./cmd/server/web .
 ARG FRONTEND_MODE="production"
 
 RUN yarn install
-RUN VITE_POKEBATTLE_URL=http://localhost:3000 yarn build:${FRONTEND_MODE}
+RUN yarn build:${FRONTEND_MODE}
 
 FROM golang:1.17.7-alpine3.15 as build
 WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
