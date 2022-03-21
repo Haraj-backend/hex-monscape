@@ -60,8 +60,7 @@ func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
 	}
 	p := filepath.Join(publicDir, fileName)
 
-	info, err := os.Stat(p)
-	if err != nil {
+	if info, err := os.Stat(p); err != nil {
 		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
 		return
 	} else if info.IsDir() {
