@@ -22,11 +22,11 @@ test:
 
 build-local:
 	sam build \
-			--template-file ./build/package/lambda/template.yml \
-			--parameter-overrides \
-				VitePokebattleUrl=http://localhost:3000 \
-				LocalDeploymentEnabled=true \
-				LocalDeploymentEndpoint=http://host.docker.internal:4566
+		--template-file ./build/package/lambda/template.yml \
+		--parameter-overrides \
+			VitePokebattleUrl=http://localhost:3000 \
+			LocalDeploymentEnabled=true \
+			LocalDeploymentEndpoint=http://host.docker.internal:4566
 
 deploy-local:
 	docker-compose down -v
