@@ -20,10 +20,6 @@ test:
 		go test -count=1 ./...
 	docker-compose down -v
 
-run-with-ddb:
-	docker-compose down -v
-	docker-compose up --build --remove-orphans
-
 deploy-local:
 	docker-compose down -v
 	docker-compose up --build --remove-orphans -d

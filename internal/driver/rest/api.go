@@ -3,7 +3,6 @@ package rest
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -60,7 +59,6 @@ func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
 		fileName = "assets" + fileName
 	}
 	p := filepath.Join(publicDir, fileName)
-	log.Println(p)
 
 	info, err := os.Stat(p)
 	if err != nil {
@@ -70,8 +68,6 @@ func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
 		return
 	}
-	log.Println(info)
-	log.Println(err)
 
 	http.ServeFile(w, r, p)
 }

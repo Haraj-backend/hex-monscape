@@ -1,6 +1,0 @@
-{
-    "Parameters": {
-        "LOCAL_DEPLOYMENT_ENABLED": "true",
-        "LOCAL_DEPLOYMENT_ENDPOINT": "http://host.docker.internal:4566"
-    }
-}
