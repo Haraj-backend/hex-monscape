@@ -20,19 +20,22 @@ test:
 		go test -count=1 ./...
 	docker-compose down -v
 
+build-local:
+	sam build \
+			--template-file ./build/package/lambda/template.yml \
+			--parameter-overrides \
+				VitePokebattleUrl=http://localhost:3000 \
+				LocalDeploymentEnabled=true \
+				LocalDeploymentEndpoint=http://host.docker.internal:4566
+
 deploy-local:
 	docker-compose down -v
 	docker-compose up --build --remove-orphans -d
-
-	sam build \
-		--template-file ./build/package/lambda/template.yml \
-		--parameter-overrides \
-			VitePokebattleUrl=http://localhost:3000 \
-			LocalDeploymentEnabled=true \
-			LocalDeploymentEndpoint=http://host.docker.internal:4566
-
+	make build-local
 	./deploy/local/wait-localstack.sh -h localhost:4566 -s dynamodb
 
 	sam local start-api \
 		--warm-containers LAZY \
-		--env-vars deploy/lambda/lambda-config.json
+		--parameter-overrides \
+			LocalDeploymentEnabled=true \
+			LocalDeploymentEndpoint=http://host.docker.internal:4566
