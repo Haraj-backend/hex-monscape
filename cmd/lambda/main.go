@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -93,17 +92,9 @@ func main() {
 		log.Fatalf("unable to initialize rest api due: %v", err)
 	}
 
-	err = listenAndServe(cfg.LocalDeployment.Enabled, fmt.Sprintf(":%d", cfg.LocalDeployment.Port), api.GetHandler())
+	log.Println("Running in serverless mode")
+	err = gateway.ListenAndServe("", api.GetHandler())
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatalf("unable to start server due: %v", err)
 	}
-}
-
-func listenAndServe(serverMode bool, addr string, handler http.Handler) error {
-	if serverMode {
-		log.Printf("Running in server mode at %s", addr)
-		return http.ListenAndServe(addr, handler)
-	}
-
-	return gateway.ListenAndServe(addr, handler)
 }

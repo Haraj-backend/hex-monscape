@@ -4,10 +4,10 @@ WORKDIR /web
 COPY ./cmd/server/web .
 
 # FRONTEND_MODE define .env | .env.staging | .env.production that will be used
-ARG FRONTEND_MODE="production" 
+ARG FRONTEND_MODE="production"
 
 RUN yarn install
-RUN yarn build:${FRONTEND_MODE}
+RUN VITE_POKEBATTLE_URL=http://localhost:3000 yarn build:${FRONTEND_MODE}
 
 FROM golang:1.17.7-alpine3.15 as build
 WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
