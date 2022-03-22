@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Hex Pokebattle
+  SAM Template for hex-pokebattle
+
+Parameters:
+  ImageUri:
+    Type: String
+    Description: Local docker image URI for hex-pokebattle
+  LocalDeploymentEnabled:
+    Type: String
+    Description: Flag for local deployment enablement
+  LocalDeploymentEndpoint:
+    Type: String
+    Default: def
+    Description: Local deployment AWS Endpoint
+  StageName:
+    Type: String
+    Description: Additional path for API Gateway
+  TableBattle:
+    Type: String
+    Default: Battles
+  TableGame:
+    Type: String
+    Default: Games
+  TablePokemon:
+    Type: String
+    Default: Pokemons
+
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 15
+
+Resources:
+  HexPokebattleAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref StageName
+
+  EntrypointFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      PackageType: Image
+      ImageUri: !Ref ImageUri
+      Architectures:
+        - x86_64
+      Events:
+        RootEndpoint:
+          Properties:
+            Method: any
+            Path: /
+            RestApiId: !Ref HexPokebattleAPI
+          Type: Api
+        EverythingElse:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            RestApiId: !Ref HexPokebattleAPI
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableBattle
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableGame
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TablePokemon
+
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          LOCAL_DEPLOYMENT_ENABLED: !Ref LocalDeploymentEnabled
+          LOCAL_DEPLOYMENT_ENDPOINT: !Ref LocalDeploymentEndpoint
+    Metadata:
+      DockerTag: go1.x-v1
+      DockerContext: ../..
+      Dockerfile: ./build/package/lambda/Dockerfile
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HexPokebattleAPI:
+    Description: "API Gateway endpoint URL for Prod environment for Entrypoint Function"
+    Value: !Sub "https://${HexPokebattleAPI}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/"
+  EntrypointFunction:
+    Description: "First Lambda Function ARN"
+    Value: !GetAtt EntrypointFunction.Arn
+  EntrypointFunctionIamRole:
+    Description: "Implicit IAM Role created for Entrypoint function"
+    Value: !GetAtt EntrypointFunctionRole.Arn

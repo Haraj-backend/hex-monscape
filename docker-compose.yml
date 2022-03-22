@@ -17,7 +17,7 @@ services:
   hex-pokebattle:
     build:
       context: .
-      dockerfile: build/package/lambda/Dockerfile
+      dockerfile: build/package/lambda/Dockerfile.local
     depends_on:
       - localstack
     ports:

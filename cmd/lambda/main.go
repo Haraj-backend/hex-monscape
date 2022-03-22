@@ -105,5 +105,6 @@ func listenAndServe(serverMode bool, addr string, handler http.Handler) error {
 		return http.ListenAndServe(addr, handler)
 	}
 
-	return gateway.ListenAndServe(addr, handler)
+	log.Println("Running in serverless mode")
+	return gateway.ListenAndServe("", handler)
 }

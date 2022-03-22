@@ -6,8 +6,9 @@ class PokebattleHTTP {
     },
   };
 
+  _apiStagePath = import.meta.env.VITE_API_STAGE_PATH || ""; // API Gateway required stage path
   _pokebattleBaseURL =
-    import.meta.env.VITE_POKEBATTLE_URL || "http://localhost:9186";
+    import.meta.env.VITE_POKEBATTLE_URL || `${window.location.origin}${this._apiStagePath}`;
 
   constructor(options) {
     this._setRequestOptions(options);
