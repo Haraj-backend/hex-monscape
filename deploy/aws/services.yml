@@ -29,8 +29,6 @@ Globals:
     Timeout: 15
 
 Resources:
-
-
   HexPokebattleAPI:
     Type: AWS::Serverless::Api
     Properties:

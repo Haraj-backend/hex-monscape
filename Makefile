@@ -43,7 +43,7 @@ deploy-infras-dev:
 build-push-image-dev:
 	docker build \
 		--build-arg VITE_API_STAGE_PATH=/Dev \
-		--build-arg FRONTEND_MODE=lambda-dev \
+		--build-arg FRONTEND_MODE=lambda \
 		-t hex-pokebattle-lambda:latest -f ./build/package/lambda/Dockerfile .
 	docker tag hex-pokebattle-lambda:latest ${REMOTE_REPO_DEV}:${TIMESTAMP}
 
