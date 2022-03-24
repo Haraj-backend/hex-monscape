@@ -47,7 +47,7 @@ const routes = [
 ];
 
 const router = VueRouter.createRouter({
-  history: VueRouter.createWebHistory(),
+  history: VueRouter.createWebHistory(import.meta.env.VITE_API_STAGE_PATH),
   routes,
 });
 
