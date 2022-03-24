@@ -4,30 +4,24 @@ Description: >
   Hex Pokebattle
   SAM Template for hex-pokebattle
 
+Mappings:
+  Dev:
+    StageName:
+      Value: Dev
+
 Parameters:
+  Environment:
+    Type: String
+    Description: Deployment environment
+    AllowedValues:
+      - Dev
+      - Prod
+  InfraStackName:
+    Type: String
+    Description: Infras stack name for this app
   ImageUri:
     Type: String
-    Description: Local docker image URI for hex-pokebattle
-  LocalDeploymentEnabled:
-    Type: String
-    Description: Flag for local deployment enablement
-  LocalDeploymentEndpoint:
-    Type: String
-    Default: def
-    Description: Local deployment AWS Endpoint
-  StageName:
-    Type: String
-    Description: Additional path for API Gateway
-  TableBattle:
-    Type: String
-    Default: Battles
-  TableGame:
-    Type: String
-    Default: Games
-  TablePokemon:
-    Type: String
-    Default: Pokemons
-
+    Description: Docker image URI for hex-pokebattle
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -35,10 +29,12 @@ Globals:
     Timeout: 15
 
 Resources:
+
+
   HexPokebattleAPI:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: !Ref StageName
+      StageName: !FindInMap [!Ref Environment, StageName, Value]
 
   EntrypointFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -62,16 +58,23 @@ Resources:
             RestApiId: !Ref HexPokebattleAPI
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableBattle
+            TableName:
+              Fn::ImportValue: !Sub "${InfraStackName}:BattleTableName"
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableGame
+            TableName:
+              Fn::ImportValue: !Sub "${InfraStackName}:GameTableName"
         - DynamoDBCrudPolicy:
-            TableName: !Ref TablePokemon
+            TableName:
+              Fn::ImportValue: !Sub "${InfraStackName}:PokemonTableName"
 
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          LOCAL_DEPLOYMENT_ENABLED: !Ref LocalDeploymentEnabled
-          LOCAL_DEPLOYMENT_ENDPOINT: !Ref LocalDeploymentEndpoint
+          DDB_BATTLE_TABLE:
+            Fn::ImportValue: !Sub "${InfraStackName}:BattleTableName"
+          DDB_GAME_TABLE:
+            Fn::ImportValue: !Sub "${InfraStackName}:GameTableName"
+          DDB_POKEMON_TABLE:
+            Fn::ImportValue: !Sub "${InfraStackName}:PokemonTableName"
     Metadata:
       DockerTag: go1.x-v1
       DockerContext: ../..
@@ -83,10 +86,4 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   HexPokebattleAPI:
     Description: "API Gateway endpoint URL for Prod environment for Entrypoint Function"
-    Value: !Sub "https://${HexPokebattleAPI}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/"
-  EntrypointFunction:
-    Description: "First Lambda Function ARN"
-    Value: !GetAtt EntrypointFunction.Arn
-  EntrypointFunctionIamRole:
-    Description: "Implicit IAM Role created for Entrypoint function"
-    Value: !GetAtt EntrypointFunctionRole.Arn
+    Value: !Sub "https://${HexPokebattleAPI}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/"

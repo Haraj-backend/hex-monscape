@@ -1,8 +1,13 @@
 .PHONY: *
 
-TIMESTAMP:=$(shell date +%s)
-AWS_ACCOUNT_ID=$(shell aws sts get-caller-identity --query Account --output text)
-REMOTE_REPO=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/hex-pokebattle-dev
+TIMESTAMP:=$(shell /bin/date "+%s")
+INFRA_STACK_NAME_DEV:=hex-pokebattle-infras
+AWS_ACCOUNT_ID:=$(shell aws sts get-caller-identity --query Account --output text)
+ECR_REPO_NAME_DEV:=$(shell aws cloudformation describe-stack-resource \
+	--stack-name ${INFRA_STACK_NAME_DEV} \
+	--logical-resource-id ECRRepoHexPokebattle \
+	--query "StackResourceDetail.PhysicalResourceId" --output text)
+REMOTE_REPO_DEV:=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_DEV}
 
 run:
 	docker build -t hex-pokebattle -f ./build/package/server/Dockerfile .
@@ -28,25 +33,31 @@ run-with-ddb:
 	docker-compose down -v
 	docker-compose up --build --remove-orphans
 
+deploy-infras-dev:
+	aws cloudformation deploy \
+		--region ${AWS_REGION} \
+		--template-file ./deploy/aws/infras.yml \
+		--stack-name ${INFRA_STACK_NAME_DEV} \
+		--capabilities CAPABILITY_NAMED_IAM
+
 build-push-image-dev:
 	docker build \
 		--build-arg VITE_API_STAGE_PATH=/Dev \
 		--build-arg FRONTEND_MODE=lambda-dev \
 		-t hex-pokebattle-lambda:latest -f ./build/package/lambda/Dockerfile .
-	docker tag hex-pokebattle-lambda:latest ${REMOTE_REPO}:${TIMESTAMP}
+	docker tag hex-pokebattle-lambda:latest ${REMOTE_REPO_DEV}:${TIMESTAMP}
 
-	aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO}
-	docker push ${REMOTE_REPO}:${TIMESTAMP}
+	aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO_DEV}
+	docker push ${REMOTE_REPO_DEV}:${TIMESTAMP}
 
-deploy-dev:
-	make build-push-image-dev
+deploy-dev: build-push-image-dev
 	sam deploy \
 		--region ${AWS_REGION} \
 		--stack-name hex-pokebattle \
-		--image-repository ${REMOTE_REPO} \
-		--template-file ./deploy/aws/deploy.yml \
+		--image-repository ${REMOTE_REPO_DEV} \
+		--template-file ./deploy/aws/services.yml \
 		--capabilities CAPABILITY_NAMED_IAM \
 		--parameter-overrides \
-			StageName=Dev \
-			LocalDeploymentEnabled=false \
-			ImageUri=${REMOTE_REPO}:${TIMESTAMP}
+			Environment=Dev \
+			InfraStackName=${INFRA_STACK_NAME_DEV} \
+			ImageUri=${REMOTE_REPO_DEV}:${TIMESTAMP}
