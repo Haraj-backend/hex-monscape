@@ -58,6 +58,5 @@ deploy-dev: build-push-image-dev
 		--template-file ./deploy/aws/services.yml \
 		--capabilities CAPABILITY_NAMED_IAM \
 		--parameter-overrides \
-			Environment=Dev \
 			InfraStackName=${INFRA_STACK_NAME_DEV} \
 			ImageUri=${REMOTE_REPO_DEV}:${TIMESTAMP}

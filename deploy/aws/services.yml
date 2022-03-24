@@ -5,17 +5,11 @@ Description: >
   SAM Template for hex-pokebattle
 
 Mappings:
-  Dev:
+  Config:
     StageName:
       Value: Dev
 
 Parameters:
-  Environment:
-    Type: String
-    Description: Deployment environment
-    AllowedValues:
-      - Dev
-      - Prod
   InfraStackName:
     Type: String
     Description: Infras stack name for this app
@@ -32,7 +26,7 @@ Resources:
   HexPokebattleAPI:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: !FindInMap [!Ref Environment, StageName, Value]
+      StageName: !FindInMap [Config, StageName, Value]
 
   EntrypointFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -79,9 +73,8 @@ Resources:
       Dockerfile: ./build/package/lambda/Dockerfile
 
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   HexPokebattleAPI:
     Description: "API Gateway endpoint URL for Prod environment for Entrypoint Function"
-    Value: !Sub "https://${HexPokebattleAPI}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/"
+    Value: !Sub
+      - "https://${HexPokebattleAPI}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/"
+      - StageName: !FindInMap [Config, StageName, Value]
