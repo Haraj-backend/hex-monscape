@@ -27,7 +27,7 @@ until [ "$services_ready" = "true" ] || [ $retry -gt $max_retry ]; do
     for expected_svc in $(echo $services | tr ',' '\n'); do
         services_ready=false
         for running_svc in $running_svcs; do
-            if [ "$running_svc" = *"$expected_svc"* ]; then
+            if [ "$running_svc" = "\"$expected_svc\"" ]; then
                 services_ready=true
                 break
             fi
@@ -40,7 +40,7 @@ until [ "$services_ready" = "true" ] || [ $retry -gt $max_retry ]; do
 
     if [ "$services_ready" = "false" ]; then
         sleep $waiting_in_second
-        ((retry=retry+1))
+        $(retry=retry+1)
     fi
 done
 

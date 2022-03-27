@@ -16,11 +16,20 @@ on:
     secrets:
       github-token:
         required: true
+      DEV_AWS_ACCESS_KEY_ID:
+        required: true
+      DEV_AWS_SECRET_ACCESS_KEY:
+        required: true
+      SOLUTIONS_TEAM_SLACK_WEBHOOK:
+        required: true
 
 jobs:
   test:
-    name: Run Tests
+    name: Run tests
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout Current Commit
         if: github.event_name != 'workflow_call'
@@ -46,6 +55,6 @@ jobs:
           channel: "#solutions-team-ci-cd"
           icon_emoji: ":haraaj:"
           username: "ci/cd-reporter"
-          url: ${{ secrets.SLACK_WEBHOOK }}
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.github-token }}
+          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}

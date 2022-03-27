@@ -1,3 +1,4 @@
+#!/bin/sh
 echo "Local Deployment"
 
 # Create dynamodb table for Pokemons
