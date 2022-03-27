@@ -32,7 +32,7 @@ jobs:
         with:
           ref: ${{ inputs.checkout-ref }}
 
-      - name: Run Test
+      - name: Run Tests
         run: make test
 
       - name: Notify To Slack If Failed

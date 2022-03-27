@@ -18,7 +18,7 @@ RUN go mod download
 COPY ./cmd/lambda ./cmd/lambda
 COPY ./internal ./internal
 WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda
-RUN CGO_ENABLED=0 GOOS=linux go build -o server
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server
 
 # copy artifacts to a clean image
 FROM alpine:3.12
