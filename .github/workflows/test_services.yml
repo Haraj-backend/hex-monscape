@@ -17,35 +17,35 @@ on:
       github-token:
         required: true
 
-  jobs:
-    test:
-      name: Run Tests
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout Current Commit
-          if: github.event_name != 'workflow_call'
-          uses: actions/checkout@v2
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Current Commit
+        if: github.event_name != 'workflow_call'
+        uses: actions/checkout@v2
 
-        - name: Checkout Using `checkout-ref`
-          if: github.event_name == 'workflow_call'
-          uses: actions/checkout@v2
-          with:
-            ref: ${{ inputs.checkout-ref }}
+      - name: Checkout Using `checkout-ref`
+        if: github.event_name == 'workflow_call'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.checkout-ref }}
 
-        - name: Run Test
-          run: make test
+      - name: Run Test
+        run: make test
 
-        - name: Notify To Slack If Failed
-          uses: lazy-actions/slatify@v3.0.0
-          if: failure()
-          with:
-            type: ${{ job.status }}
-            job_name: "*${{ github.job }}*"
-            mention: "here"
-            mention_if: "failure"
-            channel: "#solutions-team-ci-cd"
-            icon_emoji: ":haraaj:"
-            username: "ci/cd-reporter"
-            url: ${{ secrets.SLACK_WEBHOOK }}
-            commit: true
-            token: ${{ secrets.github-token }}
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*${{ github.job }}*"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.github-token }}

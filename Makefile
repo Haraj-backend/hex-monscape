@@ -18,7 +18,7 @@ test:
 	env DONT_SEED_POKEMON=true \
 		docker-compose up --build --remove-orphans -d
 
-    # waiting for Localstack preparations (DynamoDB tables, etc)
+	# waiting for Localstack preparations (DynamoDB tables, etc)
 	./deploy/local/wait-localstack.sh -h localhost:4566 -s dynamodb
 
 	env DDB_TABLE_BATTLE_NAME="Battles" \
