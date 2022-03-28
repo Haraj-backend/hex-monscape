@@ -2,6 +2,10 @@ name: Deploy to Dev environment
 
 on:
   push:
+    paths-ignore:
+      - 'Makefile'
+      - '**.md'
+      - 'docs/**'
     branches: [master]
 
 jobs:
