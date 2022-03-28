@@ -6,7 +6,6 @@ on:
       - 'Makefile'
       - '**.md'
       - 'docs/**'
-    branches: [master]
 
   workflow_call:
     inputs:
