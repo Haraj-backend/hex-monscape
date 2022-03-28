@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o server
 # copy artifacts to a clean image
 FROM alpine:3.12
 RUN apk add ca-certificates tzdata
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda/server /var/task
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda/server .
 COPY --from=frontend_build /web/dist /dist
 
 CMD [ "./server" ]

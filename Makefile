@@ -18,7 +18,7 @@ test:
 	env DONT_SEED_POKEMON=true \
 		docker-compose up --build --remove-orphans -d
 
-    # waiting for Localstack preparations (DynamoDB tables, etc)
+	# waiting for Localstack preparations (DynamoDB tables, etc)
 	./deploy/local/wait-localstack.sh -h localhost:4566 -s dynamodb
 
 	env DDB_TABLE_BATTLE_NAME="Battles" \
@@ -26,6 +26,8 @@ test:
 		DDB_TABLE_POKEMON_NAME="Pokemons" \
 		LOCALSTACK_ENDPOINT="http://localhost:4566" \
 		AWS_REGION=eu-west-1 \
+		AWS_ACCESS_KEY_ID=awslocal \
+		AWS_SECRET_ACCESS_KEY=awslocal \
 		go test -count=1 ./...
 	docker-compose down -v
 

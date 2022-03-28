@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   localstack:
-    image: localstack/localstack
+    image: localstack/localstack:0.14
     ports:
       - 4566:4566
     environment:
