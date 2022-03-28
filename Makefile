@@ -26,6 +26,8 @@ test:
 		DDB_TABLE_POKEMON_NAME="Pokemons" \
 		LOCALSTACK_ENDPOINT="http://localhost:4566" \
 		AWS_REGION=eu-west-1 \
+		AWS_ACCESS_KEY_ID=awslocal \
+		AWS_SECRET_ACCESS_KEY=awslocal \
 		go test -count=1 ./...
 	docker-compose down -v
 

@@ -12,8 +12,6 @@ jobs:
       checkout-ref: ${{ github.sha }}
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
-      DEV_AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-      DEV_AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
       SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
 
   deploy-dev:
