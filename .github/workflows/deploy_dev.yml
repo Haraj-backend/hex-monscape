@@ -41,12 +41,12 @@ jobs:
       - name: Deploy to Dev
         run: make deploy-dev
 
-      - name: Notify To Slack If Failed
+      - name: Notify To Slack
         uses: lazy-actions/slatify@v3.0.0
-        if: failure()
+        if: always()
         with:
           type: ${{ job.status }}
-          job_name: "*${{ github.job }}*"
+          job_name: "*Hex-Pokebattle ${{ github.job }}*"
           mention: "here"
           mention_if: "failure"
           channel: "#solutions-team-ci-cd"
