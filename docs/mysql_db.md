@@ -67,7 +67,7 @@ Table that holds records of every games that has been/being played
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `FOREIGN_KEY` => `partner_id` ref to `Pokemons`.
+- `FOREIGN_KEY` => `partner_id` ref to `Pokemons.id`.
 
 [Back to Top](#mysql-schema)
 
@@ -80,8 +80,8 @@ Table that holds records of running battle for each games
 - `game_id`, VARCHAR(36) => identifier of a game that the battle resides
 - `state`, VARCHAR(30) => current state of a battle
   - current valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
-- `partner_id`, VARCHAR(36) => identifier of the player's partner state
-- `enemy_id`, VARCHAR(36) => identifier of the enemy's pokemon state
+- `partner_state_id`, VARCHAR(36) => identifier of the player's partner state
+- `enemy_state_id`, VARCHAR(36) => identifier of the enemy's pokemon state
 - `partner_last_damage`, Number => last inflicted damage to player's partner
 - `enemy_last_damage`, Number => last inflicted damage to opposite partner
 
@@ -91,8 +91,8 @@ Table that holds records of running battle for each games
 {
     "game_id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
     "state": "DECIDE_TURN",
-    "partner_id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-    "enemy_id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+    "partner_state_id": 1,
+    "enemy_state_id": 2,
     "partner_last_damage": 10,
     "enemy_last_damage": 25
 }
@@ -101,7 +101,7 @@ Table that holds records of running battle for each games
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `game_id`
-- `FOREIGN_KEY` => `partner_id`, `enemy_id` ref to `Pokemon_Battle_States`.
+- `FOREIGN_KEY` => `partner_state_id`, `enemy_state_id` ref to `Pokemon_Battle_States.id`.
 
 [Back to Top](#mysql-schema)
 
@@ -140,6 +140,6 @@ Table that holds records of all available pokemons states.
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `FOREIGN_KEY` => `pokemon_id` ref to `Pokemons`.
+- `FOREIGN_KEY` => `pokemon_id` ref to `Pokemons.id`.
 
 [Back to Top](#mysql-schema)
