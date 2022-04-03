@@ -91,8 +91,8 @@ Table that holds records of running battle for each games
 {
     "game_id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
     "state": "DECIDE_TURN",
-    "partner_pokemon_id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-    "enemy_pokemon_id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+    "partner_id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+    "enemy_id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
     "partner_last_damage": 10,
     "enemy_last_damage": 25
 }
