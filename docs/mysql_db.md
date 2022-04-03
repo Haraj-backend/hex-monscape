@@ -1,6 +1,6 @@
 # Mysql Schema
 
-## Table `Pokemons`
+## Table `pokemons`
 
 Table that holds records of all available pokemons.
 
@@ -13,7 +13,7 @@ Table that holds records of all available pokemons.
 - `defense`, SMALLINT => number of damage reducer for a pokemon (damage = enemy.attack - your_partner.defense)
 - `speed`, SMALLINT => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
 - `avatar_url`, TEXT => url for avatar image of a pokemon
-- `is_partnerable`, TINYINT(1) => whether pokemon is partner or not
+- `is_partnerable`, TINYINT(1) => whether pokemon is partnerable or not
 
 **Example Record:**
 
@@ -33,11 +33,11 @@ Table that holds records of all available pokemons.
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `is_partnerable`
+- `is_partnerable` => `is_partnerable`
 
 [Back to Top](#mysql-schema)
 
-## Table `Games`
+## Table `games`
 
 Table that holds records of every games that has been/being played
 
@@ -67,11 +67,11 @@ Table that holds records of every games that has been/being played
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `FOREIGN_KEY` => `partner_id` ref to `Pokemons.id`.
+- `FOREIGN_KEY` => `partner_id` ref to `pokemons.id`.
 
 [Back to Top](#mysql-schema)
 
-## Table `Battles`
+## Table `battles`
 
 Table that holds records of running battle for each games
 
@@ -101,11 +101,11 @@ Table that holds records of running battle for each games
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `game_id`
-- `FOREIGN_KEY` => `partner_state_id`, `enemy_state_id` ref to `Pokemon_Battle_States.id`.
+- `FOREIGN_KEY` => `partner_state_id`, `enemy_state_id` ref to `pokemon_battle_states.id`.
 
 [Back to Top](#mysql-schema)
 
-## Table `Pokemon_Battle_States`
+## Table `pokemon_battle_states`
 
 Table that holds records of all available pokemons states.
 
@@ -140,6 +140,6 @@ Table that holds records of all available pokemons states.
 **Relevant Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `FOREIGN_KEY` => `pokemon_id` ref to `Pokemons.id`.
+- `FOREIGN_KEY` => `pokemon_id` ref to `pokemons.id`.
 
 [Back to Top](#mysql-schema)
