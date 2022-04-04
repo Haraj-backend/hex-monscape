@@ -3,7 +3,13 @@ package mysql
 import (
 	"database/sql"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
+
+type RowResultInterface interface {
+	Scan(dest ...interface{}) error
+}
 
 type Database struct {
 	db *sql.DB

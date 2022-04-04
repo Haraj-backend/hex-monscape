@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	db "github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -37,9 +38,10 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
 	var pokemon *entity.Pokemon
-	if err := mappingPokemon(
-		s.db.QueryRowContext(ctx, "SELECT id, name, max_health, attack, defence, speed, avatar_url FROM pokemons WHERE id = ?", partnerID),
-		pokemon); err != nil {
+
+	query := "SELECT id, name, max_health, attack, defence, speed, avatar_url FROM pokemons WHERE id = ?"
+
+	if err := mappingPokemon(s.db.QueryRowContext(ctx, query, partnerID), pokemon); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("unable to find partner with id %s", partnerID)
 		}
@@ -51,7 +53,9 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
 	var pokemons []entity.Pokemon
 
-	rows, err := s.db.QueryContext(ctx, "SELECT id, name, max_health, attack, defence, speed, avatar_url FROM pokemons WHERE is_partnerable = ?", isPartnerable)
+	query := "SELECT id, name, max_health, attack, defence, speed, avatar_url FROM pokemons WHERE is_partnerable = ?"
+
+	rows, err := s.db.QueryContext(ctx, query, isPartnerable)
 
 	if err != nil {
 		return nil, err
@@ -72,11 +76,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 	return pokemons, nil
 }
 
-type rowResultInterface interface {
-	Scan(dest ...interface{}) error
-}
-
-func mappingPokemon(row rowResultInterface, pk *entity.Pokemon) error {
+func mappingPokemon(row db.RowResultInterface, pk *entity.Pokemon) error {
 	return row.Scan(
 		&pk.ID, &pk.Name,
 		&pk.BattleStats.MaxHealth, &pk.BattleStats.Attack, &pk.BattleStats.Defense, &pk.BattleStats.Speed,
