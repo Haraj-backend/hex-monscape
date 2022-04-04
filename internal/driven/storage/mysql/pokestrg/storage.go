@@ -60,7 +60,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 
 	for rows.Next() {
 		var pk entity.Pokemon
-		if err := mappingPokemons(rows, &pk); err != nil {
+		if err := mappingPokemon(rows, &pk); err != nil {
 			return pokemons, err
 		}
 		pokemons = append(pokemons, pk)
@@ -72,15 +72,12 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 	return pokemons, nil
 }
 
-func mappingPokemon(row *sql.Row, pk *entity.Pokemon) error {
-	return row.Scan(
-		&pk.ID, &pk.Name,
-		&pk.BattleStats.MaxHealth, &pk.BattleStats.Attack, &pk.BattleStats.Defense, &pk.BattleStats.Speed,
-		&pk.AvatarURL)
+type rowResultInterface interface {
+	Scan(dest ...interface{}) error
 }
 
-func mappingPokemons(rows *sql.Rows, pk *entity.Pokemon) error {
-	return rows.Scan(
+func mappingPokemon(row rowResultInterface, pk *entity.Pokemon) error {
+	return row.Scan(
 		&pk.ID, &pk.Name,
 		&pk.BattleStats.MaxHealth, &pk.BattleStats.Attack, &pk.BattleStats.Defense, &pk.BattleStats.Speed,
 		&pk.AvatarURL)
