@@ -19,31 +19,32 @@ func New(db *sql.DB) *Storage {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	var game *entity.Game
+	var game entity.Game
+	var pokemon entity.Pokemon
 
-	query := `SELECT id, player_name, created_at, battle_won, scenario,
-		FROM games
-		LEFT JOIN pokemon on partner_id = pokemon.id
-		WHERE id = ?`
+	game.Partner = &pokemon
 
-	if err := mappingGame(s.db.QueryRowContext(ctx, query, gameID), game); err != nil {
+	query := `SELECT g.id, player_name, created_at, battle_won, scenario,
+		p.id, p.name, p.avatar_url,
+		p.max_health, p.attack, p.defense, p.speed
+		FROM games g
+		LEFT JOIN pokemons p on partner_id = p.id
+		WHERE g.id = ?`
+
+	if err := mappingGame(s.db.QueryRowContext(ctx, query, gameID), &game); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("unable to find game with id %s", gameID)
 		}
 		return nil, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
 	}
 
-	return game, nil
+	return &game, nil
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	queryGame := `
 		INSERT INTO games (id, player_name, created_at, battle_won, scenario, partner_id)
 		VALUES (?, ?, ?, ?, ?, ?)
-	`
-	queryPartner := `
-		INSERT INTO pokemon (id, name, max_health, attack, defense, speed, avatar_url)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -52,11 +53,6 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	}
 
 	if _, err := tx.ExecContext(ctx, queryGame, game.ID, game.PlayerName, game.CreatedAt, game.BattleWon, game.Scenario, game.Partner.ID); err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	if _, err := tx.ExecContext(ctx, queryPartner, game.Partner.ID, game.Partner.Name, game.Partner.BattleStats.MaxHealth, game.Partner.BattleStats.Attack, game.Partner.BattleStats.Defense, game.Partner.BattleStats.Speed, game.Partner.AvatarURL); err != nil {
 		tx.Rollback()
 		return err
 	}

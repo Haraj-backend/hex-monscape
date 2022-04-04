@@ -19,7 +19,7 @@ func New(db *sql.DB) *Storage {
 }
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	var battle *battle.Battle
+	var battle battle.Battle
 
 	query := `
 	SELECT game_id, partner_last_damage, enemy_last_damage, state,
@@ -33,14 +33,14 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	WHERE game_id = ?
 		`
 
-	if err := mappingBattle(s.db.QueryRowContext(ctx, query, gameID), battle); err != nil {
+	if err := mappingBattle(s.db.QueryRowContext(ctx, query, gameID), &battle); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("unable to find game with id %s", gameID)
 		}
 		return nil, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
 	}
 
-	return battle, nil
+	return &battle, nil
 }
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {

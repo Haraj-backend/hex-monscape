@@ -32,17 +32,20 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
-	var pokemon *entity.Pokemon
+	var pokemon entity.Pokemon
 
 	query := "SELECT id, name, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE id = ?"
 
-	if err := mappingPokemon(s.db.QueryRowContext(ctx, query, partnerID), pokemon); err != nil {
+	if err := mappingPokemon(s.db.QueryRowContext(ctx, query, partnerID), &pokemon); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("unable to find partner with id %s", partnerID)
 		}
 		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
 	}
-	return pokemon, nil
+
+	pokemon.BattleStats.Health = pokemon.BattleStats.MaxHealth
+
+	return &pokemon, nil
 }
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
@@ -62,6 +65,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		if err := mappingPokemon(rows, &pk); err != nil {
 			return pokemons, err
 		}
+		pk.BattleStats.Health = pk.BattleStats.MaxHealth
 		pokemons = append(pokemons, pk)
 	}
 	if err = rows.Err(); err != nil {
