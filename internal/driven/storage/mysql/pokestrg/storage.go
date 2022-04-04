@@ -34,7 +34,7 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
 	var pokemon *entity.Pokemon
 
-	query := "SELECT id, name, max_health, attack, defence, speed, avatar_url FROM pokemons WHERE id = ?"
+	query := "SELECT id, name, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE id = ?"
 
 	if err := mappingPokemon(s.db.QueryRowContext(ctx, query, partnerID), pokemon); err != nil {
 		if err == sql.ErrNoRows {
@@ -48,7 +48,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
 	var pokemons []entity.Pokemon
 
-	query := "SELECT id, name, max_health, attack, defence, speed, avatar_url FROM pokemons WHERE is_partnerable = ?"
+	query := "SELECT id, name, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE is_partnerable = ?"
 
 	rows, err := s.db.QueryContext(ctx, query, isPartnerable)
 

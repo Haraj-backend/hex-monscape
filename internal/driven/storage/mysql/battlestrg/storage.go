@@ -24,9 +24,9 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	query := `
 	SELECT game_id, partner_last_damage, enemy_last_damage, state,
 	p.pokemon_id as partner_id, p.name as partner_name, p.max_health as partner_max_health, p.health as partner_health,
-	p.attack as partner_attack, p.defence as partner_defence, p.speed as partner_speed, p.avatar_url as partner_avatar_url,
+	p.attack as partner_attack, p.defense as partner_defense, p.speed as partner_speed, p.avatar_url as partner_avatar_url,
 	e.pokemon_id as enemy_id, e.name as enemy_name, e.max_health as enemy_max_health, e.health as enemy_health,
-	e.attack as enemy_attack, e.defence as enemy_defence, e.speed as enemy_speed, e.avatar_url as enemy_avatar_url,
+	e.attack as enemy_attack, e.defense as enemy_defense, e.speed as enemy_speed, e.avatar_url as enemy_avatar_url,
 	FROM battles
 	LEFT JOIN pokemon_battle_states p on partner_state_id = p.id
 	LEFT JOIN pokemon_battle_states e on enemy_state_id = e.id
@@ -49,7 +49,7 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 		VALUES (?, ?, ?, ?)
 	`
 	queryPoke := `
-		INSERT INTO pokemon_battle_states (id, name, max_health, health, attack, defence, speed, avatar_url)
+		INSERT INTO pokemon_battle_states (id, name, max_health, health, attack, defense, speed, avatar_url)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
 

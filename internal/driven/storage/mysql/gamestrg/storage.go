@@ -42,7 +42,7 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 		VALUES (?, ?, ?, ?, ?, ?)
 	`
 	queryPartner := `
-		INSERT INTO pokemon (id, name, max_health, attack, defence, speed, avatar_url)
+		INSERT INTO pokemon (id, name, max_health, attack, defense, speed, avatar_url)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 
