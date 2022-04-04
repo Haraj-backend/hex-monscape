@@ -31,6 +31,10 @@ test:
 		go test -count=1 ./...
 	docker-compose down -v
 
+run-with-mysql:
+	docker-compose -f docker-compose-mysql.yml down -v
+	docker-compose -f docker-compose-mysql.yml up  --build --remove-orphans
+
 run-with-ddb:
 	docker-compose down -v
 	docker-compose up --build --remove-orphans

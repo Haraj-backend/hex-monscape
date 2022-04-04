@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "test"
+    volumes:
+      - ./cmd/lambda-mysql/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3306"
+
+  hex-pokebattle:
+    build:
+      context: .
+      dockerfile: build/package/lambda-mysql/Dockerfile
+    environment:
+      DB_DRIVER: "mysql"
+      DB_SOURCE_NAME: "root:root@tcp(db:3306)/test"
+      MYSQL_HOST: "db"
+      MYSQL_PASSWORD: "root"
+      MYSQL_USER: "root"
+      MYSQL_PORT: "3306"
+      MYSQL_DB: "test"
+    depends_on:
+      - db
+    ports:
+      - 9186:9186
