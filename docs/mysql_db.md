@@ -80,8 +80,8 @@ Table that holds records of running battle for each games
 - `game_id`, VARCHAR(36) => identifier of a game that the battle resides
 - `state`, VARCHAR(30) => current state of a battle
   - current valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
-- `partner_state_id`, VARCHAR(36) => identifier of the player's partner state
-- `enemy_state_id`, VARCHAR(36) => identifier of the enemy's pokemon state
+- `partner_state_id`, INT => identifier of the player's partner state
+- `enemy_state_id`, INT => identifier of the enemy's pokemon state
 - `partner_last_damage`, Number => last inflicted damage to player's partner
 - `enemy_last_damage`, Number => last inflicted damage to opposite partner
 
