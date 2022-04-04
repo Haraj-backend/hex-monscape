@@ -12,13 +12,13 @@ type RowResultInterface interface {
 }
 
 type Database struct {
-	db *sql.DB
+	Db *sql.DB
 }
 
 // New creates a new Database
-func New(driverName, dataSourceName string) (*Database, error) {
+func New(dataSourceName string) (*Database, error) {
 	// connect
-	db, err := sql.Open(driverName, dataSourceName)
+	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
 		log.Fatalf("db connection failure: %v", err)
 	}
@@ -29,12 +29,12 @@ func New(driverName, dataSourceName string) (*Database, error) {
 		log.Fatalf("db ping failure: %v", err)
 	}
 
-	return &Database{db: db}, nil
+	return &Database{Db: db}, nil
 }
 
 // CloseDbConnection closes the db  connection
 func (da Database) CloseDbConnection() {
-	err := da.db.Close()
+	err := da.Db.Close()
 	if err != nil {
 		log.Fatalf("db close failure: %v", err)
 	}

@@ -19,13 +19,8 @@ const (
 	enemy   int = 0
 )
 
-func New(db *sql.DB) (*Storage, error) {
-	err := db.Ping()
-	if err != nil {
-		return nil, err
-	}
-
-	return &Storage{db: db}, nil
+func New(db *sql.DB) *Storage {
+	return &Storage{db: db}
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
