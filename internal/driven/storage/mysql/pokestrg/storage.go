@@ -34,7 +34,7 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
 	var pokemon entity.Pokemon
 
-	query := "SELECT id, name, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE id = ?"
+	query := "SELECT id, name, health, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE id = ?"
 
 	if err := mappingPokemon(s.db.QueryRowContext(ctx, query, partnerID), &pokemon); err != nil {
 		if err == sql.ErrNoRows {
@@ -43,15 +43,13 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
 	}
 
-	pokemon.BattleStats.Health = pokemon.BattleStats.MaxHealth
-
 	return &pokemon, nil
 }
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
 	var pokemons []entity.Pokemon
 
-	query := "SELECT id, name, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE is_partnerable = ?"
+	query := "SELECT id, name, health, max_health, attack, defense, speed, avatar_url FROM pokemons WHERE is_partnerable = ?"
 
 	rows, err := s.db.QueryContext(ctx, query, isPartnerable)
 
@@ -65,7 +63,6 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		if err := mappingPokemon(rows, &pk); err != nil {
 			return pokemons, err
 		}
-		pk.BattleStats.Health = pk.BattleStats.MaxHealth
 		pokemons = append(pokemons, pk)
 	}
 	if err = rows.Err(); err != nil {
@@ -78,6 +75,6 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 func mappingPokemon(row db.RowResultInterface, pk *entity.Pokemon) error {
 	return row.Scan(
 		&pk.ID, &pk.Name,
-		&pk.BattleStats.MaxHealth, &pk.BattleStats.Attack, &pk.BattleStats.Defense, &pk.BattleStats.Speed,
+		&pk.BattleStats.Health, &pk.BattleStats.MaxHealth, &pk.BattleStats.Attack, &pk.BattleStats.Defense, &pk.BattleStats.Speed,
 		&pk.AvatarURL)
 }
