@@ -19,12 +19,12 @@ func New(db *sql.DB) *Storage {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	var game entity.Game
+	game := entity.Game{}
 	var pokemon entity.Pokemon
 
 	game.Partner = &pokemon
 
-	query := `SELECT g.id, player_name, created_at, battle_won, scenario,
+	query := `SELECT g.id, g.player_name, g.created_at, g.battle_won, g.scenario,
 		p.id, p.name, p.avatar_url,
 		p.max_health, p.attack, p.defense, p.speed
 		FROM games g
@@ -41,7 +41,51 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 	return &game, nil
 }
 
+func (s *Storage) checkGameExists(ctx context.Context, gameID string) (bool, error) {
+	query := `SELECT id FROM games WHERE id = ?`
+
+	var id string
+	if err := s.db.QueryRowContext(ctx, query, gameID).Scan(&id); err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
+	}
+
+	return true, nil
+}
+
+func (s *Storage) updateGame(ctx context.Context, g *entity.Game) error {
+	query := `UPDATE games SET
+		player_name = ?,
+		created_at = ?,
+		battle_won = ?,
+		scenario = ?,
+		partner_id = ?
+		WHERE id = ?`
+
+	_, err := s.db.ExecContext(ctx, query,
+		g.PlayerName, g.CreatedAt, g.BattleWon, g.Scenario,
+		g.Partner.ID, g.ID,
+	)
+
+	return err
+}
+
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
+	exists, err := s.checkGameExists(ctx, game.ID)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return s.updateGame(ctx, &game)
+	}
+
+	return s.insertGame(ctx, game)
+}
+
+func (s *Storage) insertGame(ctx context.Context, game entity.Game) error {
 	queryGame := `
 		INSERT INTO games (id, player_name, created_at, battle_won, scenario, partner_id)
 		VALUES (?, ?, ?, ?, ?, ?)
