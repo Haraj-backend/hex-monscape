@@ -3,6 +3,7 @@ module github.com/Haraj-backend/hex-pokebattle
 go 1.15
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-sdk-go v1.43.10
 	github.com/go-chi/chi/v5 v5.0.7
