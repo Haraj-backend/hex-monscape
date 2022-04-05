@@ -8,6 +8,7 @@ Table that holds records of all available pokemons.
 
 - `id`, VARCHAR(36) => identifier of a pokemon
 - `name`, VARCHAR(255) => name of a pokemon
+- `health`, SMALLINT => health of a pokemon
 - `max_health`, SMALLINT => maximum health (on battle start) of a pokemon
 - `attack`, SMALLINT => number of damage that can be inflicted by a pokemon
 - `defense`, SMALLINT => number of damage reducer for a pokemon (damage = enemy.attack - your_partner.defense)
