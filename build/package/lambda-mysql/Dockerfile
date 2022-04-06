@@ -35,6 +35,3 @@ COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda-mys
 COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda-mysql/entrypoint.sh .
 RUN /bin/chmod +x entrypoint.sh
 COPY --from=frontend_build /web/dist /dist
-
-CMD [ "./server" ]
-ENTRYPOINT ["./entrypoint.sh"]

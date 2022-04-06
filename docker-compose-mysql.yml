@@ -29,3 +29,4 @@ services:
       - db
     ports:
       - 9186:9186
+    command: ["./entrypoint.sh", "./server"]
