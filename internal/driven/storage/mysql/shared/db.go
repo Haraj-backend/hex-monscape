@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,13 +21,13 @@ func New(dataSourceName string) (*Database, error) {
 	// connect
 	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
-		log.Fatalf("db connection failure: %v", err)
+		return nil, fmt.Errorf("db connection failure: %v", err)
 	}
 
 	// test db connection
 	err = db.Ping()
 	if err != nil {
-		log.Fatalf("db ping failure: %v", err)
+		return nil, fmt.Errorf("db ping failure: %v", err)
 	}
 
 	return &Database{Db: db}, nil
