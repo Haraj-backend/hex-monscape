@@ -7,7 +7,6 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	db "github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type Storage struct {

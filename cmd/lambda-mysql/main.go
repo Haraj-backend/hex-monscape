@@ -14,6 +14,8 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/pokestrg"
 	mysql "github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const addr = ":9186"
