@@ -6,10 +6,13 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/jmoiron/sqlx"
 )
 
 func TestShouldGetGame(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
@@ -39,7 +42,9 @@ func TestShouldGetGame(t *testing.T) {
 }
 
 func TestSaveGameInsert(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
@@ -91,7 +96,9 @@ func TestSaveGameInsert(t *testing.T) {
 }
 
 func TestSaveGameUpdate(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}

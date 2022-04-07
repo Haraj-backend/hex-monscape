@@ -5,10 +5,13 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/jmoiron/sqlx"
 )
 
 func TestGetBattle(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
@@ -46,7 +49,9 @@ func TestGetBattle(t *testing.T) {
 }
 
 func TestGetBattleNotFound(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}

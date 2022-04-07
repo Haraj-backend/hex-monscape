@@ -1,9 +1,10 @@
-package mysql
+package shared
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type RowResultInterface interface {
@@ -11,13 +12,13 @@ type RowResultInterface interface {
 }
 
 type Database struct {
-	Db *sql.DB
+	Db *sqlx.DB
 }
 
 // New creates a new Database
 func New(dataSourceName string) (*Database, error) {
 	// connect
-	db, err := sql.Open("mysql", dataSourceName)
+	db, err := sqlx.Open("mysql", dataSourceName)
 	if err != nil {
 		return nil, fmt.Errorf("db connection failure: %v", err)
 	}

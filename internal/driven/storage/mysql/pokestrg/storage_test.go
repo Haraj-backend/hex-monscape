@@ -6,10 +6,13 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/jmoiron/sqlx"
 )
 
 func TestShouldGetPartners(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
@@ -35,7 +38,9 @@ func TestShouldGetPartners(t *testing.T) {
 }
 
 func TestShouldGetEnemies(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
+
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
@@ -61,7 +66,8 @@ func TestShouldGetEnemies(t *testing.T) {
 }
 
 func TestShouldGetPartner(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
@@ -88,7 +94,8 @@ func TestShouldGetPartner(t *testing.T) {
 }
 
 func TestShouldGetNoPartner(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db0, mock, err := sqlmock.New()
+	db := sqlx.NewDb(db0, "mysql")
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}

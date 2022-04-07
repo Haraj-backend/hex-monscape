@@ -6,44 +6,57 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	db "github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	"github.com/jmoiron/sqlx"
 )
 
 type Storage struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func New(db *sql.DB) *Storage {
+func New(db *sqlx.DB) *Storage {
 	return &Storage{db: db}
 }
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	var battle battle.Battle
-	var partner, enemy entity.Pokemon
-	battle.Partner = &partner
-	battle.Enemy = &enemy
+	var battle shared.BattleRow
 
 	query := `
-	SELECT b.game_id, b.partner_last_damage, b.enemy_last_damage, b.state,
-	p.pokemon_id as partner_id, p.name as partner_name, p.max_health as partner_max_health, p.health as partner_health,
-	p.attack as partner_attack, p.defense as partner_defense, p.speed as partner_speed, p.avatar_url as partner_avatar_url,
-	e.pokemon_id as enemy_id, e.name as enemy_name, e.max_health as enemy_max_health, e.health as enemy_health,
-	e.attack as enemy_attack, e.defense as enemy_defense, e.speed as enemy_speed, e.avatar_url as enemy_avatar_url
-	FROM battles b
-	LEFT JOIN pokemon_battle_states p on b.partner_state_id = p.id
-	LEFT JOIN pokemon_battle_states e on b.enemy_state_id = e.id
-	WHERE game_id = ?
-		`
+		SELECT
+			b.game_id,
+			b.partner_last_damage,
+			b.enemy_last_damage,
+			b.state,
+			p.pokemon_id as 'partner.id',
+			p.name as 'partner.name',
+			p.max_health as 'partner.max_health',
+			p.health as 'partner.health',
+			p.attack as 'partner.attack',
+			p.defense as 'partner.defense',
+			p.speed as 'partner.speed',
+			p.avatar_url as 'partner.avatar_url',
+			e.pokemon_id as 'enemy.id',
+			e.name as 'enemy.name',
+			e.max_health as 'enemy.max_health',
+			e.health as 'enemy.health',
+			e.attack as 'enemy.attack',
+			e.defense as 'enemy.defense',
+			e.speed as 'enemy.speed',
+			e.avatar_url as 'enemy.avatar_url'
+		FROM battles b
+		LEFT JOIN pokemon_battle_states p on b.partner_state_id = p.id
+		LEFT JOIN pokemon_battle_states e on b.enemy_state_id = e.id
+		WHERE game_id = ?
+	`
 
-	if err := mappingBattle(s.db.QueryRowContext(ctx, query, gameID), &battle); err != nil {
+	if err := s.db.GetContext(ctx, &battle, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
 		return nil, fmt.Errorf("unable to find battle with id %s: %v", gameID, err)
 	}
 
-	return &battle, nil
+	return battle.ToBattle(), nil
 }
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
@@ -61,27 +74,61 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 }
 
 func (s *Storage) updateBattle(ctx context.Context, b *battle.Battle, partnerStateId, enemyStateId int) error {
+	tx, err := s.db.BeginTxx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("unable to start transaction when update battle due: %w", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+		if err != nil {
+			err = fmt.Errorf("unable to commit transaction update battle due: %w", err)
+			return
+		}
+	}()
+
 	query := `
-	UPDATE battles
-	SET partner_last_damage = ?, enemy_last_damage = ?, state = ?
-	WHERE game_id = ?
-		`
+		UPDATE battles
+		SET
+			partner_last_damage = :partner_last_damage,
+			enemy_last_damage = :enemy_last_damage,
+			state = :state
+		WHERE game_id = :game_id
+	`
 
 	queryPoke := `
 		UPDATE pokemon_battle_states
-		SET health = ?
-		WHERE id = ?
-		`
+		SET
+			health = :health
+		WHERE id = :id
+	`
 
-	if _, err := s.db.ExecContext(ctx, query, b.LastDamage.Partner, b.LastDamage.Enemy, b.State, b.GameID); err != nil {
+	_, err = tx.NamedExecContext(ctx, query, map[string]interface{}{
+		"partner_last_damage": b.LastDamage.Partner,
+		"enemy_last_damage":   b.LastDamage.Enemy,
+		"state":               b.State,
+		"game_id":             b.GameID,
+	})
+	if err != nil {
 		return fmt.Errorf("unable to update battle with id %s: %v", b.GameID, err)
 	}
 
-	if _, err := s.db.ExecContext(ctx, queryPoke, b.Partner.BattleStats.Health, partnerStateId); err != nil {
+	_, err = tx.NamedExecContext(ctx, queryPoke, map[string]interface{}{
+		"health": b.Partner.BattleStats.Health,
+		"id":     partnerStateId,
+	})
+	if err != nil {
 		return fmt.Errorf("unable to update partner battle state with id %s: %v", b.GameID, err)
 	}
 
-	if _, err := s.db.ExecContext(ctx, queryPoke, b.Enemy.BattleStats.Health, enemyStateId); err != nil {
+	_, err = tx.NamedExecContext(ctx, queryPoke, map[string]interface{}{
+		"health": b.Enemy.BattleStats.Health,
+		"id":     enemyStateId,
+	})
+	if err != nil {
 		return fmt.Errorf("unable to update enemy battle state with id %s: %v", b.GameID, err)
 	}
 
@@ -90,10 +137,13 @@ func (s *Storage) updateBattle(ctx context.Context, b *battle.Battle, partnerSta
 
 func (s *Storage) checkBattleExists(ctx context.Context, gameID string) (bool, int, int, error) {
 	query := `
-	SELECT 1, partner_state_id, enemy_state_id
-	FROM battles
-	WHERE game_id = ?
-		`
+		SELECT
+			1,
+			partner_state_id,
+			enemy_state_id
+		FROM battles
+		WHERE game_id = ?
+	`
 
 	var count int
 	var partnerStateId int
@@ -159,14 +209,4 @@ func (s *Storage) insertBattle(ctx context.Context, b battle.Battle) error {
 	}
 
 	return nil
-}
-
-func mappingBattle(row db.RowResultInterface, b *battle.Battle) error {
-	return row.Scan(
-		&b.GameID, &b.LastDamage.Partner, &b.LastDamage.Enemy, &b.State,
-		&b.Partner.ID, &b.Partner.Name, &b.Partner.BattleStats.MaxHealth, &b.Partner.BattleStats.Health,
-		&b.Partner.BattleStats.Attack, &b.Partner.BattleStats.Defense, &b.Partner.BattleStats.Speed, &b.Partner.AvatarURL,
-		&b.Enemy.ID, &b.Enemy.Name, &b.Enemy.BattleStats.MaxHealth, &b.Enemy.BattleStats.Health,
-		&b.Enemy.BattleStats.Attack, &b.Enemy.BattleStats.Defense, &b.Enemy.BattleStats.Speed, &b.Enemy.AvatarURL,
-	)
 }
