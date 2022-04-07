@@ -20,10 +20,10 @@ func TestGetBattle(t *testing.T) {
 	battlestrg := New(db)
 
 	columns := []string{"game_id", "partner_last_damage", "enemy_last_damage", "state",
-		"partner_id", "partner_name", "partner_max_health", "partner_health",
-		"partner_attack", "partner_defense", "partner_speed", "partner_avatar_url",
-		"enemy_id", "enemy_name", "enemy_max_health", "enemy_health",
-		"enemy_attack", "enemy_defense", "enemy_speed", "enemy_avatar_url",
+		"partner.id", "partner.name", "partner.max_health", "partner.health",
+		"partner.attack", "partner.defense", "partner.speed", "partner.avatar_url",
+		"enemy.id", "enemy.name", "enemy.max_health", "enemy.health",
+		"enemy.attack", "enemy.defense", "enemy.speed", "enemy.avatar_url",
 	}
 	gameId := "b1c87c5c-2ac3-471d-9880-4812552ee15d"
 

@@ -21,7 +21,7 @@ func TestShouldGetGame(t *testing.T) {
 	gamestrg := New(db)
 
 	columns := []string{"id", "player_name", "created_at", "battle_won", "scenario",
-		"id", "name", "avatar_url", "max_health", "attack", "defense", "speed"}
+		"partner.id", "partner.name", "partner.avatar_url", "partner.max_health", "partner.attack", "partner.defense", "partner.speed"}
 	gameId := "b1c87c5c-2ac3-471d-9880-4812552ee15d"
 
 	mock.ExpectQuery("^SELECT (.+) FROM games g").

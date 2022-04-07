@@ -8,6 +8,8 @@ import (
 
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
