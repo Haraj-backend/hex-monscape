@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -19,8 +18,7 @@ func New(db *sqlx.DB) *Storage {
 }
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	var battle shared.BattleRow
-
+	var row battleRow
 	query := `
 		SELECT
 			b.game_id,
@@ -48,15 +46,14 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 		LEFT JOIN pokemon_battle_states e on b.enemy_state_id = e.id
 		WHERE game_id = ?
 	`
-
-	if err := s.db.GetContext(ctx, &battle, query, gameID); err != nil {
+	if err := s.db.GetContext(ctx, &row, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
 		return nil, fmt.Errorf("unable to find battle with id %s: %v", gameID, err)
 	}
 
-	return battle.ToBattle(), nil
+	return row.ToBattle(), nil
 }
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
