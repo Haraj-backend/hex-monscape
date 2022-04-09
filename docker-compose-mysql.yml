@@ -13,7 +13,7 @@ services:
       timeout: 20s
       retries: 10
     volumes:
-      - ./cmd/lambda-mysql/sql:/docker-entrypoint-initdb.d
+      - ./deploy/local:/docker-entrypoint-initdb.d
     ports:
       - "3307:3306"
 
