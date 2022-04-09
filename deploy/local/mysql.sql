@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS pokemons (
   speed INT(11) NOT NULL,
   avatar_url TEXT NOT NULL,
   is_partnerable TINYINT(1) NOT NULL,
-  KEY `is_partnerable` (`is_partnerable`),
+  KEY `is_partnerable` (`is_partnerable`)
 );
 
 CREATE TABLE IF NOT EXISTS games (

@@ -11,6 +11,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const envKeySQLDSN = "SQL_DSN"
@@ -23,61 +25,78 @@ func TestSaveBattle(t *testing.T) {
 	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
-	b := battle.Battle{
-		GameID: uuid.NewString(),
-		State:  battle.DECIDE_TURN,
-		Partner: &entity.Pokemon{
-			ID:   uuid.NewString(),
-			Name: "Pokemon 1",
-			BattleStats: entity.BattleStats{
-				Health:    10,
-				MaxHealth: 10,
-				Attack:    10,
-				Defense:   10,
-				Speed:     10,
-			},
-			AvatarURL: "https://someurl.com/1.jpg",
-		},
-		Enemy: &entity.Pokemon{
-			ID:   uuid.NewString(),
-			Name: "Pokemon 2",
-			BattleStats: entity.BattleStats{
-				Health:    20,
-				MaxHealth: 20,
-				Attack:    20,
-				Defense:   20,
-				Speed:     20,
-			},
-			AvatarURL: "https://someurl.com/2.jpg",
-		},
-		LastDamage: battle.LastDamage{
-			Partner: 0,
-			Enemy:   10,
-		},
-	}
+	b := newBattle()
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// check whether battle exists on database
 	savedBattle, err := getBattle(sqlClient, b.GameID)
 	require.NoError(t, err)
 	// check whether battle data is match
-	require.Equal(t, b, savedBattle)
+	require.Equal(t, b, *savedBattle)
 }
 
 func TestSaveBattleExistingBattle(t *testing.T) {
-	// TODO
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// save battle
+	b := newBattle()
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// override battle state
+	b.State = battle.ENEMY_TURN
+	// save again
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := getBattle(sqlClient, b.GameID)
+	require.NoError(t, err)
+	// check whether battle data is match
+	require.Equal(t, b, *savedBattle)
 }
 
 func TestGetBattle(t *testing.T) {
-	// TODO
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// save battle
+	b := newBattle()
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// override battle state
+	b.State = battle.ENEMY_TURN
+	// save again
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := strg.GetBattle(context.Background(), b.GameID)
+	require.NoError(t, err)
+	// check whether battle data is match
+	require.Equal(t, b, *savedBattle)
 }
 
 func TestGetBattleNotFound(t *testing.T) {
-	// TODO
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := strg.GetBattle(context.Background(), uuid.NewString())
+	require.NoError(t, err)
+	require.Nil(t, savedBattle)
 }
 
 func newSQLClient() (*sqlx.DB, error) {
-	sqlClient, err := sqlx.Connect("mysql", os.Getenv(envKeySQLDSN))
+	sqlDSN := os.Getenv(envKeySQLDSN)
+	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
 	if err != nil {
 		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 	}
@@ -92,4 +111,39 @@ func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
 		return nil, fmt.Errorf("unable to execute query due: %w", err)
 	}
 	return row.ToBattle(), nil
+}
+
+func newBattle() battle.Battle {
+	return battle.Battle{
+		GameID: uuid.NewString(),
+		State:  battle.DECIDE_TURN,
+		Partner: &entity.Pokemon{
+			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+			Name: "Pikachu",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    49,
+				Defense:   49,
+				Speed:     45,
+			},
+			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
+		},
+		Enemy: &entity.Pokemon{
+			ID:   "0f9b84b6-a768-4ba9-8800-207740fc993d",
+			Name: "Bulbasaur",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    49,
+				Defense:   49,
+				Speed:     45,
+			},
+			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png",
+		},
+		LastDamage: battle.LastDamage{
+			Partner: 0,
+			Enemy:   10,
+		},
+	}
 }
