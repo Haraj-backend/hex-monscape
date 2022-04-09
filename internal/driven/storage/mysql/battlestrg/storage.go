@@ -7,14 +7,28 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/jmoiron/sqlx"
+	"gopkg.in/validator.v2"
 )
 
 type Storage struct {
-	db *sqlx.DB
+	sqlClient *sqlx.DB
 }
 
-func New(db *sqlx.DB) *Storage {
-	return &Storage{db: db}
+type Config struct {
+	SQLClient *sqlx.DB `validate:"nonnil"`
+}
+
+func (c Config) Validate() error {
+	return validator.Validate(c)
+}
+
+func New(cfg Config) (*Storage, error) {
+	err := cfg.Validate()
+	if err != nil {
+		return nil, err
+	}
+	s := &Storage{sqlClient: cfg.SQLClient}
+	return s, nil
 }
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
@@ -46,7 +60,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 		LEFT JOIN pokemon_battle_states e on b.enemy_state_id = e.id
 		WHERE game_id = ?
 	`
-	if err := s.db.GetContext(ctx, &row, query, gameID); err != nil {
+	if err := s.sqlClient.GetContext(ctx, &row, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
@@ -71,7 +85,7 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 }
 
 func (s *Storage) updateBattle(ctx context.Context, b *battle.Battle, partnerStateId, enemyStateId int) error {
-	tx, err := s.db.BeginTxx(ctx, nil)
+	tx, err := s.sqlClient.BeginTxx(ctx, nil)
 	if err != nil {
 		return fmt.Errorf("unable to start transaction when update battle due: %w", err)
 	}
@@ -145,7 +159,7 @@ func (s *Storage) checkBattleExists(ctx context.Context, gameID string) (bool, i
 	var count int
 	var partnerStateId int
 	var enemyStateId int
-	if err := s.db.QueryRowContext(ctx, query, gameID).Scan(&count, &partnerStateId, &enemyStateId); err != nil {
+	if err := s.sqlClient.QueryRowContext(ctx, query, gameID).Scan(&count, &partnerStateId, &enemyStateId); err != nil {
 		if err == sql.ErrNoRows {
 			return false, 0, 0, nil
 		}
@@ -165,7 +179,7 @@ func (s *Storage) insertBattle(ctx context.Context, b battle.Battle) error {
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
-	tx, err := s.db.BeginTx(ctx, nil)
+	tx, err := s.sqlClient.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
