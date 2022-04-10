@@ -1,4 +1,4 @@
-version: "3.7"
+version: "2.4"
 
 services:
   localstack:
@@ -14,7 +14,22 @@ services:
       - './deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json'
       - './deploy/local/partner-batch-write-items.json:/var/partner-batch-write-items.json'
 
-  hex-pokebattle:
+  mysql:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "test1234"
+      MYSQL_DATABASE: "db_pokebattle"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - ./deploy/local/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+    ports:
+      - "3307:3306"
+
+  hex_ddb:
     build:
       context: .
       dockerfile: build/package/lambda/Dockerfile.local

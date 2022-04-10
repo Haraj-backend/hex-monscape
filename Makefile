@@ -28,6 +28,7 @@ test:
 		AWS_REGION=eu-west-1 \
 		AWS_ACCESS_KEY_ID=awslocal \
 		AWS_SECRET_ACCESS_KEY=awslocal \
+		SQL_DSN="root:test1234@tcp(127.0.0.1:3307)/db_pokebattle?timeout=5s" \
 		go test -count=1 ./...
 	docker-compose down -v
 
@@ -62,17 +63,3 @@ deploy-dev: build-push-image-dev
 		--parameter-overrides \
 			InfraStackName=${INFRA_STACK_NAME_DEV} \
 			ImageUri=${REMOTE_REPO_DEV}:${TIMESTAMP}
-
-test-mysql:
-	-make down-mysql 
-	docker-compose -f docker-compose-mysql.yml up --build --remove-orphans -d
-	sleep 60
-	env SQL_DSN="root:test1234@tcp(127.0.0.1:3307)/db_pokebattle?timeout=5s" go test -count=1 ./internal/driven/storage/mysql/...
-	make down-mysql
-
-run-mysql:
-	-make down-mysql
-	docker-compose -f docker-compose-mysql.yml up --build --remove-orphans
-
-down-mysql:
-	docker-compose -f docker-compose-mysql.yml down -v
