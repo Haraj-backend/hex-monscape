@@ -2,81 +2,148 @@ package battlestrg
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 
-	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/require"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
+const envKeySQLDSN = "SQL_DSN"
+
+func TestSaveBattle(t *testing.T) {
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// save battle
+	b := newBattle()
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := getBattle(sqlClient, b.GameID)
+	require.NoError(t, err)
+	// check whether battle data is match
+	require.Equal(t, b, *savedBattle)
+}
+
+func TestSaveBattleExistingBattle(t *testing.T) {
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// save battle
+	b := newBattle()
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// override battle state
+	b.State = battle.ENEMY_TURN
+	// save again
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := getBattle(sqlClient, b.GameID)
+	require.NoError(t, err)
+	// check whether battle data is match
+	require.Equal(t, b, *savedBattle)
+}
+
 func TestGetBattle(t *testing.T) {
-	db0, mock, err := sqlmock.New()
-	db := sqlx.NewDb(db0, "mysql")
-
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer db.Close()
-
-	battlestrg := New(db)
-
-	columns := []string{"game_id", "partner_last_damage", "enemy_last_damage", "state",
-		"partner.id", "partner.name", "partner.max_health", "partner.health",
-		"partner.attack", "partner.defense", "partner.speed", "partner.avatar_url",
-		"enemy.id", "enemy.name", "enemy.max_health", "enemy.health",
-		"enemy.attack", "enemy.defense", "enemy.speed", "enemy.avatar_url",
-	}
-	gameId := "b1c87c5c-2ac3-471d-9880-4812552ee15d"
-
-	mock.ExpectQuery(`
-	^SELECT (.+)
-	FROM battles b
-	LEFT JOIN pokemon_battle_states p (.+)
-	LEFT JOIN pokemon_battle_states e (.+)`).
-		WithArgs(gameId).
-		WillReturnRows(
-			sqlmock.NewRows(columns).
-				FromCSVString("1,1,1,BATTLE_3,b1c87c5c-2ac3-471d-9880-4812552ee15d,Pikachu,100,100,49,49,45,https://example.com/025.png,1,Bulbasaur,100,100,49,49,45,https://example.com/001.png"))
-
-	ctx := context.Background()
-
-	if _, err = battlestrg.GetBattle(ctx, gameId); err != nil {
-		t.Errorf("error was not expected while getting partners: %s", err)
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-	}
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// save battle
+	b := newBattle()
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// override battle state
+	b.State = battle.ENEMY_TURN
+	// save again
+	err = strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := strg.GetBattle(context.Background(), b.GameID)
+	require.NoError(t, err)
+	// check whether battle data is match
+	require.Equal(t, b, *savedBattle)
 }
 
 func TestGetBattleNotFound(t *testing.T) {
-	db0, mock, err := sqlmock.New()
-	db := sqlx.NewDb(db0, "mysql")
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// check whether battle exists on database
+	savedBattle, err := strg.GetBattle(context.Background(), uuid.NewString())
+	require.NoError(t, err)
+	require.Nil(t, savedBattle)
+}
 
+func newSQLClient() (*sqlx.DB, error) {
+	sqlDSN := os.Getenv(envKeySQLDSN)
+	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 	}
-	defer db.Close()
+	return sqlClient, nil
+}
 
-	battlestrg := New(db)
-
-	gameId := "b1c87c5c-2ac3-471d-9880-4812552ee15d"
-
-	mock.ExpectQuery(`
-	^SELECT (.+)
-	FROM battles b
-	LEFT JOIN pokemon_battle_states p (.+)
-	LEFT JOIN pokemon_battle_states e (.+)`).
-		WithArgs(gameId).
-		WillReturnRows(sqlmock.NewRows([]string{})).
-		WillReturnError(nil)
-
-	ctx := context.Background()
-
-	if _, err = battlestrg.GetBattle(ctx, gameId); err != nil {
-		t.Errorf("error was not expected while getting partners: %s", err)
+func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
+	var row battleRow
+	query := `SELECT * FROM battles WHERE game_id = ?`
+	err := sqlClient.Get(&row, query, gameID)
+	if err != nil {
+		return nil, fmt.Errorf("unable to execute query due: %w", err)
 	}
+	return row.ToBattle(), nil
+}
 
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
+func newBattle() battle.Battle {
+	return battle.Battle{
+		GameID: uuid.NewString(),
+		State:  battle.DECIDE_TURN,
+		Partner: &entity.Pokemon{
+			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+			Name: "Pikachu",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    49,
+				Defense:   49,
+				Speed:     45,
+			},
+			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
+		},
+		Enemy: &entity.Pokemon{
+			ID:   "0f9b84b6-a768-4ba9-8800-207740fc993d",
+			Name: "Bulbasaur",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    49,
+				Defense:   49,
+				Speed:     45,
+			},
+			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png",
+		},
+		LastDamage: battle.LastDamage{
+			Partner: 0,
+			Enemy:   10,
+		},
 	}
 }

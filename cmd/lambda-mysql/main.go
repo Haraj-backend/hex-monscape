@@ -39,7 +39,10 @@ func main() {
 	gameStrg := gamestrg.New(dbAdapter.Db)
 
 	// init battle storage
-	battleStrg := battlestrg.New(dbAdapter.Db)
+	battleStrg, err := battlestrg.New(battlestrg.Config{SQLClient: dbAdapter.Db})
+	if err != nil {
+		log.Fatalf("unable to initialize battle storage due: %v", err)
+	}
 
 	// init play service
 	playService, err := play.NewService(play.ServiceConfig{

@@ -1,7 +1,6 @@
 package shared
 
 import (
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 )
 
@@ -58,27 +57,5 @@ func (r *GameRow) ToGame() *entity.Game {
 		BattleWon:  r.BattleWon,
 		Scenario:   r.Scenario,
 		Partner:    r.Partner.ToPokemon(),
-	}
-}
-
-type BattleRow struct {
-	GameID         string       `db:"game_id"`
-	PartnerLastDmg int          `db:"partner_last_damage"`
-	EnemyLastDmg   int          `db:"enemy_last_damage"`
-	State          battle.State `db:"state"`
-	Partner        *PokeRow     `db:"partner"`
-	Enemy          *PokeRow     `db:"enemy"`
-}
-
-func (r *BattleRow) ToBattle() *battle.Battle {
-	return &battle.Battle{
-		GameID: r.GameID,
-		LastDamage: battle.LastDamage{
-			Partner: r.PartnerLastDmg,
-			Enemy:   r.EnemyLastDmg,
-		},
-		State:   r.State,
-		Partner: r.Partner.ToPokemon(),
-		Enemy:   r.Enemy.ToPokemon(),
 	}
 }
