@@ -35,7 +35,10 @@ func main() {
 	configDB := mysql.Config{SQLClient: dbAdapter.Db}
 
 	// init pokemon storage
-	pokeStrg := pokestrg.New(configDB.SQLClient)
+	pokeStrg, err := pokestrg.New(configDB)
+	if err != nil {
+		log.Fatalf("unable to initialize pokemon storage due: %v", err)
+	}
 
 	// init game storage
 	gameStrg, err := gamestrg.New(configDB)
