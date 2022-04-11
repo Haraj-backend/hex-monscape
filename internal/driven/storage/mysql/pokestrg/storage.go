@@ -3,7 +3,6 @@ package pokestrg
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
@@ -12,7 +11,7 @@ import (
 )
 
 type Storage struct {
-	db *sqlx.DB
+	sqlClient *sqlx.DB
 }
 
 const (
@@ -20,8 +19,13 @@ const (
 	enemy   int = 0
 )
 
-func New(db *sqlx.DB) *Storage {
-	return &Storage{db: db}
+func New(cfg shared.Config) (*Storage, error) {
+	err := cfg.Validate()
+	if err != nil {
+		return nil, err
+	}
+	s := &Storage{sqlClient: cfg.SQLClient}
+	return s, nil
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
@@ -49,9 +53,9 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 		WHERE id = ?
 	`
 
-	if err := s.db.GetContext(ctx, &pokemon, query, partnerID); err != nil {
+	if err := s.sqlClient.GetContext(ctx, &pokemon, query, partnerID); err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("unable to find partner with id %s", partnerID)
+			return nil, nil
 		}
 		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
 	}
@@ -76,9 +80,11 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		WHERE is_partnerable = ?
 	`
 
-	err := s.db.SelectContext(ctx, &pokemons, query, isPartnerable)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return nil, fmt.Errorf("unable to execute query to get list of bills due: %w", err)
+	if err := s.sqlClient.GetContext(ctx, &pokemons, query, isPartnerable); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("unable to find pokemon's role %d: %v", isPartnerable, err)
 	}
 
 	return pokemons.ToPokemons(), nil
