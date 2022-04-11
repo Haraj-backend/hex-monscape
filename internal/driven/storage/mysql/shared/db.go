@@ -5,7 +5,16 @@ import (
 	"log"
 
 	"github.com/jmoiron/sqlx"
+	"gopkg.in/validator.v2"
 )
+
+type Config struct {
+	SQLClient *sqlx.DB `validate:"nonnil"`
+}
+
+func (c Config) Validate() error {
+	return validator.Validate(c)
+}
 
 type RowResultInterface interface {
 	Scan(dest ...interface{}) error

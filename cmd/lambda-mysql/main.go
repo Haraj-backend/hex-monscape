@@ -32,14 +32,19 @@ func main() {
 	}
 	defer dbAdapter.CloseDbConnection()
 
+	configDB := mysql.Config{SQLClient: dbAdapter.Db}
+
 	// init pokemon storage
-	pokeStrg := pokestrg.New(dbAdapter.Db)
+	pokeStrg := pokestrg.New(configDB.SQLClient)
 
 	// init game storage
-	gameStrg := gamestrg.New(dbAdapter.Db)
+	gameStrg, err := gamestrg.New(configDB)
+	if err != nil {
+		log.Fatalf("unable to initialize game storage due: %v", err)
+	}
 
 	// init battle storage
-	battleStrg, err := battlestrg.New(battlestrg.Config{SQLClient: dbAdapter.Db})
+	battleStrg, err := battlestrg.New(configDB)
 	if err != nil {
 		log.Fatalf("unable to initialize battle storage due: %v", err)
 	}

@@ -6,23 +6,15 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
 	"github.com/jmoiron/sqlx"
-	"gopkg.in/validator.v2"
 )
 
 type Storage struct {
 	sqlClient *sqlx.DB
 }
 
-type Config struct {
-	SQLClient *sqlx.DB `validate:"nonnil"`
-}
-
-func (c Config) Validate() error {
-	return validator.Validate(c)
-}
-
-func New(cfg Config) (*Storage, error) {
+func New(cfg shared.Config) (*Storage, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, err

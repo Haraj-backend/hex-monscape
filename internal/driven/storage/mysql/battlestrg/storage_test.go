@@ -8,6 +8,7 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
@@ -22,7 +23,7 @@ func TestSaveBattle(t *testing.T) {
 	sqlClient, err := newSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
+	strg, err := New(shared.Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
 	b := newBattle()
@@ -40,7 +41,7 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 	sqlClient, err := newSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
+	strg, err := New(shared.Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
 	b := newBattle()
@@ -63,7 +64,7 @@ func TestGetBattle(t *testing.T) {
 	sqlClient, err := newSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
+	strg, err := New(shared.Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
 	b := newBattle()
@@ -86,7 +87,7 @@ func TestGetBattleNotFound(t *testing.T) {
 	sqlClient, err := newSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
+	strg, err := New(shared.Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// check whether battle exists on database
 	savedBattle, err := strg.GetBattle(context.Background(), uuid.NewString())
