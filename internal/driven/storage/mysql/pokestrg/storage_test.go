@@ -2,120 +2,69 @@ package pokestrg
 
 import (
 	"context"
-	"database/sql"
+	"fmt"
+	"os"
 	"testing"
 
-	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/require"
 )
 
-func TestShouldGetPartners(t *testing.T) {
-	db0, mock, err := sqlmock.New()
-	db := sqlx.NewDb(db0, "mysql")
+const envKeySQLDSN = "SQL_DSN"
 
+func newSQLClient() (*sqlx.DB, error) {
+	sqlDSN := os.Getenv(envKeySQLDSN)
+	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 	}
-	defer db.Close()
-
-	pokestrg := New(db)
-
-	columns := []string{"id", "name", "health", "max_health", "attack", "defense", "speed", "avatar_url"}
-
-	mock.ExpectQuery("^SELECT (.+) FROM pokemons").
-		WithArgs(1).
-		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("b1c87c5c-2ac3-471d-9880-4812552ee15d,Pikachu,100,100,49,49,45,https://example.com/025.png"))
-
-	ctx := context.Background()
-
-	if _, err = pokestrg.GetAvailablePartners(ctx); err != nil {
-		t.Errorf("error was not expected while getting partners: %s", err)
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-	}
+	return sqlClient, nil
 }
 
-func TestShouldGetEnemies(t *testing.T) {
-	db0, mock, err := sqlmock.New()
-	db := sqlx.NewDb(db0, "mysql")
-
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer db.Close()
-
-	pokestrg := New(db)
-
-	columns := []string{"id", "name", "health", "max_health", "attack", "defense", "speed", "avatar_url"}
-
-	mock.ExpectQuery("^SELECT (.+) FROM pokemons").
-		WithArgs(0).
-		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("b1c87c5c-2ac3-471d-9880-4812552ee15d,Pikachu,100,100,49,49,45,https://example.com/025.png"))
-
-	ctx := context.Background()
-
-	if _, err = pokestrg.GetPossibleEnemies(ctx); err != nil {
-		t.Errorf("error was not expected while getting partners: %s", err)
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-	}
+func TestGetPartner(t *testing.T) {
+	// initialize sql client
+	sqlClient, err := newSQLClient()
+	require.NoError(t, err)
+	// initialize storage
+	strg, err := New(shared.Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+	// insert pokemon
+	p := newPokemon()
+	id := insertPokemon(sqlClient, p, 1)
+	// check whether pokemon exists on database
+	savedPokemon, err := strg.GetPartner(context.Background(), id)
+	require.NoError(t, err)
+	// check whether pokemon data is match
+	require.Equal(t, p, *savedPokemon)
 }
 
-func TestShouldGetPartner(t *testing.T) {
-	db0, mock, err := sqlmock.New()
-	db := sqlx.NewDb(db0, "mysql")
+func insertPokemon(db *sqlx.DB, p entity.Pokemon, is_partnerable int) string {
+	_, err := db.Exec(
+		"INSERT INTO pokemons (id, name, health, max_health, attack, defense, speed, avatar_url, is_partnerable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		p.ID, p.Name, p.BattleStats.Health, p.BattleStats.MaxHealth, p.BattleStats.Attack, p.BattleStats.Defense, p.BattleStats.Speed, p.AvatarURL, is_partnerable,
+	)
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer db.Close()
-
-	pokestrg := New(db)
-
-	columns := []string{"id", "name", "health", "max_health", "attack", "defense", "speed", "avatar_url"}
-	id := "b1c87c5c-2ac3-471d-9880-4812552ee15d"
-
-	mock.ExpectQuery("^SELECT (.+) FROM pokemons").
-		WithArgs(id).
-		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("b1c87c5c-2ac3-471d-9880-4812552ee15d,Pikachu,100,100,49,49,45,https://example.com/025.png"))
-
-	ctx := context.Background()
-
-	if _, err = pokestrg.GetPartner(ctx, id); err != nil {
-		t.Errorf("error was not expected while getting partners: %s", err)
+		panic(err)
 	}
 
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-	}
+	return p.ID
 }
 
-func TestShouldGetNoPartner(t *testing.T) {
-	db0, mock, err := sqlmock.New()
-	db := sqlx.NewDb(db0, "mysql")
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer db.Close()
-
-	pokestrg := New(db)
-
-	id := "b1c87c5c-2ac3-471d-9880-4812552ee15d"
-
-	mock.ExpectQuery("^SELECT (.+) FROM pokemons").
-		WithArgs(id).
-		WillReturnError(sql.ErrNoRows)
-
-	ctx := context.Background()
-
-	if _, err = pokestrg.GetPartner(ctx, id); err == nil {
-		t.Errorf("error was not expected while getting partners: %s", err)
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
+func newPokemon() entity.Pokemon {
+	return entity.Pokemon{
+		ID:        uuid.NewString(),
+		Name:      "Lala",
+		AvatarURL: "https://example.com/025.png",
+		BattleStats: entity.BattleStats{
+			Health:    100,
+			MaxHealth: 100,
+			Attack:    49,
+			Defense:   49,
+			Speed:     45,
+		},
 	}
 }

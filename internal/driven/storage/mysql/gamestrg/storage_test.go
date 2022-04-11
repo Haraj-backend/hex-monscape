@@ -40,7 +40,6 @@ func TestSaveGame(t *testing.T) {
 	require.NoError(t, err)
 	// check whether Game exists on database
 	savedGame, err := strg.GetGame(context.Background(), g.ID)
-	fmt.Println(savedGame)
 	require.NoError(t, err)
 	// check whether Game data is match
 	require.Equal(t, g, *savedGame)
