@@ -59,3 +59,27 @@ func (r *GameRow) ToGame() *entity.Game {
 		Partner:    r.Partner.ToPokemon(),
 	}
 }
+
+func NewGameRow(game *entity.Game) *GameRow {
+	return &GameRow{
+		ID:         game.ID,
+		PlayerName: game.PlayerName,
+		CreatedAt:  game.CreatedAt,
+		BattleWon:  game.BattleWon,
+		Scenario:   game.Scenario,
+		Partner:    NewPokeRow(game.Partner),
+	}
+}
+
+func NewPokeRow(pokemon *entity.Pokemon) *PokeRow {
+	return &PokeRow{
+		ID:        pokemon.ID,
+		Name:      pokemon.Name,
+		Health:    pokemon.BattleStats.Health,
+		MaxHealth: pokemon.BattleStats.MaxHealth,
+		Attack:    pokemon.BattleStats.Attack,
+		Defense:   pokemon.BattleStats.Defense,
+		Speed:     pokemon.BattleStats.Speed,
+		AvatarURL: pokemon.AvatarURL,
+	}
+}
