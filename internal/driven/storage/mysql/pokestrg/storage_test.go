@@ -17,7 +17,7 @@ func TestGetPartner(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// insert pokemon
 	p := newPokemon()
@@ -34,7 +34,7 @@ func TestGetPartnerNotFound(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// insert pokemon
 	p := newPokemon()
@@ -49,7 +49,7 @@ func TestGetAvailablePartners(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 
 	partner := newPokemon()
@@ -94,7 +94,7 @@ func TestGetAvailableEnemies(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 
 	enemy := newPokemon()

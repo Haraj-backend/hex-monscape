@@ -20,7 +20,7 @@ func TestSaveBattle(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
 	b := newBattle()
@@ -38,7 +38,7 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
 	b := newBattle()
@@ -61,7 +61,7 @@ func TestGetBattle(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save battle
 	b := newBattle()
@@ -84,7 +84,7 @@ func TestGetBattleNotFound(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// check whether battle exists on database
 	savedBattle, err := strg.GetBattle(context.Background(), uuid.NewString())

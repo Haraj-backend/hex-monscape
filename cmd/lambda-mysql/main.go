@@ -27,22 +27,23 @@ func main() {
 		log.Fatalf("unable to init db connection: %v", err)
 	}
 
-	configDB := mysql.Config{SQLClient: Db}
-
 	// init pokemon storage
-	pokeStrg, err := pokestrg.New(configDB)
+	configPokeDB := pokestrg.Config{SQLClient: Db}
+	pokeStrg, err := pokestrg.New(configPokeDB)
 	if err != nil {
 		log.Fatalf("unable to initialize pokemon storage due: %v", err)
 	}
 
 	// init game storage
-	gameStrg, err := gamestrg.New(configDB)
+	configGameDB := gamestrg.Config{SQLClient: Db}
+	gameStrg, err := gamestrg.New(configGameDB)
 	if err != nil {
 		log.Fatalf("unable to initialize game storage due: %v", err)
 	}
 
 	// init battle storage
-	battleStrg, err := battlestrg.New(configDB)
+	configBattleDB := battlestrg.Config{SQLClient: Db}
+	battleStrg, err := battlestrg.New(configBattleDB)
 	if err != nil {
 		log.Fatalf("unable to initialize battle storage due: %v", err)
 	}

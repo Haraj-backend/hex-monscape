@@ -5,16 +5,7 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
-	"gopkg.in/validator.v2"
 )
-
-type Config struct {
-	SQLClient *sqlx.DB `validate:"nonnil"`
-}
-
-func (c Config) Validate() error {
-	return validator.Validate(c)
-}
 
 const envKeySQLDSN = "SQL_DSN"
 

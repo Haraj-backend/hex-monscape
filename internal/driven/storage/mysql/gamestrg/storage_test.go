@@ -18,7 +18,7 @@ func TestSaveGame(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save Game
 	g := newGame()
@@ -36,7 +36,7 @@ func TestGetGame(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// save Game
 	g := newGame()
@@ -59,7 +59,7 @@ func TestGetGameNotFound(t *testing.T) {
 	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(shared.Config{SQLClient: sqlClient})
+	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 	// check whether game exists on database
 	savedGame, err := strg.GetGame(context.Background(), uuid.NewString())
