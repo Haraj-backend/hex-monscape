@@ -50,7 +50,7 @@ services:
       dockerfile: build/package/lambda-mysql/Dockerfile
     environment:
       DB_DRIVER: "mysql"
-      DB_SOURCE_NAME: "root:test1234@tcp(mysql:3306)/db_pokebattle"
+      SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
       MYSQL_HOST: "mysql"
       MYSQL_PASSWORD: "test1234"
       MYSQL_USER: "root"

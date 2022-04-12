@@ -2,7 +2,7 @@ package shared
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/jmoiron/sqlx"
 	"gopkg.in/validator.v2"
@@ -16,35 +16,13 @@ func (c Config) Validate() error {
 	return validator.Validate(c)
 }
 
-type RowResultInterface interface {
-	Scan(dest ...interface{}) error
-}
+const envKeySQLDSN = "SQL_DSN"
 
-type Database struct {
-	Db *sqlx.DB
-}
-
-// New creates a new Database
-func New(dataSourceName string) (*Database, error) {
-	// connect
-	db, err := sqlx.Open("mysql", dataSourceName)
+func NewSQLClient() (*sqlx.DB, error) {
+	sqlDSN := os.Getenv(envKeySQLDSN)
+	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
 	if err != nil {
-		return nil, fmt.Errorf("db connection failure: %v", err)
+		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 	}
-
-	// test db connection
-	err = db.Ping()
-	if err != nil {
-		return nil, fmt.Errorf("db ping failure: %v", err)
-	}
-
-	return &Database{Db: db}, nil
-}
-
-// CloseDbConnection closes the db  connection
-func (da Database) CloseDbConnection() {
-	err := da.Db.Close()
-	if err != nil {
-		log.Fatalf("db close failure: %v", err)
-	}
+	return sqlClient, nil
 }

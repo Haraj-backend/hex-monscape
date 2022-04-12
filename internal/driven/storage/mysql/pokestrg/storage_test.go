@@ -2,8 +2,6 @@ package pokestrg
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"testing"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
@@ -14,20 +12,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const envKeySQLDSN = "SQL_DSN"
-
-func newSQLClient() (*sqlx.DB, error) {
-	sqlDSN := os.Getenv(envKeySQLDSN)
-	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
-	if err != nil {
-		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
-	}
-	return sqlClient, nil
-}
-
 func TestGetPartner(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -44,7 +31,7 @@ func TestGetPartner(t *testing.T) {
 
 func TestGetPartnerNotFound(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -59,7 +46,7 @@ func TestGetPartnerNotFound(t *testing.T) {
 
 func TestGetAvailablePartners(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -104,7 +91,7 @@ func TestGetAvailablePartners(t *testing.T) {
 
 func TestGetAvailableEnemies(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})

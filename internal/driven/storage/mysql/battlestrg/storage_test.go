@@ -3,7 +3,6 @@ package battlestrg
 import (
 	"context"
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
@@ -16,11 +15,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const envKeySQLDSN = "SQL_DSN"
-
 func TestSaveBattle(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -38,7 +35,7 @@ func TestSaveBattle(t *testing.T) {
 
 func TestSaveBattleExistingBattle(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -61,7 +58,7 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 
 func TestGetBattle(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -84,7 +81,7 @@ func TestGetBattle(t *testing.T) {
 
 func TestGetBattleNotFound(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -93,15 +90,6 @@ func TestGetBattleNotFound(t *testing.T) {
 	savedBattle, err := strg.GetBattle(context.Background(), uuid.NewString())
 	require.NoError(t, err)
 	require.Nil(t, savedBattle)
-}
-
-func newSQLClient() (*sqlx.DB, error) {
-	sqlDSN := os.Getenv(envKeySQLDSN)
-	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
-	if err != nil {
-		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
-	}
-	return sqlClient, nil
 }
 
 func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {

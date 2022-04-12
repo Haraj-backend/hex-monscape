@@ -2,34 +2,20 @@ package gamestrg
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"testing"
 
 	"github.com/google/uuid"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
-	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const envKeySQLDSN = "SQL_DSN"
-
-func newSQLClient() (*sqlx.DB, error) {
-	sqlDSN := os.Getenv(envKeySQLDSN)
-	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
-	if err != nil {
-		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
-	}
-	return sqlClient, nil
-}
-
 func TestSaveGame(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -47,7 +33,7 @@ func TestSaveGame(t *testing.T) {
 
 func TestGetGame(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})
@@ -70,7 +56,7 @@ func TestGetGame(t *testing.T) {
 
 func TestGetGameNotFound(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := newSQLClient()
+	sqlClient, err := shared.NewSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(shared.Config{SQLClient: sqlClient})

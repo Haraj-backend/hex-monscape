@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
@@ -23,16 +22,12 @@ const addr = ":9186"
 func main() {
 	log.Printf("Running service...")
 
-	// init DB
-	dbSourceName := os.Getenv("DB_SOURCE_NAME")
-
-	dbAdapter, err := mysql.New(dbSourceName)
+	Db, err := mysql.NewSQLClient()
 	if err != nil {
 		log.Fatalf("unable to init db connection: %v", err)
 	}
-	defer dbAdapter.CloseDbConnection()
 
-	configDB := mysql.Config{SQLClient: dbAdapter.Db}
+	configDB := mysql.Config{SQLClient: Db}
 
 	// init pokemon storage
 	pokeStrg, err := pokestrg.New(configDB)
