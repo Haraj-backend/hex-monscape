@@ -24,7 +24,7 @@ func New(cfg shared.Config) (*Storage, error) {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	var game shared.GameRow
+	var game GameRow
 	query := `
 		SELECT
 			g.id,
@@ -56,7 +56,7 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
-	gameRow := shared.NewGameRow(&game)
+	gameRow := NewGameRow(&game)
 	fmt.Println(gameRow)
 	query := `
 		REPLACE INTO games (
