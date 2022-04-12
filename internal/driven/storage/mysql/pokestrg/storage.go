@@ -80,7 +80,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		WHERE is_partnerable = ?
 	`
 
-	if err := s.sqlClient.GetContext(ctx, &pokemons, query, isPartnerable); err != nil {
+	if err := s.sqlClient.SelectContext(ctx, &pokemons, query, isPartnerable); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
