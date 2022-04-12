@@ -44,7 +44,7 @@ services:
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
 
-  hex-pokebattle:
+  hex-mysql:
     build:
       context: .
       dockerfile: build/package/lambda-mysql/Dockerfile
