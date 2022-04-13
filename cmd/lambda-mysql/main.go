@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
@@ -11,38 +12,41 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/battlestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/pokestrg"
-	mysql "github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/jmoiron/sqlx"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 const addr = ":9186"
+const envKeySQLDSN = "SQL_DSN"
 
 func main() {
 	log.Printf("Running service...")
 
-	Db, err := mysql.NewSQLClient()
+	sqlDSN := os.Getenv(envKeySQLDSN)
+	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
 	if err != nil {
 		log.Fatalf("unable to init db connection: %v", err)
 	}
+	defer sqlClient.Close()
 
 	// init pokemon storage
-	configPokeDB := pokestrg.Config{SQLClient: Db}
+	configPokeDB := pokestrg.Config{SQLClient: sqlClient}
 	pokeStrg, err := pokestrg.New(configPokeDB)
 	if err != nil {
 		log.Fatalf("unable to initialize pokemon storage due: %v", err)
 	}
 
 	// init game storage
-	configGameDB := gamestrg.Config{SQLClient: Db}
+	configGameDB := gamestrg.Config{SQLClient: sqlClient}
 	gameStrg, err := gamestrg.New(configGameDB)
 	if err != nil {
 		log.Fatalf("unable to initialize game storage due: %v", err)
 	}
 
 	// init battle storage
-	configBattleDB := battlestrg.Config{SQLClient: Db}
+	configBattleDB := battlestrg.Config{SQLClient: sqlClient}
 	battleStrg, err := battlestrg.New(configBattleDB)
 	if err != nil {
 		log.Fatalf("unable to initialize battle storage due: %v", err)

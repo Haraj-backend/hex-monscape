@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-const envKeySQLDSN = "SQL_DSN"
+const envKeySQLDSN = "TEST_SQL_DSN"
 
 func NewSQLClient() (*sqlx.DB, error) {
 	sqlDSN := os.Getenv(envKeySQLDSN)

@@ -28,7 +28,7 @@ test:
 		AWS_REGION=eu-west-1 \
 		AWS_ACCESS_KEY_ID=awslocal \
 		AWS_SECRET_ACCESS_KEY=awslocal \
-		SQL_DSN="root:test1234@tcp(127.0.0.1:3307)/db_pokebattle?timeout=5s" \
+		TEST_SQL_DSN="root:test1234@tcp(127.0.0.1:3307)/db_pokebattle?timeout=5s" \
 		go test -count=1 ./...
 	docker-compose down -v
 
