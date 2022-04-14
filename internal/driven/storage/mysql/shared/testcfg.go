@@ -9,7 +9,7 @@ import (
 
 const envKeySQLDSN = "TEST_SQL_DSN"
 
-func NewSQLClient() (*sqlx.DB, error) {
+func NewTestSQLClient() (*sqlx.DB, error) {
 	sqlDSN := os.Getenv(envKeySQLDSN)
 	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
 	if err != nil {

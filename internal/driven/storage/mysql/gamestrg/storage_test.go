@@ -15,7 +15,7 @@ import (
 
 func TestSaveGame(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -33,7 +33,7 @@ func TestSaveGame(t *testing.T) {
 
 func TestGetGame(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -56,7 +56,7 @@ func TestGetGame(t *testing.T) {
 
 func TestGetGameNotFound(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})

@@ -17,7 +17,7 @@ import (
 
 func TestSaveBattle(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -35,7 +35,7 @@ func TestSaveBattle(t *testing.T) {
 
 func TestSaveBattleExistingBattle(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -58,7 +58,7 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 
 func TestGetBattle(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -81,7 +81,7 @@ func TestGetBattle(t *testing.T) {
 
 func TestGetBattleNotFound(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})

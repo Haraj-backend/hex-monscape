@@ -14,7 +14,7 @@ import (
 
 func TestGetPartner(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -31,7 +31,7 @@ func TestGetPartner(t *testing.T) {
 
 func TestGetPartnerNotFound(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -46,7 +46,7 @@ func TestGetPartnerNotFound(t *testing.T) {
 
 func TestGetAvailablePartners(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
@@ -91,7 +91,7 @@ func TestGetAvailablePartners(t *testing.T) {
 
 func TestGetAvailableEnemies(t *testing.T) {
 	// initialize sql client
-	sqlClient, err := shared.NewSQLClient()
+	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
