@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Template for deploying necessary infrastructures for Hex-Pokebattle MySql (https://github.com/Haraj-backend/hex-pokebattle)
+
+Parameters:
+  EngineVersion:
+    Type: String
+    Default: '5.7.12'
+  DatabaseName:
+    Type: String
+  MasterUsername:
+    Type: String
+    Default: admin
+  MasterUserPassword:
+    Type: String
+    NoEcho: true
+
+Resources:
+  ECRRepoHexPokebattleMysql:
+    Type: AWS::ECR::Repository
+
+  MysqlCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: aurora-mysql
+      EngineMode: serverless
+      EngineVersion: !Ref EngineVersion
+      DatabaseName: !Ref DatabaseName
+      MasterUsername: !Ref MasterUsername
+      MasterUserPassword: !Ref MasterUserPassword
+      DBClusterIdentifier: !Ref AWS::StackName
+
+Outputs:
+  ECRRepoHexPokebattleName:
+    Value: !Ref ECRRepoHexPokebattleMysql
+    Export:
+      Name: !Sub "${AWS::StackName}:ECRRepoHexPokebattleNameMysql"
+
+  MysqlDBHost:
+    Value: !GetAtt MysqlCluster.Endpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-HexPokeBattleMysqlDBHost'
