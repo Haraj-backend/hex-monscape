@@ -9,6 +9,13 @@ ECR_REPO_NAME_DEV:=$(shell aws cloudformation describe-stack-resource \
 	--query "StackResourceDetail.PhysicalResourceId" --output text)
 REMOTE_REPO_DEV:=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_DEV}
 
+INFRA_STACK_NAME_MYSQL_DEV:=hex-pokebattle-mysql-infras
+ECR_MYSQL_REPO_NAME_DEV:=$(shell aws cloudformation describe-stack-resource \
+	--stack-name ${INFRA_STACK_NAME_MYSQL_DEV} \
+	--logical-resource-id ECRRepoHexPokebattleMysql \
+	--query "StackResourceDetail.PhysicalResourceId" --output text)
+REMOTE_MYSQL_REPO_DEV:=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_MYSQL_REPO_NAME_DEV}
+
 run:
 	docker build -t hex-pokebattle -f ./build/package/server/Dockerfile .
 	docker run -p 9186:9186 hex-pokebattle
@@ -63,3 +70,35 @@ deploy-dev: build-push-image-dev
 		--parameter-overrides \
 			InfraStackName=${INFRA_STACK_NAME_DEV} \
 			ImageUri=${REMOTE_REPO_DEV}:${TIMESTAMP}
+
+deploy-infras-dev-mysql:
+	aws cloudformation deploy \
+		--region eu-west-1 \
+		--template-file ./deploy/aws/mysql/infras.yml \
+		--stack-name ${INFRA_STACK_NAME_MYSQL_DEV} \
+		--capabilities CAPABILITY_NAMED_IAM \
+		--parameter-overrides \
+			MasterUserPassword=pokebattle1234
+
+build-push-image-dev-mysql:
+	docker build \
+		--build-arg VITE_API_STAGE_PATH=/Dev \
+		--build-arg FRONTEND_MODE=lambda \
+		-t hex-pokebattle-lambda-mysql:latest -f ./build/package/lambda-mysql/Dockerfile .
+	docker tag hex-pokebattle-lambda-mysql:latest ${REMOTE_MYSQL_REPO_DEV}:${TIMESTAMP}
+
+	aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_MYSQL_REPO_DEV}
+	docker push ${REMOTE_MYSQL_REPO_DEV}:${TIMESTAMP}
+
+deploy-dev-mysql: build-push-image-dev-mysql
+	sam deploy \
+		--region eu-west-1 \
+		--stack-name hex-pokebattle-mysql \
+		--image-repository ${REMOTE_MYSQL_REPO_DEV} \
+		--template-file ./deploy/aws/mysql/services.yml \
+		--capabilities CAPABILITY_NAMED_IAM \
+		--parameter-overrides \
+			InfraStackName=${INFRA_STACK_NAME_MYSQL_DEV} \
+			ImageUri=${REMOTE_MYSQL_REPO_DEV}:${TIMESTAMP} \
+			MasterUserPassword=pokebattle1234 \
+			DatabaseName=db_pokebattle
