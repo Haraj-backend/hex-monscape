@@ -8,6 +8,9 @@ on:
       - 'docs/**'
     branches: [master]
 
+env:
+  AWS_REGION: eu-west-1
+
 jobs:
   run-test:
     uses: ./.github/workflows/test_services.yml
@@ -18,14 +21,60 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
 
-  deploy-dev-ddb:
-    name: Deploy to Dev
-    needs: run-test
+  preparation:
+    name: Prepare Environment
+    needs: test
     runs-on: ubuntu-latest
+    outputs:
+      deploy-dev-lambda-ddb: ${{ (steps.changes.outputs.lambda-ddb == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-dev-lambda-mysql: ${{ (steps.changes.outputs.lambda-mysql == 'true') || (steps.changes.outputs.all == 'true') }}
+    steps:
+      - name: Checkout Latest Commit
+        uses: actions/checkout@v2
+
+      - name: Resolve Previous Tag
+        id: resolve-previous-tag
+        run: |
+          LINE_NUMBER=$(git ls-remote --tags --sort="-v:refname" --refs origin | grep -wn "${GITHUB_REF}" | cut -d: -f1)
+          PREV_TAG_REF=$(git ls-remote --tags --sort="-v:refname" --refs origin | head -$((LINE_NUMBER + 1)) | tail -1 | cut -f2)
+          echo "::set-output name=previous-tag-ref::${PREV_TAG_REF}"
+
+      - name: Determine Changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          base: ${{ steps.resolve-previous-tag.outputs.previous-tag-ref }}
+          filters: |
+            all:
+              - "internal/core/**"
+              - "internal/driver/**"
+              - "cmd/server/web/**"
+              - ".github/workflows/deploy_dev.yml"
+              - ".github/workflows/test_services.yml"
+              - "go.mod"
+              - "go.sum"
+            lambda-ddb:
+              - "build/package/lambda/**"
+              - "cmd/lambda/**"
+              - "internal/driven/dynamodb/**"
+              - "deploy/aws/infras.yml"
+              - "deploy/aws/services.yml"
+            lambda-mysql:
+              - "build/package/lambda-mysql/**"
+              - "cmd/lambda-mysql/**"
+              - "internal/driven/mysql/**"
+              - "deploy/aws/mysql/infras.yml"
+              - "deploy/aws/mysql/services.yml"
+
+  deploy-dev-ddb:
+    name: Deploy DDB to Dev
+    needs: [run-test, preparation]
+    runs-on: ubuntu-latest
+    if: ${{ needs.preparation.outputs.deploy-dev-lambda-ddb == 'true' }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: eu-west-1
+      AWS_REGION: "${AWS_REGION}"
     steps:
       - name: Checkout Current Commit
         uses: actions/checkout@v2
@@ -50,7 +99,50 @@ jobs:
         if: always()
         with:
           type: ${{ job.status }}
-          job_name: "*Hex-Pokebattle ${{ github.job }}*"
+          job_name: "*Hex-Pokebattle-DDB ${{ github.job }}*"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-dev-mysql:
+    name: Deploy Mysql to Dev
+    needs: [run-test, preparation]
+    runs-on: ubuntu-latest
+    if: ${{ needs.preparation.outputs.deploy-dev-lambda-mysql == 'true' }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: "${AWS_REGION}"
+    steps:
+      - name: Checkout Current Commit
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.DEV_AWS_DEPLOY_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy Mysql related infras to Dev
+        run: make deploy-infras-dev-mysql
+
+      - name: Deploy Mysql to Dev
+        run: make deploy-dev-mysql
+
+      - name: Notify To Slack
+        uses: lazy-actions/slatify@v3.0.0
+        if: always()
+        with:
+          type: ${{ job.status }}
+          job_name: "*Hex-Pokebattle-Mysql ${{ github.job }}*"
           mention: "here"
           mention_if: "failure"
           channel: "#solutions-team-ci-cd"
