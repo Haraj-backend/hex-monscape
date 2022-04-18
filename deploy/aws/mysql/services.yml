@@ -29,7 +29,7 @@ Parameters:
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 60
+    Timeout: 15
 
 Resources:
   HexPokebattleAPI:
@@ -67,7 +67,7 @@ Resources:
 
     Metadata:
       DockerTag: go1.x-v1
-      DockerContext: ../..
+      DockerContext: ../../..
       Dockerfile: ./build/package/lambda-mysql/Dockerfile
 
 Outputs:
