@@ -29,7 +29,7 @@ Parameters:
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 15
+    Timeout: 60
 
 Resources:
   HexPokebattleAPI:
@@ -42,6 +42,14 @@ Resources:
     Properties:
       PackageType: Image
       ImageUri: !Ref ImageUri
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-9b4ee1e2
+          - sg-9a41e2e3
+        SubnetIds:
+          - subnet-328ba46a
+          - subnet-b6ef0dd1
+          - subnet-d236db9b
       Architectures:
         - x86_64
       Events:

@@ -29,6 +29,9 @@ Resources:
       MasterUsername: !Ref MasterUsername
       MasterUserPassword: !Ref MasterUserPassword
       DBClusterIdentifier: !Ref AWS::StackName
+      VpcSecurityGroupIds:
+        - sg-9b4ee1e2
+        - sg-9a41e2e3
 
 Outputs:
   ECRRepoHexPokebattleName:
