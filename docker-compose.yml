@@ -44,18 +44,13 @@ services:
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
 
-  hex-mysql:
+  hex_mysql:
     build:
       context: .
-      dockerfile: build/package/lambda-mysql/Dockerfile
+      dockerfile: build/package/lambda-mysql/Dockerfile.local
     environment:
-      DB_DRIVER: "mysql"
+      SERVER_DEPLOYMENT: "true"
       SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
-      MYSQL_HOST: "mysql"
-      MYSQL_PASSWORD: "test1234"
-      MYSQL_USER: "root"
-      MYSQL_PORT: "3306"
-      MYSQL_DB: "db_pokebattle"
     depends_on:
       mysql:
         condition: service_healthy
