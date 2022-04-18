@@ -73,7 +73,7 @@ deploy-dev: build-push-image-dev
 
 deploy-infras-dev-mysql:
 	aws cloudformation deploy \
-		--region eu-west-1 \
+		--region ${AWS_REGION} \
 		--template-file ./deploy/aws/mysql/infras.yml \
 		--stack-name ${INFRA_STACK_NAME_MYSQL_DEV} \
 		--capabilities CAPABILITY_NAMED_IAM \
@@ -92,7 +92,7 @@ build-push-image-dev-mysql:
 
 deploy-dev-mysql: build-push-image-dev-mysql
 	sam deploy \
-		--region eu-west-1 \
+		--region ${AWS_REGION} \
 		--stack-name hex-pokebattle-mysql \
 		--image-repository ${REMOTE_MYSQL_REPO_DEV} \
 		--template-file ./deploy/aws/mysql/services.yml \
