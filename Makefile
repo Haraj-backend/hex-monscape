@@ -43,14 +43,14 @@ run-with-ddb:
 	docker-compose down -v
 	docker-compose up --build --remove-orphans
 
-deploy-infras-dev:
+deploy-infras-dev-ddb:
 	aws cloudformation deploy \
 		--region ${AWS_REGION} \
 		--template-file ./deploy/aws/infras.yml \
 		--stack-name ${INFRA_STACK_NAME_DEV} \
 		--capabilities CAPABILITY_NAMED_IAM
 
-build-push-image-dev:
+build-push-image-dev-ddb:
 	docker build \
 		--build-arg VITE_API_STAGE_PATH=/Dev \
 		--build-arg FRONTEND_MODE=lambda \
@@ -60,7 +60,7 @@ build-push-image-dev:
 	aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO_DEV}
 	docker push ${REMOTE_REPO_DEV}:${TIMESTAMP}
 
-deploy-dev: build-push-image-dev
+deploy-dev-ddb: build-push-image-dev-ddb
 	sam deploy \
 		--region ${AWS_REGION} \
 		--stack-name hex-pokebattle \

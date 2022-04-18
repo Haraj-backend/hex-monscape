@@ -18,7 +18,7 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
 
-  deploy-dev:
+  deploy-dev-ddb:
     name: Deploy to Dev
     needs: run-test
     runs-on: ubuntu-latest
@@ -39,11 +39,11 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Deploy related infras to Dev
-        run: make deploy-infras-dev
+      - name: Deploy DDB related infras to Dev
+        run: make deploy-infras-dev-ddb
 
-      - name: Deploy to Dev
-        run: make deploy-dev
+      - name: Deploy DDB to Dev
+        run: make deploy-dev-ddb
 
       - name: Notify To Slack
         uses: lazy-actions/slatify@v3.0.0
