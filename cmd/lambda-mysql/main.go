@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
@@ -13,6 +12,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/apex/gateway"
 	"github.com/jmoiron/sqlx"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -23,6 +23,8 @@ const envKeySQLDSN = "SQL_DSN"
 
 func main() {
 	log.Printf("Running service...")
+
+	isServer := os.Getenv("SERVER_DEPLOYMENT") == "true"
 
 	sqlDSN := os.Getenv(envKeySQLDSN)
 	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
@@ -80,16 +82,19 @@ func main() {
 		log.Fatalf("unable to init rest service: %v", err)
 	}
 
-	// initialize server
-	server := &http.Server{
-		Addr:        addr,
-		Handler:     api.GetHandler(),
-		ReadTimeout: 3 * time.Second,
-	}
 	// run server
-	log.Printf("server is listening on %v...", addr)
-	err = server.ListenAndServe()
+	err = listenAndServe(isServer, addr, api.GetHandler())
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("unable to start server due: %v", err)
 	}
+}
+
+func listenAndServe(serverMode bool, addr string, handler http.Handler) error {
+	if serverMode {
+		log.Printf("Running in server mode at %s", addr)
+		return http.ListenAndServe(addr, handler)
+	}
+
+	log.Println("Running in serverless mode")
+	return gateway.ListenAndServe("", handler)
 }
