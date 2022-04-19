@@ -6,6 +6,7 @@ on:
       - 'Makefile'
       - '**.md'
       - 'docs/**'
+    branches: [master]
 
 jobs:
   run-test:
