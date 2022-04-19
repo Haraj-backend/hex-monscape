@@ -23,7 +23,7 @@ jobs:
 
   preparation:
     name: Prepare Environment
-    needs: test
+    needs: run-test
     runs-on: ubuntu-latest
     outputs:
       deploy-dev-lambda-ddb: ${{ (steps.changes.outputs.lambda-ddb == 'true') || (steps.changes.outputs.all == 'true') }}
