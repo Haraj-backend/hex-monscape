@@ -73,7 +73,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: "${AWS_REGION}"
+      AWS_REGION: ${{ env.AWS_REGION }}
     steps:
       - name: Checkout Current Commit
         uses: actions/checkout@v2
@@ -116,7 +116,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: "${AWS_REGION}"
+      AWS_REGION: ${{ env.AWS_REGION }}
     steps:
       - name: Checkout Current Commit
         uses: actions/checkout@v2
