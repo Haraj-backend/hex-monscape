@@ -22,8 +22,16 @@ func TestSaveBattle(t *testing.T) {
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
+	// create partner pokemon
+	partner := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, partner, 1)
+	require.NoError(t, err)
+	// create enemy pokemon
+	enemy := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, enemy, 0)
+	require.NoError(t, err)
 	// save battle
-	b := newBattle()
+	b := newBattle(partner, enemy)
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// check whether battle exists on database
@@ -40,8 +48,16 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
+	// create partner pokemon
+	partner := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, partner, 1)
+	require.NoError(t, err)
+	// create enemy pokemon
+	enemy := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, enemy, 0)
+	require.NoError(t, err)
 	// save battle
-	b := newBattle()
+	b := newBattle(partner, enemy)
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// override battle state
@@ -63,8 +79,16 @@ func TestGetBattle(t *testing.T) {
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
+	// create partner pokemon
+	partner := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, partner, 1)
+	require.NoError(t, err)
+	// create enemy pokemon
+	enemy := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, enemy, 0)
+	require.NoError(t, err)
 	// save battle
-	b := newBattle()
+	b := newBattle(partner, enemy)
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// override battle state
@@ -102,34 +126,12 @@ func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
 	return row.ToBattle(), nil
 }
 
-func newBattle() battle.Battle {
+func newBattle(partner entity.Pokemon, enemy entity.Pokemon) battle.Battle {
 	return battle.Battle{
-		GameID: uuid.NewString(),
-		State:  battle.DECIDE_TURN,
-		Partner: &entity.Pokemon{
-			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-			Name: "Pikachu",
-			BattleStats: entity.BattleStats{
-				Health:    100,
-				MaxHealth: 100,
-				Attack:    49,
-				Defense:   49,
-				Speed:     45,
-			},
-			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
-		},
-		Enemy: &entity.Pokemon{
-			ID:   "0f9b84b6-a768-4ba9-8800-207740fc993d",
-			Name: "Bulbasaur",
-			BattleStats: entity.BattleStats{
-				Health:    100,
-				MaxHealth: 100,
-				Attack:    49,
-				Defense:   49,
-				Speed:     45,
-			},
-			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png",
-		},
+		GameID:  uuid.NewString(),
+		State:   battle.DECIDE_TURN,
+		Partner: &partner,
+		Enemy:   &enemy,
 		LastDamage: battle.LastDamage{
 			Partner: 0,
 			Enemy:   10,
