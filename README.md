@@ -26,33 +26,30 @@ Here is the flowchart for each battle in the game:
 
 ## How to Run
 
-This app is powered by docker. So make sure to install it before running below command:
+There are 3 variants of server in this project:
+
+- Server using Memory storage
+- Server using DynamoDB storage
+- Server using MySQL storage
+
+These variants could be run by using this command:
 
 ```bash
 > make run
 ```
 
-Upon success, your console should output message like following:
+This command will create & run the stack defined in this [docker-compose.yml](./docker-compose.yml) file. 
+
+Wait a moment until the entire stack setup done. You will something like this in the console log after the setup is done:
 
 ```bash
-2022/02/20 15:53:42 server is listening on :9186...
+hex_mem_1     | 2022/05/11 16:29:50 server is listening on :9186...
+hex_mysql_1   | 2022/05/11 16:30:21 Running in server mode at :9186
+hex_ddb_1     | 2022/05/11 16:30:21 Running in server mode at :9186
 ```
 
-## How to Run (LocalStack)
+After that we could access each of variants by visiting the urls below:
 
-We will run the app by using LocalStack DynamoDB as a storage.
-
-Necessary environment variables can be configure from [config.yml](cmd/lambda/config.yml)
-
-```bash
-> make run-with-ddb
-```
-
-Upon success, docker compose should have log like following:
-
-```
-hex-pokebattle_1  | 2022/03/16 07:54:21 Running service...
-hex-pokebattle_1  | 2022/03/16 07:54:21 Running in server mode at :9186
-```
-
-After the message is shown, you could access http://localhost:9186 using your browser to play the game.
+- Memory storage => http://localhost:9185
+- DynamoDB storage => http://localhost:9186
+- MySQL storage => http://localhost:9187
