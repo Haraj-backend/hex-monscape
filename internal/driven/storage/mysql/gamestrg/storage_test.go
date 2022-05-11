@@ -13,38 +13,19 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func TestSaveGame(t *testing.T) {
+func TestSaveGameGetGame(t *testing.T) {
 	// initialize sql client
 	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
 	// initialize storage
 	strg, err := New(Config{SQLClient: sqlClient})
 	require.NoError(t, err)
-	// save Game
-	g := newGame()
-	err = strg.SaveGame(context.Background(), g)
-	require.NoError(t, err)
-	// check whether Game exists on database
-	savedGame, err := strg.GetGame(context.Background(), g.ID)
-	require.NoError(t, err)
-	// check whether Game data is match
-	require.Equal(t, g, *savedGame)
-}
-
-func TestGetGame(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
-	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
+	// create new test pokemon
+	partner := shared.NewTestPokemon()
+	err = shared.InsertTestPokemon(sqlClient, partner, 1)
 	require.NoError(t, err)
 	// save Game
-	g := newGame()
-	err = strg.SaveGame(context.Background(), g)
-	require.NoError(t, err)
-	// override Game battle won
-	g.BattleWon = 1
-	// save again
+	g := newGame(partner)
 	err = strg.SaveGame(context.Background(), g)
 	require.NoError(t, err)
 	// check whether Game exists on database
@@ -67,20 +48,7 @@ func TestGetGameNotFound(t *testing.T) {
 	require.Nil(t, savedGame)
 }
 
-func newGame() entity.Game {
-	partner := entity.Pokemon{
-		ID:        "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-		Name:      "Pikachu",
-		AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    49,
-			Defense:   49,
-			Speed:     45,
-		},
-	}
-
+func newGame(partner entity.Pokemon) entity.Game {
 	return entity.Game{
 		ID:         uuid.NewString(),
 		PlayerName: "player1",
