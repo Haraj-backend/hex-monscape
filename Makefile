@@ -17,16 +17,15 @@ ECR_MYSQL_REPO_NAME_DEV:=$(shell aws cloudformation describe-stack-resource \
 REMOTE_MYSQL_REPO_DEV:=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_MYSQL_REPO_NAME_DEV}
 
 run:
-	docker build -t hex-pokebattle -f ./build/package/server/Dockerfile .
-	docker run -p 9186:9186 hex-pokebattle
+	-make down
+	docker-compose up --build
+
+down:
+	docker-compose down -v --remove-orphans
 
 test:
 	-docker-compose -f ./deploy/integration_test/docker-compose.yml down --remove-orphans
 	docker-compose -f ./deploy/integration_test/docker-compose.yml up --build --exit-code-from=integration_test
-
-run-with-ddb:
-	docker-compose down -v
-	docker-compose up --build --remove-orphans
 
 deploy-infras-dev-ddb:
 	aws cloudformation deploy \

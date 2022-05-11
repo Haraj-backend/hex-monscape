@@ -8,11 +8,15 @@ services:
     environment:
       - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
-      - DONT_SEED_POKEMON=${DONT_SEED_POKEMON}
+      - DONT_SEED_POKEMON=false
+    healthcheck:
+      test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
+    entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
     volumes:
-      - './deploy/local/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh'
-      - './deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json'
-      - './deploy/local/partner-batch-write-items.json:/var/partner-batch-write-items.json'
+      - ./deploy/shared/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh
+      - ./deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json
+      - ./deploy/local/partner-batch-write-items.json:/var/partner-batch-write-items.json
+      - ./deploy/shared/wait-localstack.sh:/wait-localstack.sh
 
   mysql:
     image: mysql:5.7
@@ -25,16 +29,25 @@ services:
       timeout: 20s
       retries: 10
     volumes:
-      - ./deploy/local/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+      - ./deploy/shared/mysql.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./deploy/local/data.sql:/docker-entrypoint-initdb.d/2.sql
     ports:
       - "3307:3306"
+
+  hex_mem:
+    build:
+      context: .
+      dockerfile: ./build/package/server/Dockerfile
+    ports:
+      - 9185:9186
 
   hex_ddb:
     build:
       context: .
       dockerfile: build/package/lambda/Dockerfile.local
     depends_on:
-      - localstack
+      localstack:
+        condition: service_healthy
     ports:
       - 9186:9186
     volumes:
