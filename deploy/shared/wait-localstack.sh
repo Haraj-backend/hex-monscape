@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 host="localhost:4566"
 waiting_in_second=5
@@ -40,7 +40,7 @@ until [ "$services_ready" = "true" ] || [ $retry -gt $max_retry ]; do
 
     if [ "$services_ready" = "false" ]; then
         sleep $waiting_in_second
-        $(retry=retry+1)
+        ((retry = retry+1))
     fi
 done
 
