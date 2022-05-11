@@ -17,6 +17,8 @@ services:
       - ./deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json
       - ./deploy/local/partner-batch-write-items.json:/var/partner-batch-write-items.json
       - ./deploy/shared/wait-localstack.sh:/wait-localstack.sh
+    logging:
+      driver: none
 
   mysql:
     image: mysql:5.7
@@ -33,6 +35,8 @@ services:
       - ./deploy/local/data.sql:/docker-entrypoint-initdb.d/2.sql
     ports:
       - "3307:3306"
+    logging:
+      driver: none
 
   hex_mem:
     build:
