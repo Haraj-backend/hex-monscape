@@ -22,8 +22,6 @@ const addr = ":9186"
 const envKeySQLDSN = "SQL_DSN"
 
 func main() {
-	log.Printf("Running service...")
-
 	isServer := os.Getenv("SERVER_DEPLOYMENT") == "true"
 
 	sqlDSN := os.Getenv(envKeySQLDSN)

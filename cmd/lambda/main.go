@@ -19,8 +19,6 @@ import (
 )
 
 func main() {
-	log.Printf("Running service...")
-
 	// read config
 	var cfg config
 	goconfig.File = "config.yml"
