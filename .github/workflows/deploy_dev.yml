@@ -90,11 +90,11 @@ jobs:
 
       - name: Deploy Infrastructure
         run: |
-          	aws cloudformation deploy \
-              --region ${{ env.AWS_REGION }} \
-              --template-file ./deploy/aws/laddb/infras.yml \
-              --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
-              --capabilities CAPABILITY_NAMED_IAM
+          aws cloudformation deploy \
+            --region ${{ env.AWS_REGION }} \
+            --template-file ./deploy/aws/laddb/infras.yml \
+            --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
+            --capabilities CAPABILITY_NAMED_IAM
 
       - name: Deploy Service
         run: |
