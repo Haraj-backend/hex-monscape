@@ -105,7 +105,7 @@ jobs:
             --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
             --logical-resource-id ECRRepoHexPokebattle \
             --query "StackResourceDetail.PhysicalResourceId" --output text)
-          REMOTE_REPO_DEV:=${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${ECR_REPO_NAME_DEV}
+          REMOTE_REPO_DEV=${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${ECR_REPO_NAME_DEV}
           
           # build docker image
           docker build \
