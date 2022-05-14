@@ -30,19 +30,11 @@ jobs:
     steps:
       - name: Checkout Latest Commit
         uses: actions/checkout@v2
-
-      - name: Resolve Previous Tag
-        id: resolve-previous-tag
-        run: |
-          LINE_NUMBER=$(git ls-remote --tags --sort="-v:refname" --refs origin | grep -wn "${GITHUB_REF}" | cut -d: -f1)
-          PREV_TAG_REF=$(git ls-remote --tags --sort="-v:refname" --refs origin | head -$((LINE_NUMBER + 1)) | tail -1 | cut -f2)
-          echo "::set-output name=previous-tag-ref::${PREV_TAG_REF}"
-
       - name: Determine Changes
         uses: dorny/paths-filter@v2
         id: changes
         with:
-          base: ${{ steps.resolve-previous-tag.outputs.previous-tag-ref }}
+          base: ${{ github.ref }}
           filters: |
             all:
               - "internal/core/**"
@@ -99,24 +91,24 @@ jobs:
       - name: Deploy Service
         run: |
           # prepare necessary parameters
-          TIMESTAMP=$(date "+%s")
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           ECR_REPO_NAME_DEV=$(aws cloudformation describe-stack-resource \
             --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
             --logical-resource-id ECRRepoHexPokebattle \
             --query "StackResourceDetail.PhysicalResourceId" --output text)
           REMOTE_REPO_DEV=${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${ECR_REPO_NAME_DEV}
+          IMAGE_URI=${REMOTE_REPO_DEV}:${GITHUB_SHA}
           
           # build docker image
           docker build \
             --build-arg VITE_API_STAGE_PATH=/Dev \
             --build-arg FRONTEND_MODE=lambda \
             -t hex-pokebattle-lambda:latest -f ./build/package/lambda/Dockerfile .
-          docker tag hex-pokebattle-lambda:latest ${REMOTE_REPO_DEV}:${TIMESTAMP}
+          docker tag hex-pokebattle-lambda:latest ${IMAGE_URI}
 
           # push docker image to ECR
           aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO_DEV}
-          docker push ${REMOTE_REPO_DEV}:${TIMESTAMP}
+          docker push ${IMAGE_URI}
 
           # deploy service
           sam deploy \
@@ -127,7 +119,7 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
               InfraStackName=${{ env.INFRA_STACK_NAME_DEV }} \
-              ImageUri=${REMOTE_REPO_DEV}:${TIMESTAMP}        
+              ImageUri=${IMAGE_URI}       
 
       - name: Notify To Slack
         uses: lazy-actions/slatify@v3.0.0
