@@ -11,14 +11,14 @@ on:
       - chore/tidy-deployment
 
 jobs:
-  run-test:
-    uses: ./.github/workflows/test_services.yml
-    name: Run tests before deploy
-    with:
-      checkout-ref: ${{ github.sha }}
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+  # run-test:
+  #   uses: ./.github/workflows/test_services.yml
+  #   name: Run tests before deploy
+  #   with:
+  #     checkout-ref: ${{ github.sha }}
+  #   secrets:
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
 
   preparation:
     name: Prepare Environment
@@ -99,9 +99,9 @@ jobs:
       - name: Deploy Service
         run: |
           # prepare necessary parameters
-          TIMESTAMP:=$(shell /bin/date "+%s")
-          AWS_ACCOUNT_ID:=$(shell aws sts get-caller-identity --query Account --output text)
-          ECR_REPO_NAME_DEV:=$(shell aws cloudformation describe-stack-resource \
+          TIMESTAMP=$(date "+%s")
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REPO_NAME_DEV=$(aws cloudformation describe-stack-resource \
             --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
             --logical-resource-id ECRRepoHexPokebattle \
             --query "StackResourceDetail.PhysicalResourceId" --output text)
