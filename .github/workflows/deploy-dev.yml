@@ -57,16 +57,95 @@ jobs:
               - "deploy/aws/rest-lambda-mysql/infras.yml"
               - "deploy/aws/rest-lambda-mysql/services.yml"
 
-  deploy-rest-lambda-ddb:
-    name: Deploy Lambda + DynamoDB Variant
+  # deploy-rest-lambda-ddb:
+  #   name: Deploy rest-lambda-ddb
+  #   needs: preparation
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.preparation.outputs.deploy-rest-lambda-ddb == 'true' }}
+  #   env:
+  #     AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+  #     AWS_REGION: eu-west-1
+  #     INFRA_STACK_NAME_DEV: hex-pokebattle-infras
+  #   steps:
+  #     - name: Checkout Current Commit
+  #       uses: actions/checkout@v2
+
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+  #         role-to-assume: ${{ secrets.DEV_AWS_DEPLOY_ROLE_ARN }}
+  #         role-duration-seconds: 3600
+  #         aws-region: ${{ env.AWS_REGION }}
+
+  #     - name: Deploy Infrastructure
+  #       run: |
+  #         aws cloudformation deploy \
+  #           --region ${{ env.AWS_REGION }} \
+  #           --template-file ./deploy/aws/rest-lambda-ddb/infras.yml \
+  #           --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
+  #           --capabilities CAPABILITY_NAMED_IAM
+
+  #     - name: Deploy Service
+  #       run: |
+  #         # prepare necessary parameters
+  #         AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+  #         ECR_REPO_NAME_DEV=$(aws cloudformation describe-stack-resource \
+  #           --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
+  #           --logical-resource-id ECRRepoHexPokebattle \
+  #           --query "StackResourceDetail.PhysicalResourceId" --output text)
+  #         REMOTE_REPO_DEV=${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${ECR_REPO_NAME_DEV}
+  #         IMAGE_URI=${REMOTE_REPO_DEV}:${GITHUB_SHA}
+          
+  #         # build docker image
+  #         docker build \
+  #           --build-arg VITE_API_STAGE_PATH=/Dev \
+  #           --build-arg FRONTEND_MODE=lambda \
+  #           -t hex-pokebattle-lambda:latest -f ./build/package/rest-lambda-ddb/Dockerfile .
+  #         docker tag hex-pokebattle-lambda:latest ${IMAGE_URI}
+
+  #         # push docker image to ECR
+  #         aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO_DEV}
+  #         docker push ${IMAGE_URI}
+
+  #         # deploy service
+  #         sam deploy \
+  #           --region ${AWS_REGION} \
+  #           --stack-name hex-pokebattle \
+  #           --image-repository ${REMOTE_REPO_DEV} \
+  #           --template-file ./deploy/aws/rest-lambda-ddb/services.yml \
+  #           --capabilities CAPABILITY_NAMED_IAM \
+  #           --parameter-overrides \
+  #             InfraStackName=${{ env.INFRA_STACK_NAME_DEV }} \
+  #             ImageUri=${IMAGE_URI}       
+
+  #     - name: Notify To Slack
+  #       uses: lazy-actions/slatify@v3.0.0
+  #       if: always()
+  #       with:
+  #         type: ${{ job.status }}
+  #         job_name: "*[hex-pokebattle]* ${{ github.job }}"
+  #         mention: "here"
+  #         mention_if: "failure"
+  #         channel: "#solutions-team-ci-cd"
+  #         icon_emoji: ":haraaj:"
+  #         username: "ci/cd-reporter"
+  #         url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+  #         commit: true
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-rest-lambda-mysql:
+    name: Deploy rest-lambda-mysql
     needs: preparation
     runs-on: ubuntu-latest
-    if: ${{ needs.preparation.outputs.deploy-rest-lambda-ddb == 'true' }}
+    if: ${{ needs.preparation.outputs.deploy-rest-lambda-mysql == 'true' }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: eu-west-1
-      INFRA_STACK_NAME_DEV: hex-pokebattle-infras
+      INFRA_STACK_NAME: hex-pokebattle-mysql-infras
     steps:
       - name: Checkout Current Commit
         uses: actions/checkout@v2
@@ -84,43 +163,46 @@ jobs:
         run: |
           aws cloudformation deploy \
             --region ${{ env.AWS_REGION }} \
-            --template-file ./deploy/aws/rest-lambda-ddb/infras.yml \
-            --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
-            --capabilities CAPABILITY_NAMED_IAM
+            --template-file ./deploy/aws/rest-lambda-mysql/infras.yml \
+            --stack-name ${{ env.INFRA_STACK_NAME_MYSQL_DEV }} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+              MasterUserPassword=pokebattle1234
 
       - name: Deploy Service
         run: |
           # prepare necessary parameters
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          ECR_REPO_NAME_DEV=$(aws cloudformation describe-stack-resource \
-            --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
-            --logical-resource-id ECRRepoHexPokebattle \
+          REPO_NAME=$(aws cloudformation describe-stack-resource \
+            --stack-name ${{ env.INFRA_STACK_NAME }} \
+            --logical-resource-id ECRRepoHexPokebattleMysql \
             --query "StackResourceDetail.PhysicalResourceId" --output text)
-          REMOTE_REPO_DEV=${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${ECR_REPO_NAME_DEV}
-          IMAGE_URI=${REMOTE_REPO_DEV}:${GITHUB_SHA}
-          
+          REMOTE_REPO=${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${REPO_NAME}
+          IMAGE_URI=${REMOTE_REPO}:${GITHUB_SHA}
+
           # build docker image
           docker build \
             --build-arg VITE_API_STAGE_PATH=/Dev \
             --build-arg FRONTEND_MODE=lambda \
-            -t hex-pokebattle-lambda:latest -f ./build/package/rest-lambda-ddb/Dockerfile .
-          docker tag hex-pokebattle-lambda:latest ${IMAGE_URI}
+            -t hex-pokebattle-lambda-mysql:latest -f ./build/package/rest-lambda-mysql/Dockerfile .
+          docker tag hex-pokebattle-lambda-mysql:latest ${IMAGE_URI}
 
-          # push docker image to ECR
-          aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO_DEV}
+          # push image
+          aws ecr get-login-password | docker login --username AWS --password-stdin ${REMOTE_REPO}
           docker push ${IMAGE_URI}
 
           # deploy service
           sam deploy \
             --region ${AWS_REGION} \
-            --stack-name hex-pokebattle \
-            --image-repository ${REMOTE_REPO_DEV} \
-            --template-file ./deploy/aws/rest-lambda-ddb/services.yml \
+            --stack-name hex-pokebattle-mysql \
+            --image-repository ${REMOTE_REPO} \
+            --template-file ./deploy/aws/rest-lambda-mysql/services.yml \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
-              InfraStackName=${{ env.INFRA_STACK_NAME_DEV }} \
-              ImageUri=${IMAGE_URI}       
-
+              InfraStackName=${INFRA_STACK_NAME} \
+              ImageUri=${IMAGE_URI} \
+              MasterUserPassword=pokebattle1234 \
+              DatabaseName=db_pokebattle  
       - name: Notify To Slack
         uses: lazy-actions/slatify@v3.0.0
         if: always()
@@ -135,46 +217,3 @@ jobs:
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  # deploy-dev-mysql:
-  #   name: Deploy Mysql to Dev
-  #   needs: [run-test, preparation]
-  #   runs-on: ubuntu-latest
-  #   if: ${{ needs.preparation.outputs.deploy-dev-lambda-mysql == 'true' }}
-  #   env:
-  #     AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-  #     AWS_REGION: eu-west-1
-  #   steps:
-  #     - name: Checkout Current Commit
-  #       uses: actions/checkout@v2
-
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-  #         role-to-assume: ${{ secrets.DEV_AWS_DEPLOY_ROLE_ARN }}
-  #         role-duration-seconds: 3600
-  #         aws-region: ${{ env.AWS_REGION }}
-
-  #     - name: Deploy Mysql related infras to Dev
-  #       run: make deploy-infras-dev-mysql
-
-  #     - name: Deploy Mysql to Dev
-  #       run: make deploy-dev-mysql
-
-  #     - name: Notify To Slack
-  #       uses: lazy-actions/slatify@v3.0.0
-  #       if: always()
-  #       with:
-  #         type: ${{ job.status }}
-  #         job_name: "*Hex-Pokebattle-Mysql ${{ github.job }}*"
-  #         mention: "here"
-  #         mention_if: "failure"
-  #         channel: "#solutions-team-ci-cd"
-  #         icon_emoji: ":haraaj:"
-  #         username: "ci/cd-reporter"
-  #         url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
-  #         commit: true
-  #         token: ${{ secrets.GITHUB_TOKEN }}
