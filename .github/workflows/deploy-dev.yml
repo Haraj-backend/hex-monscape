@@ -12,7 +12,7 @@ on:
 
 jobs:
   # run-test:
-  #   uses: ./.github/workflows/test_services.yml
+  #   uses: ./.github/workflows/run-tests.yml
   #   name: Run tests before deploy
   #   with:
   #     checkout-ref: ${{ github.sha }}
@@ -25,8 +25,8 @@ jobs:
     # needs: run-test
     runs-on: ubuntu-latest
     outputs:
-      deploy-dev-lambda-ddb: ${{ (steps.changes.outputs.lambda-ddb == 'true') || (steps.changes.outputs.all == 'true') }}
-      deploy-dev-lambda-mysql: ${{ (steps.changes.outputs.lambda-mysql == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-lambda-ddb: ${{ (steps.changes.outputs.lambda-ddb == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-lambda-mysql: ${{ (steps.changes.outputs.lambda-mysql == 'true') || (steps.changes.outputs.all == 'true') }}
     steps:
       - name: Checkout Latest Commit
         uses: actions/checkout@v2
@@ -57,8 +57,8 @@ jobs:
               - "deploy/aws/mysql/infras.yml"
               - "deploy/aws/mysql/services.yml"
 
-  deploy-dev-ddb:
-    name: Deploy Lambda + DynamoDB Variant to Dev
+  deploy-laddb:
+    name: Deploy Lambda + DynamoDB Variant
     needs: preparation
     runs-on: ubuntu-latest
     if: ${{ needs.preparation.outputs.deploy-dev-lambda-ddb == 'true' }}

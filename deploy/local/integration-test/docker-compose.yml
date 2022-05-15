@@ -35,7 +35,7 @@ services:
   integration_test:
     build:
       context: ../../
-      dockerfile: ./build/package/integration_test/Dockerfile
+      dockerfile: ./build/package/integration-test/Dockerfile
     depends_on:
       localstack:
         condition: service_healthy
