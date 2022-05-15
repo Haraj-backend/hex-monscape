@@ -126,7 +126,7 @@ jobs:
         if: always()
         with:
           type: ${{ job.status }}
-          job_name: "*Hex-Pokebattle-DDB ${{ github.job }}*"
+          job_name: "*[hex-pokebattle]* ${{ github.job }}"
           mention: "here"
           mention_if: "failure"
           channel: "#solutions-team-ci-cd"
