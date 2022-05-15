@@ -25,8 +25,8 @@ jobs:
     # needs: run-test
     runs-on: ubuntu-latest
     outputs:
-      deploy-lambda-ddb: ${{ (steps.changes.outputs.lambda-ddb == 'true') || (steps.changes.outputs.all == 'true') }}
-      deploy-lambda-mysql: ${{ (steps.changes.outputs.lambda-mysql == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-rest-lambda-ddb: ${{ (steps.changes.outputs.rest-lambda-ddb == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-rest-lambda-mysql: ${{ (steps.changes.outputs.rest-lambda-mysql == 'true') || (steps.changes.outputs.all == 'true') }}
     steps:
       - name: Checkout Latest Commit
         uses: actions/checkout@v2
@@ -39,29 +39,29 @@ jobs:
             all:
               - "internal/core/**"
               - "internal/driver/**"
-              - "cmd/server/web/**"
-              - ".github/workflows/deploy_dev.yml"
-              - ".github/workflows/test_services.yml"
+              - "cmd/web/**"
+              - ".github/workflows/deploy-dev.yml"
+              - ".github/workflows/run-tests.yml"
               - "go.mod"
               - "go.sum"
-            lambda-ddb:
-              - "build/package/lambda/**"
-              - "cmd/lambda/**"
-              - "internal/driven/dynamodb/**"
-              - "deploy/aws/infras.yml"
-              - "deploy/aws/services.yml"
-            lambda-mysql:
-              - "build/package/lambda-mysql/**"
-              - "cmd/lambda-mysql/**"
-              - "internal/driven/mysql/**"
-              - "deploy/aws/mysql/infras.yml"
-              - "deploy/aws/mysql/services.yml"
+            rest-lambda-ddb:
+              - "build/package/rest-lambda-ddb/**"
+              - "cmd/rest-lambda-ddb/**"
+              - "internal/driven/storage/dynamodb/**"
+              - "deploy/aws/rest-lambda-ddb/infras.yml"
+              - "deploy/aws/rest-lambda-ddb/services.yml"
+            rest-lambda-mysql:
+              - "build/package/rest-lambda-mysql/**"
+              - "cmd/rest-lambda-mysql/**"
+              - "internal/driven/storage/mysql/**"
+              - "deploy/aws/rest-lambda-mysql/infras.yml"
+              - "deploy/aws/rest-lambda-mysql/services.yml"
 
-  deploy-laddb:
+  deploy-rest-lambda-ddb:
     name: Deploy Lambda + DynamoDB Variant
     needs: preparation
     runs-on: ubuntu-latest
-    if: ${{ needs.preparation.outputs.deploy-dev-lambda-ddb == 'true' }}
+    if: ${{ needs.preparation.outputs.deploy-rest-lambda-ddb == 'true' }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
@@ -84,7 +84,7 @@ jobs:
         run: |
           aws cloudformation deploy \
             --region ${{ env.AWS_REGION }} \
-            --template-file ./deploy/aws/laddb/infras.yml \
+            --template-file ./deploy/aws/rest-lambda-ddb/infras.yml \
             --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
             --capabilities CAPABILITY_NAMED_IAM
 
@@ -103,7 +103,7 @@ jobs:
           docker build \
             --build-arg VITE_API_STAGE_PATH=/Dev \
             --build-arg FRONTEND_MODE=lambda \
-            -t hex-pokebattle-lambda:latest -f ./build/package/lambda/Dockerfile .
+            -t hex-pokebattle-lambda:latest -f ./build/package/rest-lambda-ddb/Dockerfile .
           docker tag hex-pokebattle-lambda:latest ${IMAGE_URI}
 
           # push docker image to ECR
@@ -115,7 +115,7 @@ jobs:
             --region ${AWS_REGION} \
             --stack-name hex-pokebattle \
             --image-repository ${REMOTE_REPO_DEV} \
-            --template-file ./deploy/aws/laddb/services.yml \
+            --template-file ./deploy/aws/rest-lambda-ddb/services.yml \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
               InfraStackName=${{ env.INFRA_STACK_NAME_DEV }} \
