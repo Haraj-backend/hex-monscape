@@ -164,7 +164,7 @@ jobs:
           aws cloudformation deploy \
             --region ${{ env.AWS_REGION }} \
             --template-file ./deploy/aws/rest-lambda-mysql/infras.yml \
-            --stack-name ${{ env.INFRA_STACK_NAME_MYSQL_DEV }} \
+            --stack-name ${{ env.INFRA_STACK_NAME }} \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
               MasterUserPassword=pokebattle1234
