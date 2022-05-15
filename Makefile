@@ -24,8 +24,8 @@ down:
 	docker-compose down -v --remove-orphans
 
 test:
-	-docker-compose -f ./deploy/integration_test/docker-compose.yml down --remove-orphans
-	docker-compose -f ./deploy/integration_test/docker-compose.yml up --build --exit-code-from=integration_test
+	-docker-compose -f ./deploy/local/integration-test/docker-compose.yml down --remove-orphans
+	docker-compose -f ./deploy/local/integration-test/docker-compose.yml up --build --exit-code-from=integration-test
 
 # deploy-infras-dev-ddb:
 # 	aws cloudformation deploy \
