@@ -1,6 +1,6 @@
 FROM node:lts-alpine3.15 as frontend_build
 WORKDIR /web
-COPY ./cmd/server/web .
+COPY ./cmd/web .
 
 # FRONTEND_MODE define .env | .env.staging | .env.production that will be used
 ARG FRONTEND_MODE="production"
@@ -16,16 +16,16 @@ WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ./cmd/lambda-mysql ./cmd/lambda-mysql
+COPY ./cmd/rest-lambda-mysql ./cmd/rest-lambda-mysql
 COPY ./internal ./internal
 
-WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda-mysql
+WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-mysql
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server
 
 # copy artifacts to a clean image
 FROM public.ecr.aws/lambda/go:1.2022.02.01.10
 
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/lambda-mysql/server ${LAMBDA_TASK_ROOT}
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-mysql/server ${LAMBDA_TASK_ROOT}
 COPY --from=frontend_build /web/dist /dist
 
 CMD [ "./server" ]

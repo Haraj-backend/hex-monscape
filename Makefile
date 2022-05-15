@@ -18,10 +18,10 @@ REMOTE_MYSQL_REPO_DEV:=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${E
 
 run:
 	-make down
-	docker-compose up --build
+	docker-compose -f ./deploy/local/deployment/docker-compose.yml up --build
 
 down:
-	docker-compose down -v --remove-orphans
+	docker-compose -f ./deploy/local/deployment/docker-compose.yml down --remove-orphans
 
 test:
 	-docker-compose -f ./deploy/local/integration-test/docker-compose.yml down --remove-orphans

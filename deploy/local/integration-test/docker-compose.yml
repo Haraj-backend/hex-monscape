@@ -10,7 +10,6 @@ services:
     environment:
       - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
-      - DONT_SEED_POKEMON=true
     healthcheck:
       test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
     entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
