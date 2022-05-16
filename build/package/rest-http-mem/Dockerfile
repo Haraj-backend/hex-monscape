@@ -1,7 +1,7 @@
 FROM node:lts-alpine3.15 as frontend_build
 WORKDIR /web
 
-COPY ./cmd/server/web .
+COPY ./cmd/web .
 
 # FRONTEND_MODE define .env | .env.staging | .env.production that will be used
 ARG FRONTEND_MODE="production" 
@@ -17,14 +17,14 @@ RUN go mod download
 
 COPY ./cmd ./cmd
 COPY ./internal ./internal
-WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server
+WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem
 RUN go build -o server
 
 FROM alpine:3.15
 RUN apk add ca-certificates tzdata
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server/server .
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server/partners.json .
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/server/enemies.json .
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem/server .
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem/partners.json .
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem/enemies.json .
 
 # Copy compiled frontned to current directory
 COPY --from=frontend_build /web/dist ./dist

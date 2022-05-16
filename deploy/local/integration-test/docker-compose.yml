@@ -10,12 +10,11 @@ services:
     environment:
       - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
-      - DONT_SEED_POKEMON=true
     healthcheck:
       test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
     entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
     volumes:
-      - '../shared/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh'
+      - '../shared/ddb-create-tables.sh:/docker-entrypoint-initaws.d/ddb-create-tables.sh'
       - '../shared/wait-localstack.sh:/wait-localstack.sh'
 
   mysql:
@@ -28,14 +27,14 @@ services:
     healthcheck:
       test: "mysqladmin ping"
     volumes:
-      - ../shared/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+      - ../shared/mysql-schema.sql:/docker-entrypoint-initdb.d/mysql-schema.sql
     ports:
       - "3316:3306"
 
-  integration_test:
+  integration-test:
     build:
-      context: ../../
-      dockerfile: ./build/package/integration_test/Dockerfile
+      context: ../../../
+      dockerfile: ./build/package/integration-test/Dockerfile
     depends_on:
       localstack:
         condition: service_healthy

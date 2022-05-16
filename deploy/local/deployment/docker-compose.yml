@@ -13,10 +13,10 @@ services:
       test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
     entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
     volumes:
-      - ./deploy/shared/init-localstack.sh:/docker-entrypoint-initaws.d/init-localstack.sh
-      - ./deploy/local/enemy-batch-write-items.json:/var/enemy-batch-write-items.json
-      - ./deploy/local/partner-batch-write-items.json:/var/partner-batch-write-items.json
-      - ./deploy/shared/wait-localstack.sh:/wait-localstack.sh
+      - ../shared/wait-localstack.sh:/wait-localstack.sh
+      - ../shared/ddb-create-tables.sh:/docker-entrypoint-initaws.d/1.sh
+      - ./ddb-write-data.sh:/docker-entrypoint-initaws.d/2.sh
+      - ./ddb-data.json:/ddb-data.json
     logging:
       driver: none
 
@@ -31,40 +31,40 @@ services:
       timeout: 20s
       retries: 10
     volumes:
-      - ./deploy/shared/mysql.sql:/docker-entrypoint-initdb.d/1.sql
-      - ./deploy/local/data.sql:/docker-entrypoint-initdb.d/2.sql
+      - ../shared/mysql-schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./mysql-data.sql:/docker-entrypoint-initdb.d/2.sql
     ports:
       - "3307:3306"
     logging:
       driver: none
 
-  hex_mem:
+  rest-http-mem:
     build:
-      context: .
-      dockerfile: ./build/package/server/Dockerfile
+      context: ../../../
+      dockerfile: ./build/package/rest-http-mem/Dockerfile
     ports:
       - 9185:9186
 
-  hex_ddb:
+  rest-lambda-ddb:
     build:
-      context: .
-      dockerfile: build/package/lambda/Dockerfile.local
+      context: ../../../
+      dockerfile: ./build/package/rest-lambda-ddb/Dockerfile.local
     depends_on:
       localstack:
         condition: service_healthy
     ports:
       - 9186:9186
     volumes:
-      - './cmd/lambda/config.yml:/config.yml'
+      - '../../../cmd/rest-lambda-ddb/config.yml:/config.yml'
     environment:
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
 
-  hex_mysql:
+  rest-lambda-mysql:
     build:
-      context: .
-      dockerfile: build/package/lambda-mysql/Dockerfile.local
+      context: ../../../
+      dockerfile: ./build/package/rest-lambda-mysql/Dockerfile.local
     environment:
       SERVER_DEPLOYMENT: "true"
       SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
