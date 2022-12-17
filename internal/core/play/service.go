@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"gopkg.in/validator.v2"
 )
 
@@ -34,6 +35,10 @@ type service struct {
 }
 
 func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "GetAvailablePartners")
+	defer span.End()
+
 	partners, err := s.partnerStorage.GetAvailablePartners(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get available partners due: %w", err)
@@ -42,6 +47,10 @@ func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 }
 
 func (s *service) NewGame(ctx context.Context, playerName string, partnerID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "NewGame")
+	defer span.End()
+
 	// get partner instance
 	partner, err := s.partnerStorage.GetPartner(ctx, partnerID)
 	if err != nil {
@@ -69,6 +78,10 @@ func (s *service) NewGame(ctx context.Context, playerName string, partnerID stri
 }
 
 func (s *service) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "GetGame")
+	defer span.End()
+
 	// get game instance from storage
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {

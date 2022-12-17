@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"gopkg.in/validator.v2"
 )
 
@@ -50,6 +51,10 @@ type service struct {
 }
 
 func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "StartBattle")
+	defer span.End()
+
 	// get existing battle, make sure there is no ongoing battle
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
@@ -88,6 +93,10 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 }
 
 func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "GetBattle")
+	defer span.End()
+
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if game == nil {
 		return nil, ErrGameNotFound
@@ -101,6 +110,10 @@ func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error)
 // getGameAndBattleInstance returns game & battle for given game id, if game is not found both game
 // and battle will be returned nil. If battle is not found, the battle will be returned nil.
 func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "getGameAndBattleInstance")
+	defer span.End()
+
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)
@@ -119,6 +132,10 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 }
 
 func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "DecideTurn")
+	defer span.End()
+
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -144,6 +161,10 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 }
 
 func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "Attack")
+	defer span.End()
+
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
@@ -176,6 +197,10 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 }
 
 func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "Surrender")
+	defer span.End()
+
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
