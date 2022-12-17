@@ -9,6 +9,7 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
+	"go.opentelemetry.io/otel/attribute"
 	"gopkg.in/validator.v2"
 )
 
@@ -52,8 +53,10 @@ type service struct {
 
 func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "StartBattle")
+	ctx, span := tr.Trace(ctx, "StartBattle")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	// get existing battle, make sure there is no ongoing battle
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
@@ -94,8 +97,10 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 
 func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "GetBattle")
+	ctx, span := tr.Trace(ctx, "GetBattle")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if game == nil {
@@ -111,8 +116,10 @@ func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error)
 // and battle will be returned nil. If battle is not found, the battle will be returned nil.
 func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "getGameAndBattleInstance")
+	ctx, span := tr.Trace(ctx, "getGameAndBattleInstance")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
@@ -133,8 +140,10 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 
 func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "DecideTurn")
+	ctx, span := tr.Trace(ctx, "DecideTurn")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
@@ -162,8 +171,10 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 
 func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "Attack")
+	ctx, span := tr.Trace(ctx, "Attack")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
@@ -198,8 +209,10 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 
 func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "Surrender")
+	ctx, span := tr.Trace(ctx, "Surrender")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {

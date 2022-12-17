@@ -62,7 +62,7 @@ func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveWebFrontend")
+	_, span := tr.Trace(ctx, "serveWebFrontend")
 	defer span.End()
 
 	fileName := filepath.Clean(r.URL.Path)
@@ -87,10 +87,10 @@ func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) 
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveGetAvailablePartners")
+	ctx, span := tr.Trace(ctx, "serveGetAvailablePartners")
 	defer span.End()
 
-	partners, err := a.playService.GetAvailablePartners(r.Context())
+	partners, err := a.playService.GetAvailablePartners(ctx)
 	if err != nil {
 		render.Render(w, r, NewErrorResp(err))
 		return
@@ -105,7 +105,7 @@ func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveNewGame")
+	ctx, span := tr.Trace(ctx, "serveNewGame")
 	defer span.End()
 
 	var rb newGameReqBody
@@ -119,7 +119,7 @@ func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
-	game, err := a.playService.NewGame(r.Context(), rb.PlayerName, rb.PartnerID)
+	game, err := a.playService.NewGame(ctx, rb.PlayerName, rb.PartnerID)
 	if err != nil {
 		if errors.Is(err, play.ErrPartnerNotFound) {
 			err = NewPartnerNotFoundError()
@@ -135,11 +135,11 @@ func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveGetGameDetails")
+	ctx, span := tr.Trace(ctx, "serveGetGameDetails")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	game, err := a.playService.GetGame(r.Context(), gameID)
+	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, play.ErrGameNotFound) {
 			err = NewGameNotFoundError()
@@ -155,11 +155,11 @@ func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveGetScenario")
+	ctx, span := tr.Trace(ctx, "serveGetScenario")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	game, err := a.playService.GetGame(r.Context(), gameID)
+	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, play.ErrGameNotFound) {
 			err = NewGameNotFoundError()
@@ -177,11 +177,11 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveStartBattle")
+	ctx, span := tr.Trace(ctx, "serveStartBattle")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.StartBattle(r.Context(), gameID)
+	bt, err := a.battleService.StartBattle(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -202,11 +202,11 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveGetBattleInfo")
+	ctx, span := tr.Trace(ctx, "serveGetBattleInfo")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.GetBattle(r.Context(), gameID)
+	bt, err := a.battleService.GetBattle(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -227,11 +227,11 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveDecideTurn")
+	ctx, span := tr.Trace(ctx, "serveDecideTurn")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.DecideTurn(r.Context(), gameID)
+	bt, err := a.battleService.DecideTurn(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -252,11 +252,11 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveAttack")
+	ctx, span := tr.Trace(ctx, "serveAttack")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.Attack(r.Context(), gameID)
+	bt, err := a.battleService.Attack(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -277,11 +277,11 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 
 	// tracing
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "serveSurrender")
+	ctx, span := tr.Trace(ctx, "serveSurrender")
 	defer span.End()
 
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.Surrender(r.Context(), gameID)
+	bt, err := a.battleService.Surrender(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:

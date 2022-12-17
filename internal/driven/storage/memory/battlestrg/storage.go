@@ -5,6 +5,7 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type Storage struct {
@@ -13,8 +14,10 @@ type Storage struct {
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "GetBattle BattleStorage")
+	_, span := tr.Trace(ctx, "GetBattle BattleStorage")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	b, ok := s.data[gameID]
 	if !ok {
@@ -25,7 +28,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	tr := telemetry.GetTracer()
-	span := tr.Trace(ctx, "SaveBattle BattleStorage")
+	_, span := tr.Trace(ctx, "SaveBattle BattleStorage")
 	defer span.End()
 
 	s.data[b.GameID] = b

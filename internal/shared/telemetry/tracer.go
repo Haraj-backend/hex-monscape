@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -16,11 +17,12 @@ import (
 )
 
 type Tracer interface {
-	Trace(context context.Context, name string) Spanner
+	Trace(context context.Context, name string) (context.Context, Spanner)
 }
 
 type Spanner interface {
 	End(options ...trace.SpanEndOption)
+	SetAttributes(kv ...attribute.KeyValue)
 }
 
 type OpenTelemetryConfig struct {
@@ -77,12 +79,13 @@ func NewJaegerTracerProvider(url string, svcName string) (*sdktrace.TracerProvid
 	return tp, nil
 }
 
-func (t *OpenTelemetryTracer) Trace(ctx context.Context, name string) Spanner {
-	_, span := t.Tracer.Start(ctx, name)
-	return span
+func (t *OpenTelemetryTracer) Trace(ctx context.Context, name string) (context.Context, Spanner) {
+	newCtx, span := t.Tracer.Start(ctx, name)
+	return newCtx, span
 }
 
 // dummy tracer
+// make sure we don't have to check for nil tracer
 type InitialTracer struct{}
 
 func NewInitialTracer() (Tracer, error) {
@@ -95,9 +98,13 @@ func (s *InitialSpanner) End(options ...trace.SpanEndOption) {
 	// do nothing
 }
 
-func (t *InitialTracer) Trace(ctx context.Context, name string) Spanner {
+func (t *InitialSpanner) SetAttributes(kv ...attribute.KeyValue) {
+	// do nothing
+}
+
+func (t *InitialTracer) Trace(ctx context.Context, name string) (context.Context, Spanner) {
 	log.Printf("trace name: %s", name)
-	return &InitialSpanner{}
+	return ctx, &InitialSpanner{}
 }
 
 var tracer *Tracer
