@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
@@ -13,14 +15,39 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
 )
 
-const addr = ":9186"
+const (
+	envKeyJaegerEndpointURL = "OTEL_EXPORTER_JAEGER_ENDPOINT"
+	addr                    = ":9186"
+	serviceName             = "rest-http-mem"
+)
 
 func main() {
+	// initialize tracer exporter
+	jaegerEndpoint := os.Getenv(envKeyJaegerEndpointURL)
+	traceExporter, err := telemetry.NewJaegerTracerProvider(jaegerEndpoint, serviceName)
+	if err != nil {
+		log.Fatalf("unable to initialize jaeger tracer exporter due: %v", err)
+	}
+
+	// initialize telemetry tracer
+	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
+		Exporter:    *traceExporter,
+		ServiceName: serviceName,
+		BaseContext: context.Background(),
+	})
+	if err != nil {
+		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
+	}
+
+	// set singleton tracer
+	telemetry.SetTracer(&telemetryTracer)
+
 	// initialize pokemon storage
 	partnersData, err := ioutil.ReadFile("./partners.json")
 	if err != nil {
@@ -74,6 +101,7 @@ func main() {
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playService,
 		BattleService:  battleService,
+		ServiceName:    serviceName,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)

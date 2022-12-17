@@ -11,10 +11,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
+	"github.com/riandyrn/otelchi"
 	"gopkg.in/validator.v2"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 )
 
 const (
@@ -23,6 +25,7 @@ const (
 )
 
 type API struct {
+	serviceName   string
 	playService   play.Service
 	battleService battle.Service
 }
@@ -33,6 +36,7 @@ func (a *API) GetHandler() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+	r.Use(otelchi.Middleware(a.serviceName, otelchi.WithChiRoutes(r)))
 	r.Get("/partners", a.serveGetAvailablePartners)
 	r.Route("/games", func(r chi.Router) {
 		r.Post("/", a.serveNewGame)
@@ -54,6 +58,13 @@ func (a *API) GetHandler() http.Handler {
 }
 
 func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveWebFrontend")
+	defer span.End()
+
 	fileName := filepath.Clean(r.URL.Path)
 	if fileName != "index.html" && !strings.Contains(fileName, "assets") {
 		fileName = "assets" + fileName
@@ -72,6 +83,13 @@ func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveGetAvailablePartners")
+	defer span.End()
+
 	partners, err := a.playService.GetAvailablePartners(r.Context())
 	if err != nil {
 		render.Render(w, r, NewErrorResp(err))
@@ -83,6 +101,13 @@ func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) 
 }
 
 func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveNewGame")
+	defer span.End()
+
 	var rb newGameReqBody
 	err := json.NewDecoder(r.Body).Decode(&rb)
 	if err != nil {
@@ -106,6 +131,13 @@ func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveGetGameDetails")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	game, err := a.playService.GetGame(r.Context(), gameID)
 	if err != nil {
@@ -119,6 +151,13 @@ func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveGetScenario")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	game, err := a.playService.GetGame(r.Context(), gameID)
 	if err != nil {
@@ -134,6 +173,13 @@ func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveStartBattle")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.StartBattle(r.Context(), gameID)
 	if err != nil {
@@ -152,6 +198,13 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveGetBattleInfo")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.GetBattle(r.Context(), gameID)
 	if err != nil {
@@ -170,6 +223,13 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveDecideTurn")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.DecideTurn(r.Context(), gameID)
 	if err != nil {
@@ -188,6 +248,13 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveAttack")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.Attack(r.Context(), gameID)
 	if err != nil {
@@ -206,6 +273,13 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	span := tr.Trace(ctx, "serveSurrender")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.Surrender(r.Context(), gameID)
 	if err != nil {
@@ -226,6 +300,7 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 type APIConfig struct {
 	PlayingService play.Service   `validate:"nonnil"`
 	BattleService  battle.Service `validate:"nonnil"`
+	ServiceName    string         `validate:"nonzero"`
 }
 
 func (c APIConfig) Validate() error {
@@ -240,6 +315,7 @@ func NewAPI(cfg APIConfig) (*API, error) {
 	a := &API{
 		playService:   cfg.PlayingService,
 		battleService: cfg.BattleService,
+		serviceName:   cfg.ServiceName,
 	}
 	return a, nil
 }
