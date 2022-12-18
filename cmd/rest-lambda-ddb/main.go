@@ -18,6 +18,10 @@ import (
 	_ "github.com/gosidekick/goconfig/yaml"
 )
 
+const (
+	serviceName = "rest-lambda-ddb"
+)
+
 func main() {
 	// read config
 	var cfg config
@@ -86,6 +90,7 @@ func main() {
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playSvc,
 		BattleService:  battleSvc,
+		ServiceName:    serviceName,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)

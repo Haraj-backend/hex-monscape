@@ -18,8 +18,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const addr = ":9186"
-const envKeySQLDSN = "SQL_DSN"
+const (
+	serviceName  = "rest-lambda-mysql"
+	addr         = ":9186"
+	envKeySQLDSN = "SQL_DSN"
+)
 
 func main() {
 	isServer := os.Getenv("SERVER_DEPLOYMENT") == "true"
@@ -75,6 +78,7 @@ func main() {
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playService,
 		BattleService:  battleService,
+		ServiceName:    serviceName,
 	})
 	if err != nil {
 		log.Fatalf("unable to init rest service: %v", err)
