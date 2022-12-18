@@ -58,13 +58,6 @@ func (a *API) GetHandler() http.Handler {
 }
 
 func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	// tracing
-	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "serveWebFrontend")
-	defer span.End()
-
 	fileName := filepath.Clean(r.URL.Path)
 	if fileName != "index.html" && !strings.Contains(fileName, "assets") {
 		fileName = "assets" + fileName

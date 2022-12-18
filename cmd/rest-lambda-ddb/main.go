@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/apex/gateway"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -36,6 +38,25 @@ func main() {
 	if cfg.LocalDeployment.Enabled {
 		awsSess.Config.Endpoint = &cfg.LocalDeployment.Endpoint
 	}
+
+	// initialize tracing
+	traceExporter, err := telemetry.NewXRayTracerProvider(cfg.OtelExporterOTLPEndPoint, serviceName)
+	if err != nil {
+		log.Fatalf("unable to initialize tracer exporter due: %v", err)
+	}
+
+	// initialize telemetry tracer
+	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
+		Exporter:    *traceExporter,
+		ServiceName: serviceName,
+		BaseContext: context.Background(),
+	})
+	if err != nil {
+		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
+	}
+
+	// set singleton tracer
+	telemetry.SetTracer(&telemetryTracer)
 
 	// initialize dynamodb client
 	ddbClient := dynamodb.New(awsSess)

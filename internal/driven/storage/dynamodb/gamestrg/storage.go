@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -17,6 +18,10 @@ type Storage struct {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	_, span := tr.Trace(ctx, "GetGame GameStorage")
+	defer span.End()
+
 	key := gameKey{ID: gameID}
 	input := dynamodb.GetItemInput{
 		TableName: aws.String(s.tableName),
@@ -42,6 +47,10 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
+	tr := telemetry.GetTracer()
+	_, span := tr.Trace(ctx, "SaveGame GameStorage")
+	defer span.End()
+
 	item, _ := dynamodbattribute.MarshalMap(&game)
 	input := dynamodb.PutItemInput{
 		TableName: aws.String(s.tableName),

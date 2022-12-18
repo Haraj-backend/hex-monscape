@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/apex/gateway"
 	"github.com/jmoiron/sqlx"
 
@@ -19,12 +21,33 @@ import (
 )
 
 const (
-	serviceName  = "rest-lambda-mysql"
-	addr         = ":9186"
-	envKeySQLDSN = "SQL_DSN"
+	serviceName           = "rest-lambda-mysql"
+	addr                  = ":9186"
+	envKeySQLDSN          = "SQL_DSN"
+	envKeyOTLPEndpointURL = "OTEL_EXPORTER_OTLP_ENDPOINT"
 )
 
 func main() {
+	// initialize tracing
+	otlpEndpoint := os.Getenv(envKeyOTLPEndpointURL)
+	traceExporter, err := telemetry.NewXRayTracerProvider(otlpEndpoint, serviceName)
+	if err != nil {
+		log.Fatalf("unable to initialize tracer exporter due: %v", err)
+	}
+
+	// initialize telemetry tracer
+	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
+		Exporter:    *traceExporter,
+		ServiceName: serviceName,
+		BaseContext: context.Background(),
+	})
+	if err != nil {
+		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
+	}
+
+	// set singleton tracer
+	telemetry.SetTracer(&telemetryTracer)
+
 	isServer := os.Getenv("SERVER_DEPLOYMENT") == "true"
 
 	sqlDSN := os.Getenv(envKeySQLDSN)

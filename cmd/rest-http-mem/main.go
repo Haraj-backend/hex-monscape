@@ -32,7 +32,7 @@ func main() {
 	jaegerEndpoint := os.Getenv(envKeyJaegerEndpointURL)
 	traceExporter, err := telemetry.NewJaegerTracerProvider(jaegerEndpoint, serviceName)
 	if err != nil {
-		log.Fatalf("unable to initialize jaeger tracer exporter due: %v", err)
+		log.Fatalf("unable to initialize tracer exporter due: %v", err)
 	}
 
 	// initialize telemetry tracer

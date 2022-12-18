@@ -1,8 +1,9 @@
 package main
 
 type config struct {
-	LocalDeployment localDeploymentConfig `yaml:"local_deployment" cfg:"local_deployment"`
-	Dynamo          dynamoConfig          `yaml:"ddb" cfg:"ddb"`
+	LocalDeployment          localDeploymentConfig `yaml:"local_deployment" cfg:"local_deployment"`
+	Dynamo                   dynamoConfig          `yaml:"ddb" cfg:"ddb"`
+	OtelExporterOTLPEndPoint string                `yaml:"otel_exporter_otlp_endpoint" cfg:"otel_exporter_otlp_endpoint"`
 }
 
 type localDeploymentConfig struct {

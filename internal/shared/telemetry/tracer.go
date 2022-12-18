@@ -117,7 +117,9 @@ func (t *OpenTelemetryTracer) Trace(ctx context.Context, name string) (context.C
 }
 
 // dummy tracer
+// since we use singleton pattern
 // make sure we don't have to check for nil tracer
+// if tracer is not initialized yet, use this one
 type InitialTracer struct{}
 
 func NewInitialTracer() (Tracer, error) {
