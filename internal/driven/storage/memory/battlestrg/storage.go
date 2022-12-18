@@ -14,7 +14,7 @@ type Storage struct {
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "GetBattle BattleStorage")
+	ctx, span := tr.Trace(ctx, "GetBattle BattleStorage")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -28,7 +28,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "SaveBattle BattleStorage")
+	ctx, span := tr.Trace(ctx, "SaveBattle BattleStorage")
 	defer span.End()
 
 	s.data[b.GameID] = b

@@ -14,7 +14,7 @@ type Storage struct {
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "GetGame GameStorage")
+	ctx, span := tr.Trace(ctx, "GetGame GameStorage")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -28,7 +28,7 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "SaveGame GameStorage")
+	ctx, span := tr.Trace(ctx, "SaveGame GameStorage")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(game.ID))

@@ -19,7 +19,7 @@ type Storage struct {
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "getPokemonsByRole PokeStorage")
+	ctx, span := tr.Trace(ctx, "getPokemonsByRole PokeStorage")
 	defer span.End()
 
 	query := pokemonExtraRoleQuery{
@@ -53,7 +53,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "GetAvailablePartners PokeStorage")
+	ctx, span := tr.Trace(ctx, "GetAvailablePartners PokeStorage")
 	defer span.End()
 
 	return s.getPokemonsByRole(ctx, partnerRole)
@@ -61,7 +61,7 @@ func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "GetPossibleEnemies PokeStorage")
+	ctx, span := tr.Trace(ctx, "GetPossibleEnemies PokeStorage")
 	defer span.End()
 
 	return s.getPokemonsByRole(ctx, enemyRole)
@@ -69,7 +69,7 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "GetPartner PokeStorage")
+	ctx, span := tr.Trace(ctx, "GetPartner PokeStorage")
 	defer span.End()
 
 	key := pokemonKey{
