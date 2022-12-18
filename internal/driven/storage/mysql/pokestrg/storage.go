@@ -7,7 +7,9 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
+	"go.opentelemetry.io/otel/attribute"
 	"gopkg.in/validator.v2"
 )
 
@@ -38,14 +40,28 @@ func New(cfg Config) (*Storage, error) {
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GetAvailablePartners PokeStorage")
+	defer span.End()
+
 	return s.getPokemonsByRole(ctx, partner)
 }
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GetPossibleEnemies PokeStorage")
+	defer span.End()
+
 	return s.getPokemonsByRole(ctx, enemy)
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GetPartner PokeStorage")
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
+
 	var pokemon shared.PokeRow
 
 	query := `
@@ -73,6 +89,10 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 }
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "getPokemonsByRole PokeStorage")
+	defer span.End()
+
 	var pokemons shared.PokeRows
 
 	query := `

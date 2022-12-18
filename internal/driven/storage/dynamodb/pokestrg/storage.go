@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"go.opentelemetry.io/otel/attribute"
 	"gopkg.in/validator.v2"
 )
 
@@ -71,6 +72,8 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	tr := telemetry.GetTracer()
 	ctx, span := tr.Trace(ctx, "GetPartner PokeStorage")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
 
 	key := pokemonKey{
 		ID: partnerID,

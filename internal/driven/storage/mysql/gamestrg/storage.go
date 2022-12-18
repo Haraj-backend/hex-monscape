@@ -6,7 +6,9 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
+	"go.opentelemetry.io/otel/attribute"
 	"gopkg.in/validator.v2"
 )
 
@@ -32,6 +34,12 @@ func New(cfg Config) (*Storage, error) {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GetGame GameStorage")
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
 	var game GameRow
 	query := `
 		SELECT
@@ -64,6 +72,12 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "SaveGame GameStorage")
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(game.ID))
+
 	gameRow := NewGameRow(&game)
 	fmt.Println(gameRow)
 	query := `

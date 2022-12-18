@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"go.opentelemetry.io/otel/attribute"
 	"gopkg.in/validator.v2"
 )
 
@@ -21,6 +22,8 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	tr := telemetry.GetTracer()
 	ctx, span := tr.Trace(ctx, "GetBattle BattleStorage")
 	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	// construct params
 	key := battleKey{GameID: gameID}
