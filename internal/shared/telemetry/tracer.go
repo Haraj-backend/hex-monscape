@@ -5,14 +5,17 @@ import (
 	"fmt"
 	"log"
 
+	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"go.opentelemetry.io/otel/trace"
+	"google.golang.org/grpc"
 	"gopkg.in/validator.v2"
 )
 
@@ -58,6 +61,35 @@ func NewOpenTelemetryTracer(config OpenTelemetryConfig) (Tracer, error) {
 		Tracer:   tracer,
 		Exporter: config.Exporter,
 	}, nil
+}
+
+func NewXRayTracerProvider(endpoint, svcName string) (*sdktrace.TracerProvider, error) {
+	ctx := context.Background()
+
+	// create the grpc OTLP trace exporter
+	traceExporter, err := otlptracegrpc.New(ctx,
+		otlptracegrpc.WithInsecure(),
+		otlptracegrpc.WithEndpoint(endpoint),
+		otlptracegrpc.WithDialOption(grpc.WithBlock()),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create xray exporter: %w", err)
+	}
+
+	// get ID generator from xray
+	idg := xray.NewIDGenerator()
+
+	// initialize tracer provider
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithBatcher(traceExporter),
+		sdktrace.WithIDGenerator(idg),
+		sdktrace.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(svcName),
+		)),
+	)
+	return tp, nil
 }
 
 func NewJaegerTracerProvider(url string, svcName string) (*sdktrace.TracerProvider, error) {
