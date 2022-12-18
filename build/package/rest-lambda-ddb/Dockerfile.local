@@ -9,7 +9,7 @@ ARG FRONTEND_MODE="production"
 RUN yarn install
 RUN yarn build:${FRONTEND_MODE}
 
-FROM golang:1.17.7-alpine3.15 as build
+FROM golang:1.18-alpine3.15 as build
 WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
 
 COPY go.mod go.sum ./
