@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/otel"
@@ -16,7 +17,12 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/validator.v2"
+)
+
+const (
+	gRPCTimeout = 5 * time.Second
 )
 
 type Tracer interface {
@@ -65,12 +71,23 @@ func NewOpenTelemetryTracer(config OpenTelemetryConfig) (Tracer, error) {
 
 func NewXRayTracerProvider(endpoint, svcName string) (*sdktrace.TracerProvider, error) {
 	ctx := context.Background()
+	ctxTimeout, cancelFunc := context.WithTimeout(ctx, gRPCTimeout)
+	defer cancelFunc()
+
+	// Set up a gRPC connection to the AWS OTel collector.
+	conn, err := grpc.DialContext(
+		ctxTimeout,
+		endpoint,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create gRPC connection: %w", err)
+	}
 
 	// create the grpc OTLP trace exporter
 	traceExporter, err := otlptracegrpc.New(ctx,
-		otlptracegrpc.WithInsecure(),
-		otlptracegrpc.WithEndpoint(endpoint),
-		otlptracegrpc.WithDialOption(grpc.WithBlock()),
+		otlptracegrpc.WithGRPCConn(conn),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create xray exporter: %w", err)
