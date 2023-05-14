@@ -32,6 +32,7 @@ type Tracer interface {
 type Spanner interface {
 	End(options ...trace.SpanEndOption)
 	SetAttributes(kv ...attribute.KeyValue)
+	RecordError(err error, opts ...trace.EventOption)
 }
 
 type OpenTelemetryConfig struct {
@@ -150,6 +151,10 @@ func (s *InitialSpanner) End(options ...trace.SpanEndOption) {
 }
 
 func (t *InitialSpanner) SetAttributes(kv ...attribute.KeyValue) {
+	// do nothing
+}
+
+func (t *InitialSpanner) RecordError(err error, opts ...trace.EventOption) {
 	// do nothing
 }
 
