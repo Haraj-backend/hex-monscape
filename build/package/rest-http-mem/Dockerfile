@@ -19,6 +19,9 @@ COPY ./cmd ./cmd
 COPY ./build ./build
 COPY ./internal ./internal
 
+COPY cmd/rest-http-mem/partners.json /partners.json
+COPY cmd/rest-http-mem/enemies.json /enemies.json
+
 # Copy compiled frontend to current directory
 COPY --from=frontend_build /web/dist /dist
 

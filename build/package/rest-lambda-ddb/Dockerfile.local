@@ -16,14 +16,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./cmd/rest-lambda-ddb ./cmd/rest-lambda-ddb
+COPY ./build ./build
 COPY ./internal ./internal
-WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-ddb
-RUN CGO_ENABLED=0 GOOS=linux go build -o server
 
 # copy artifacts to a clean image
-FROM alpine:3.12
-RUN apk add ca-certificates tzdata
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-ddb/server .
 COPY --from=frontend_build /web/dist /dist
 
-CMD [ "./server" ]
+RUN go install github.com/cosmtrek/air@v1.27.3
+RUN mkdir -p tmp
+
+ENTRYPOINT ["air", "-c", "build/package/rest-lambda-ddb/.air.toml"]

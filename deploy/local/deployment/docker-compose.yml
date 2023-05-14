@@ -69,15 +69,14 @@ services:
     volumes:
       - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
       - ../../../cmd/rest-http-mem:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem
-      - ../../../cmd/web/dist:/go/src/github.com/Haraj-backend/hex-pokebattle/dist
       - ../../../build/package/rest-http-mem/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-http-mem/.air.toml
+      - ../../../cmd/web/dist:/dist
     ports:
       - 9185:9186
     environment:
       - JAEGER_ENDPOINT_URL=http://jaeger:14268/api/traces
       - SERVICE_NAME=rest-http-mem
       - PORT=9186
-      - ROOT_DATA=cmd/rest-http-mem
 
   rest-lambda-ddb:
     build:
@@ -91,12 +90,21 @@ services:
     ports:
       - 9186:9186
     volumes:
-      - '../../../cmd/rest-lambda-ddb/config.yml:/config.yml'
+      - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
+      - ../../../cmd/rest-lambda-ddb:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-ddb
+      - ../../../build/package/rest-lambda-ddb/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-lambda-ddb/.air.toml
+      - ../../../cmd/web/dist:/dist
     environment:
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
       - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:4317
+      - LOCAL_DEPLOYMENT_ENABLED=true
+      - LOCAL_DEPLOYMENT_ENDPOINT=http://localstack:4566
+      - LOCAL_DEPLOYMENT_PORT=9186
+      - DDB_BATTLE_TABLE=Battles
+      - DDB_GAME_TABLE=Games
+      - DDB_POKEMON_TABLE=Pokemons
 
   rest-lambda-mysql:
     build:
@@ -108,6 +116,11 @@ services:
       SERVICE_NAME: rest-lambda-mysql
       SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
       OTEL_EXPORTER_OTLP_ENDPOINT: aws-ot-collector:4317
+    volumes:
+      - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
+      - ../../../cmd/rest-lambda-mysql:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-mysql
+      - ../../../build/package/rest-lambda-mysql/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-lambda-mysql/.air.toml
+      - ../../../cmd/web/dist:/dist
     depends_on:
       mysql:
         condition: service_healthy

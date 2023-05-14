@@ -48,7 +48,7 @@ func main() {
 	telemetry.SetTracer(&telemetryTracer)
 
 	// initialize pokemon storage
-	partnersData, err := ioutil.ReadFile(cfg.RootData + "/partners.json")
+	partnersData, err := ioutil.ReadFile("/partners.json")
 	if err != nil {
 		log.Fatalf("unable to read partners data due: %v", err)
 	}
@@ -57,7 +57,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse partners data due: %v", err)
 	}
-	enemiesData, err := ioutil.ReadFile(cfg.RootData + "/enemies.json")
+	enemiesData, err := ioutil.ReadFile("/enemies.json")
 	if err != nil {
 		log.Fatalf("unable to read enemies data due: %v", err)
 	}
@@ -122,6 +122,5 @@ func main() {
 type config struct {
 	Port              string `cfg:"port" cfgDefault:"9186"`
 	ServiceName       string `cfg:"service_name" cfgDefault:"rest-http-mem"`
-	RootData          string `cfg:"root_data" cfgDefault:"cmd/rest-http-mem"`
 	JaegerEndpointURL string `cfg:"jaeger_endpoint_url" cfgDefault:"http://localhost:14268/api/traces"`
 }
