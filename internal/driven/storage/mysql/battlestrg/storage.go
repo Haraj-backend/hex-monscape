@@ -35,17 +35,22 @@ func New(cfg Config) (*Storage, error) {
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetBattle BattleStorage")
+	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle")
 	defer span.End()
 
-	span.SetAttributes(attribute.Key("game-id").String(gameID))
-
 	query := `SELECT * FROM battles WHERE game_id = ?`
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+	span.SetAttributes(attribute.Key("query").String(query))
+
 	var row battleRow
 	if err := s.sqlClient.GetContext(ctx, &row, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
+
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
 		return nil, fmt.Errorf("unable to execute query due: %w", err)
 	}
 	return row.ToBattle(), nil
@@ -53,7 +58,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "SaveBattle BattleStorage")
+	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle")
 	defer span.End()
 
 	battleRow := newBattleRow(b)
@@ -76,8 +81,15 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 			:enemy_avatar_url, :enemy_last_damage
 		)
 	`
+
+	span.SetAttributes(attribute.Key("game-id").String(battleRow.GameID))
+	span.SetAttributes(attribute.Key("query").String(query))
+
 	_, err := s.sqlClient.NamedExecContext(ctx, query, battleRow)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return fmt.Errorf("unable to execute query due: %w", err)
 	}
 	return nil

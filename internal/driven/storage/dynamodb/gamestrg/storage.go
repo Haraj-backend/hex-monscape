@@ -33,6 +33,9 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 
 	output, err := s.dynamoClient.GetItemWithContext(ctx, &input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
 
@@ -43,6 +46,9 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 	gameItem := entity.Game{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &gameItem)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
@@ -64,6 +70,9 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 
 	_, err := s.dynamoClient.PutItemWithContext(ctx, &input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
 

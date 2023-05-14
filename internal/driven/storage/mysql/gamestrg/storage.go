@@ -35,10 +35,8 @@ func New(cfg Config) (*Storage, error) {
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetGame GameStorage")
+	ctx, span := tr.Trace(ctx, "GameStorage: GetGame")
 	defer span.End()
-
-	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	var game GameRow
 	query := `
@@ -61,10 +59,16 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 		WHERE g.id = ?
 	`
 
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+	span.SetAttributes(attribute.Key("query").String(query))
+
 	if err := s.sqlClient.GetContext(ctx, &game, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
+
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
 		return nil, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
 	}
 
@@ -73,13 +77,10 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "SaveGame GameStorage")
+	ctx, span := tr.Trace(ctx, "GameStorage: SaveGame")
 	defer span.End()
 
-	span.SetAttributes(attribute.Key("game-id").String(game.ID))
-
 	gameRow := NewGameRow(&game)
-	fmt.Println(gameRow)
 	query := `
 		REPLACE INTO games (
 			id, player_name, created_at, battle_won, scenario, partner_id
@@ -87,6 +88,10 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 			:id, :player_name, :created_at, :battle_won, :scenario, :partner_id
 		)
 	`
+
+	span.SetAttributes(attribute.Key("game-id").String(game.ID))
+	span.SetAttributes(attribute.Key("query").String(query))
+
 	_, err := s.sqlClient.NamedExecContext(ctx, query, map[string]interface{}{
 		"id":          gameRow.ID,
 		"player_name": gameRow.PlayerName,
@@ -96,6 +101,9 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 		"partner_id":  gameRow.Partner.ID,
 	})
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return fmt.Errorf("unable to execute query due: %w", err)
 	}
 	return nil

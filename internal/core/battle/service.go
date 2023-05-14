@@ -53,7 +53,7 @@ type service struct {
 
 func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "StartBattle")
+	ctx, span := tr.Trace(ctx, "BattleService: StartBattle")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -61,6 +61,9 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	// get existing battle, make sure there is no ongoing battle
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
 	}
 	if game == nil {
@@ -74,6 +77,9 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	// get possible enemies, choose it randomly
 	enemies, err := s.pokemonStorage.GetPossibleEnemies(ctx)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to get possible enemies due: %w", err)
 	}
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -85,11 +91,17 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 		Enemy:   &enemy,
 	})
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to create new battle instance due: %w", err)
 	}
 	// save newly created battle instance to storage
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to save battle into storage due: %w", err)
 	}
 	return battle, nil
@@ -97,7 +109,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 
 func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetBattle")
+	ctx, span := tr.Trace(ctx, "BattleService: GetBattle")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -116,13 +128,16 @@ func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error)
 // and battle will be returned nil. If battle is not found, the battle will be returned nil.
 func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "getGameAndBattleInstance")
+	ctx, span := tr.Trace(ctx, "BattleService: getGameAndBattleInstance")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)
 	}
 	if game == nil {
@@ -130,6 +145,9 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 	}
 	battle, err := s.battleStorage.GetBattle(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, nil, fmt.Errorf("unable to get battle due: %w", err)
 	}
 	if battle != nil && battle.IsEnded() {
@@ -140,13 +158,16 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 
 func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "DecideTurn")
+	ctx, span := tr.Trace(ctx, "BattleService: DecideTurn")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, err
 	}
 	if battle.State != DECIDE_TURN {
@@ -154,16 +175,25 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 	}
 	_, err = battle.DecideTurn()
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
 	if battle.State == ENEMY_TURN {
 		err = battle.EnemyAttack()
 		if err != nil {
+			span.RecordError(err)
+			span.SetAttributes(attribute.Key("error").Bool(true))
+
 			return nil, fmt.Errorf("unable to make enemy attack due: %w", err)
 		}
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}
 	return battle, nil
@@ -171,13 +201,16 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 
 func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "Attack")
+	ctx, span := tr.Trace(ctx, "BattleService: Attack")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
 	}
 	if game == nil {
@@ -191,16 +224,25 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	}
 	err = battle.PartnerAttack()
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}
 	if battle.State == WIN {
 		game.IncBattleWon()
 		err = s.gameStorage.SaveGame(ctx, *game)
 		if err != nil {
+			span.RecordError(err)
+			span.SetAttributes(attribute.Key("error").Bool(true))
+
 			return nil, fmt.Errorf("unable to save game due: %w", err)
 		}
 	}
@@ -209,13 +251,16 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 
 func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "Surrender")
+	ctx, span := tr.Trace(ctx, "BattleService: Surrender")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
 
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, err
 	}
 	if battle.State != PARTNER_TURN {
@@ -223,10 +268,16 @@ func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error)
 	}
 	err = battle.PartnerSurrender()
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}
 	return battle, nil

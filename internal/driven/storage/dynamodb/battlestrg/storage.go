@@ -20,7 +20,7 @@ type Storage struct {
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetBattle BattleStorage")
+	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -34,6 +34,9 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	// execute get item
 	output, err := s.dynamoClient.GetItemWithContext(ctx, input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
 	// if item is not found, returns nil as expected by battle interface
@@ -44,6 +47,9 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	battle := battle.Battle{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
@@ -52,7 +58,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "SaveBattle BattleStorage")
+	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle")
 	defer span.End()
 
 	// construct params
@@ -64,6 +70,9 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	// execute put item
 	_, err := s.dynamoClient.PutItemWithContext(ctx, input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
 

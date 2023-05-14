@@ -20,7 +20,7 @@ type Storage struct {
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "getPokemonsByRole PokeStorage")
+	ctx, span := tr.Trace(ctx, "PokeStorage: getPokemonsByRole")
 	defer span.End()
 
 	query := pokemonExtraRoleQuery{
@@ -36,6 +36,9 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 
 	output, err := s.dynamoClient.QueryWithContext(ctx, &input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to query from %s due to: %w", s.tableName, err)
 	}
 
@@ -46,6 +49,9 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 	results := make([]entity.Pokemon, len(output.Items))
 	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &results)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to unmarshal items from %s due to: %w", s.tableName, err)
 	}
 
@@ -54,7 +60,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetAvailablePartners PokeStorage")
+	ctx, span := tr.Trace(ctx, "PokeStorage: GetAvailablePartners")
 	defer span.End()
 
 	return s.getPokemonsByRole(ctx, partnerRole)
@@ -62,7 +68,7 @@ func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetPossibleEnemies PokeStorage")
+	ctx, span := tr.Trace(ctx, "PokeStorage: GetPossibleEnemies")
 	defer span.End()
 
 	return s.getPokemonsByRole(ctx, enemyRole)
@@ -70,7 +76,7 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GetPartner PokeStorage")
+	ctx, span := tr.Trace(ctx, "PokeStorage: GetPartner")
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
@@ -86,6 +92,9 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 
 	output, err := s.dynamoClient.GetItemWithContext(ctx, &input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
 
@@ -96,6 +105,9 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	partner := entity.Pokemon{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &partner)
 	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Key("error").Bool(true))
+
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
