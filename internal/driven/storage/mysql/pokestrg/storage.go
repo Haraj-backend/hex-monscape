@@ -76,7 +76,8 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	`
 
 	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
-	span.SetAttributes(attribute.Key("query").String(query))
+	span.SetAttributes(attribute.Key("db.system").String("mysql"))
+	span.SetAttributes(attribute.Key("db.statement").String(query))
 
 	if err := s.sqlClient.GetContext(ctx, &pokemon, query, partnerID); err != nil {
 		if err == sql.ErrNoRows {
@@ -112,7 +113,8 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		WHERE is_partnerable = ?
 	`
 
-	span.SetAttributes(attribute.Key("query").String(query))
+	span.SetAttributes(attribute.Key("db.system").String("mysql"))
+	span.SetAttributes(attribute.Key("db.statement").String(query))
 
 	if err := s.sqlClient.SelectContext(ctx, &pokemons, query, isPartnerable); err != nil {
 		if err == sql.ErrNoRows {

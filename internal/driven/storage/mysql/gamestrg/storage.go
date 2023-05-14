@@ -60,7 +60,8 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 	`
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
-	span.SetAttributes(attribute.Key("query").String(query))
+	span.SetAttributes(attribute.Key("db.system").String("mysql"))
+	span.SetAttributes(attribute.Key("db.statement").String(query))
 
 	if err := s.sqlClient.GetContext(ctx, &game, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
@@ -90,7 +91,8 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	`
 
 	span.SetAttributes(attribute.Key("game-id").String(game.ID))
-	span.SetAttributes(attribute.Key("query").String(query))
+	span.SetAttributes(attribute.Key("db.system").String("mysql"))
+	span.SetAttributes(attribute.Key("db.statement").String(query))
 
 	_, err := s.sqlClient.NamedExecContext(ctx, query, map[string]interface{}{
 		"id":          gameRow.ID,
