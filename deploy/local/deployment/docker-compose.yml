@@ -62,14 +62,22 @@ services:
   rest-http-mem:
     build:
       context: ../../../
-      dockerfile: ./build/package/rest-http-mem/Dockerfile
+      dockerfile: ./build/package/rest-http-mem/Dockerfile.local
     depends_on:
       jaeger:
         condition: service_started
+    volumes:
+      - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
+      - ../../../cmd/rest-http-mem:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem
+      - ../../../cmd/web/dist:/go/src/github.com/Haraj-backend/hex-pokebattle/dist
+      - ../../../build/package/rest-http-mem/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-http-mem/.air.toml
     ports:
       - 9185:9186
     environment:
-      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - JAEGER_ENDPOINT_URL=http://jaeger:14268/api/traces
+      - SERVICE_NAME=rest-http-mem
+      - PORT=9186
+      - ROOT_DATA=cmd/rest-http-mem
 
   rest-lambda-ddb:
     build:
