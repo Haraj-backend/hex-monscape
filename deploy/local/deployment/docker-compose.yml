@@ -62,7 +62,7 @@ services:
   rest-http-mem:
     build:
       context: ../../../
-      dockerfile: ./build/package/rest-http-mem/Dockerfile.local
+      dockerfile: ./build/package/rest-http-mem/Dockerfile
     depends_on:
       jaeger:
         condition: service_started

@@ -16,17 +16,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./cmd ./cmd
+COPY ./build ./build
 COPY ./internal ./internal
-WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem
-RUN go build -o server
 
-FROM alpine:3.15
-RUN apk add ca-certificates tzdata
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem/server .
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem/partners.json .
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem/enemies.json .
+# Copy compiled frontend to current directory
+COPY --from=frontend_build /web/dist /dist
 
-# Copy compiled frontned to current directory
-COPY --from=frontend_build /web/dist ./dist
+RUN go install github.com/cosmtrek/air@v1.27.3
+RUN mkdir -p tmp
 
-ENTRYPOINT [ "./server" ]
+ENTRYPOINT ["air", "-c", "build/package/rest-http-mem/.air.toml"]
