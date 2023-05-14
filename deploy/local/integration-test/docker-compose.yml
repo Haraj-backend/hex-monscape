@@ -18,7 +18,7 @@ services:
       - '../shared/wait-localstack.sh:/wait-localstack.sh'
 
   mysql:
-    image: mysql:5.7
+    image: bitnami/mysql:5.7
     logging:
       driver: none
     environment:
