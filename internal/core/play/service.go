@@ -9,6 +9,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"gopkg.in/validator.v2"
 )
 
@@ -43,7 +44,7 @@ func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 	partners, err := s.partnerStorage.GetAvailablePartners(ctx)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get available partners due: %w", err)
 	}
@@ -62,7 +63,7 @@ func (s *service) NewGame(ctx context.Context, playerName string, partnerID stri
 	partner, err := s.partnerStorage.GetPartner(ctx, partnerID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to fetch partner instance due: %w", err)
 	}
@@ -78,7 +79,7 @@ func (s *service) NewGame(ctx context.Context, playerName string, partnerID stri
 	game, err := entity.NewGame(cfg)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to initialize game instance due: %w", err)
 	}
@@ -86,7 +87,7 @@ func (s *service) NewGame(ctx context.Context, playerName string, partnerID stri
 	err = s.gameStorage.SaveGame(ctx, *game)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to save game instance due: %w", err)
 	}
@@ -104,7 +105,7 @@ func (s *service) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get game instance due: %w", err)
 	}

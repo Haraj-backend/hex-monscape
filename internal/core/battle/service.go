@@ -10,6 +10,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"gopkg.in/validator.v2"
 )
 
@@ -62,7 +63,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
 	}
@@ -78,7 +79,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	enemies, err := s.pokemonStorage.GetPossibleEnemies(ctx)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get possible enemies due: %w", err)
 	}
@@ -92,7 +93,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	})
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to create new battle instance due: %w", err)
 	}
@@ -100,7 +101,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to save battle into storage due: %w", err)
 	}
@@ -136,7 +137,7 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)
 	}
@@ -146,7 +147,7 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 	battle, err := s.battleStorage.GetBattle(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, nil, fmt.Errorf("unable to get battle due: %w", err)
 	}
@@ -166,7 +167,7 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, err
 	}
@@ -176,7 +177,7 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 	_, err = battle.DecideTurn()
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
@@ -184,7 +185,7 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 		err = battle.EnemyAttack()
 		if err != nil {
 			span.RecordError(err)
-			span.SetAttributes(attribute.Key("error").Bool(true))
+			span.SetStatus(codes.Error, err.Error())
 
 			return nil, fmt.Errorf("unable to make enemy attack due: %w", err)
 		}
@@ -192,7 +193,7 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}
@@ -209,7 +210,7 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
 	}
@@ -225,14 +226,14 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	err = battle.PartnerAttack()
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}
@@ -241,7 +242,7 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 		err = s.gameStorage.SaveGame(ctx, *game)
 		if err != nil {
 			span.RecordError(err)
-			span.SetAttributes(attribute.Key("error").Bool(true))
+			span.SetStatus(codes.Error, err.Error())
 
 			return nil, fmt.Errorf("unable to save game due: %w", err)
 		}
@@ -259,7 +260,7 @@ func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error)
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, err
 	}
@@ -269,14 +270,14 @@ func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error)
 	err = battle.PartnerSurrender()
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}

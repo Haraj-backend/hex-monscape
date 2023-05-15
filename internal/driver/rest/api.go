@@ -14,6 +14,7 @@ import (
 	"github.com/riandyrn/otelchi"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"gopkg.in/validator.v2"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
@@ -94,7 +95,7 @@ func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) 
 	partners, err := a.playService.GetAvailablePartners(ctx)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -115,25 +116,25 @@ func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&rb)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(NewBadRequestError(err.Error())))
 		return
 	}
 	err = rb.Validate()
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
 	game, err := a.playService.NewGame(ctx, rb.PlayerName, rb.PartnerID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		if errors.Is(err, play.ErrPartnerNotFound) {
 			err = NewPartnerNotFoundError()
 		}
+
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -153,12 +154,12 @@ func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
 
 	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		if errors.Is(err, play.ErrGameNotFound) {
 			err = NewGameNotFoundError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -202,9 +203,6 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 
 	bt, err := a.battleService.StartBattle(ctx, gameID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		switch err {
 		case battle.ErrGameNotFound:
 			err = NewGameNotFoundError()
@@ -213,6 +211,9 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -232,9 +233,6 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 
 	bt, err := a.battleService.GetBattle(ctx, gameID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		switch err {
 		case battle.ErrGameNotFound:
 			err = NewGameNotFoundError()
@@ -243,6 +241,9 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -262,9 +263,6 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 
 	bt, err := a.battleService.DecideTurn(ctx, gameID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		switch err {
 		case battle.ErrGameNotFound:
 			err = NewGameNotFoundError()
@@ -273,6 +271,9 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -292,9 +293,6 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 
 	bt, err := a.battleService.Attack(ctx, gameID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		switch err {
 		case battle.ErrGameNotFound:
 			err = NewGameNotFoundError()
@@ -303,6 +301,9 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -322,9 +323,6 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 
 	bt, err := a.battleService.Surrender(ctx, gameID)
 	if err != nil {
-		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
-
 		switch err {
 		case battle.ErrGameNotFound:
 			err = NewGameNotFoundError()
@@ -333,6 +331,9 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}

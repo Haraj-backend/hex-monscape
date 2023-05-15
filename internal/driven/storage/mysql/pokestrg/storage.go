@@ -10,6 +10,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
@@ -86,7 +87,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 		}
 
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
 	}
 
@@ -123,7 +124,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		}
 
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to find pokemon's role %d: %v", isPartnerable, err)
 	}
 

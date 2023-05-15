@@ -9,6 +9,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
@@ -70,7 +71,7 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 		}
 
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
 	}
 
@@ -105,7 +106,7 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	})
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return fmt.Errorf("unable to execute query due: %w", err)
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
@@ -52,7 +53,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 		}
 
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to execute query due: %w", err)
 	}
 	return row.ToBattle(), nil
@@ -91,7 +92,7 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	_, err := s.sqlClient.NamedExecContext(ctx, query, battleRow)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return fmt.Errorf("unable to execute query due: %w", err)
 	}

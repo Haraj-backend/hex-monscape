@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
@@ -38,7 +39,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 	output, err := s.dynamoClient.QueryWithContext(ctx, &input)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to query from %s due to: %w", s.tableName, err)
 	}
@@ -51,7 +52,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &results)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to unmarshal items from %s due to: %w", s.tableName, err)
 	}
@@ -94,7 +95,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	output, err := s.dynamoClient.GetItemWithContext(ctx, &input)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
@@ -107,7 +108,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	err = dynamodbattribute.UnmarshalMap(output.Item, &partner)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
@@ -36,7 +37,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	output, err := s.dynamoClient.GetItemWithContext(ctx, input)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
@@ -49,7 +50,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
@@ -72,7 +73,7 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	_, err := s.dynamoClient.PutItemWithContext(ctx, input)
 	if err != nil {
 		span.RecordError(err)
-		span.SetAttributes(attribute.Key("error").Bool(true))
+		span.SetStatus(codes.Error, err.Error())
 
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
