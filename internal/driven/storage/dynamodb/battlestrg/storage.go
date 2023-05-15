@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -20,7 +21,7 @@ type Storage struct {
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle")
+	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -58,7 +59,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle")
+	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	// construct params

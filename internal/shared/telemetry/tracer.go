@@ -26,7 +26,7 @@ const (
 )
 
 type Tracer interface {
-	Trace(context context.Context, name string) (context.Context, Spanner)
+	Trace(context context.Context, name string, options ...trace.SpanStartOption) (context.Context, Spanner)
 }
 
 type Spanner interface {
@@ -129,8 +129,8 @@ func NewJaegerTracerProvider(url string, svcName string) (*sdktrace.TracerProvid
 	return tp, nil
 }
 
-func (t *OpenTelemetryTracer) Trace(ctx context.Context, name string) (context.Context, Spanner) {
-	newCtx, span := t.Tracer.Start(ctx, name)
+func (t *OpenTelemetryTracer) Trace(ctx context.Context, name string, opts ...trace.SpanStartOption) (context.Context, Spanner) {
+	newCtx, span := t.Tracer.Start(ctx, name, opts...)
 	return newCtx, span
 }
 
@@ -158,7 +158,7 @@ func (t *InitialSpanner) RecordError(err error, opts ...trace.EventOption) {
 	// do nothing
 }
 
-func (t *InitialTracer) Trace(ctx context.Context, name string) (context.Context, Spanner) {
+func (t *InitialTracer) Trace(ctx context.Context, name string, options ...trace.SpanStartOption) (context.Context, Spanner) {
 	log.Printf("trace name: %s", name)
 	return ctx, &InitialSpanner{}
 }

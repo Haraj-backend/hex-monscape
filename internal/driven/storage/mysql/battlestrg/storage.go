@@ -9,6 +9,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -35,7 +36,7 @@ func New(cfg Config) (*Storage, error) {
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle")
+	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	query := `SELECT * FROM battles WHERE game_id = ?`
@@ -59,7 +60,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle")
+	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	battleRow := newBattleRow(b)

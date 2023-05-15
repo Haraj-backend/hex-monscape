@@ -6,6 +6,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type Storage struct {
@@ -14,7 +15,7 @@ type Storage struct {
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GameStorage: GetGame")
+	ctx, span := tr.Trace(ctx, "GameStorage: GetGame", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(gameID))
@@ -28,7 +29,7 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "GameStorage: SaveGame")
+	ctx, span := tr.Trace(ctx, "GameStorage: SaveGame", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("game-id").String(game.ID))

@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -20,7 +21,7 @@ type Storage struct {
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: getPokemonsByRole")
+	ctx, span := tr.Trace(ctx, "PokeStorage: getPokemonsByRole", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	query := pokemonExtraRoleQuery{
@@ -60,7 +61,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: GetAvailablePartners")
+	ctx, span := tr.Trace(ctx, "PokeStorage: GetAvailablePartners", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	return s.getPokemonsByRole(ctx, partnerRole)
@@ -68,7 +69,7 @@ func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: GetPossibleEnemies")
+	ctx, span := tr.Trace(ctx, "PokeStorage: GetPossibleEnemies", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	return s.getPokemonsByRole(ctx, enemyRole)
@@ -76,7 +77,7 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
 	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: GetPartner")
+	ctx, span := tr.Trace(ctx, "PokeStorage: GetPartner", trace.WithSpanKind(trace.SpanKindClient))
 	defer span.End()
 
 	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
