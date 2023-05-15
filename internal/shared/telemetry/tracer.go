@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
@@ -32,6 +33,7 @@ type Tracer interface {
 type Spanner interface {
 	End(options ...trace.SpanEndOption)
 	SetAttributes(kv ...attribute.KeyValue)
+	SetStatus(code codes.Code, description string)
 	RecordError(err error, opts ...trace.EventOption)
 }
 
@@ -151,6 +153,10 @@ func (s *InitialSpanner) End(options ...trace.SpanEndOption) {
 }
 
 func (t *InitialSpanner) SetAttributes(kv ...attribute.KeyValue) {
+	// do nothing
+}
+
+func (t *InitialSpanner) SetStatus(code codes.Code, description string) {
 	// do nothing
 }
 
