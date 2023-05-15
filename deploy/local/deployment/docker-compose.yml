@@ -112,7 +112,7 @@ services:
       dockerfile: ./build/package/rest-lambda-mysql/Dockerfile.local
     environment:
       PORT: 9186
-      SERVER_DEPLOYMENT: true
+      SERVER_DEPLOYMENT: "true"
       SERVICE_NAME: rest-lambda-mysql
       SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
       OTEL_EXPORTER_OTLP_ENDPOINT: aws-ot-collector:4317
