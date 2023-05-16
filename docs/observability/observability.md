@@ -82,3 +82,19 @@ In OpenTelemetry, it include the following information:
    - Unset
    - Ok
    - Error
+
+9. Span Kind
+
+   When a span is created, it is one of Client, Server, Internal, Producer, or Consumer. This span kind provides a hint to the tracing backend as to how the trace should be assembled. If not provided, the span kind is assumed to be internal.
+
+   Span Kind can be one of the following:
+
+   - `Client`: A client span represents a synchronous outgoing remote call such as an outgoing HTTP request or database call. Note that in this context, "synchronous" does not refer to async/await, but to the fact that it is not queued for later processing.
+
+   - `Server`: A server span represents a synchronous incoming remote call such as an incoming HTTP request or remote procedure call.
+
+   - `Internal`: Internal spans represent operations which do not cross a process boundary. Things like instrumenting a function call or an express middleware may use internal spans.
+
+   - `Producer`: Producer spans represent the creation of a job which may be asynchronously processed later. It may be a remote job such as one inserted into a job queue or a local job handled by an event listener.
+
+   - `Consumer`: Consumer spans represent the processing of a job created by a producer and may start long after the producer span has already ended.
