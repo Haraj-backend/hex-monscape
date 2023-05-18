@@ -5,9 +5,13 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -17,6 +21,12 @@ type Storage struct {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GameStorage: GetGame", trace.WithSpanKind(trace.SpanKindClient))
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
 	key := gameKey{ID: gameID}
 	input := dynamodb.GetItemInput{
 		TableName: aws.String(s.tableName),
@@ -25,6 +35,9 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 
 	output, err := s.dynamoClient.GetItemWithContext(ctx, &input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
 
@@ -35,6 +48,9 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 	gameItem := entity.Game{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &gameItem)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
@@ -42,6 +58,12 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GameStorage: SaveGame", trace.WithSpanKind(trace.SpanKindClient))
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(game.ID))
+
 	item, _ := dynamodbattribute.MarshalMap(&game)
 	input := dynamodb.PutItemInput{
 		TableName: aws.String(s.tableName),
@@ -50,6 +72,9 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 
 	_, err := s.dynamoClient.PutItemWithContext(ctx, &input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
 

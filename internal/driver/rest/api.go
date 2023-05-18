@@ -11,10 +11,15 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
+	"github.com/riandyrn/otelchi"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"gopkg.in/validator.v2"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 )
 
 const (
@@ -23,6 +28,7 @@ const (
 )
 
 type API struct {
+	serviceName   string
 	playService   play.Service
 	battleService battle.Service
 }
@@ -33,6 +39,13 @@ func (a *API) GetHandler() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+	r.Use(otelchi.Middleware(
+		a.serviceName,
+		otelchi.WithChiRoutes(r),
+		otelchi.WithPropagators(otel.GetTextMapPropagator()),
+		otelchi.WithTracerProvider(otel.GetTracerProvider()),
+		otelchi.WithRequestMethodInSpanName(true),
+	))
 	r.Get("/partners", a.serveGetAvailablePartners)
 	r.Route("/games", func(r chi.Router) {
 		r.Post("/", a.serveNewGame)
@@ -72,8 +85,17 @@ func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
-	partners, err := a.playService.GetAvailablePartners(r.Context())
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveGetAvailablePartners: /partners")
+	defer span.End()
+
+	partners, err := a.playService.GetAvailablePartners(ctx)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -83,22 +105,36 @@ func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) 
 }
 
 func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveNewGame: POST /games/")
+	defer span.End()
+
 	var rb newGameReqBody
 	err := json.NewDecoder(r.Body).Decode(&rb)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(NewBadRequestError(err.Error())))
 		return
 	}
 	err = rb.Validate()
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
-	game, err := a.playService.NewGame(r.Context(), rb.PlayerName, rb.PartnerID)
+	game, err := a.playService.NewGame(ctx, rb.PlayerName, rb.PartnerID)
 	if err != nil {
 		if errors.Is(err, play.ErrPartnerNotFound) {
 			err = NewPartnerNotFoundError()
 		}
+
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -106,12 +142,24 @@ func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveGetGameDetails: GET /games/{game_id}")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	game, err := a.playService.GetGame(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, play.ErrGameNotFound) {
 			err = NewGameNotFoundError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -119,8 +167,17 @@ func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveGetScenario: GET /games/{game_id}/scenario")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	game, err := a.playService.GetGame(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, play.ErrGameNotFound) {
 			err = NewGameNotFoundError()
@@ -134,8 +191,17 @@ func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveStartBattle: PUT /games/{game_id}/battle")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.StartBattle(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	bt, err := a.battleService.StartBattle(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -145,6 +211,9 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -152,8 +221,17 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveGetBattleInfo: GET /games/{game_id}/battle")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.GetBattle(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	bt, err := a.battleService.GetBattle(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -163,6 +241,9 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -170,8 +251,17 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveDecideTurn: PUT /games/{game_id}/battle/turn")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.DecideTurn(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	bt, err := a.battleService.DecideTurn(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -181,6 +271,9 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -188,8 +281,17 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveAttack: PUT /games/{game_id}/battle/attack")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.Attack(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	bt, err := a.battleService.Attack(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -199,6 +301,9 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -206,8 +311,17 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// tracing
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "serveSurrender: PUT /games/{game_id}/battle/surrender")
+	defer span.End()
+
 	gameID := chi.URLParam(r, "game_id")
-	bt, err := a.battleService.Surrender(r.Context(), gameID)
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
+	bt, err := a.battleService.Surrender(ctx, gameID)
 	if err != nil {
 		switch err {
 		case battle.ErrGameNotFound:
@@ -217,6 +331,9 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 		case battle.ErrInvalidBattleState:
 			err = NewInvalidBattleStateError()
 		}
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		render.Render(w, r, NewErrorResp(err))
 		return
 	}
@@ -226,6 +343,7 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 type APIConfig struct {
 	PlayingService play.Service   `validate:"nonnil"`
 	BattleService  battle.Service `validate:"nonnil"`
+	ServiceName    string         `validate:"nonzero"`
 }
 
 func (c APIConfig) Validate() error {
@@ -240,6 +358,7 @@ func NewAPI(cfg APIConfig) (*API, error) {
 	a := &API{
 		playService:   cfg.PlayingService,
 		battleService: cfg.BattleService,
+		serviceName:   cfg.ServiceName,
 	}
 	return a, nil
 }

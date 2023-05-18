@@ -7,6 +7,9 @@ import (
 	"time"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"gopkg.in/validator.v2"
 )
 
@@ -34,17 +37,34 @@ type service struct {
 }
 
 func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "PlayService: GetAvailablePartners")
+	defer span.End()
+
 	partners, err := s.partnerStorage.GetAvailablePartners(ctx)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to get available partners due: %w", err)
 	}
 	return partners, nil
 }
 
 func (s *service) NewGame(ctx context.Context, playerName string, partnerID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "PlayService: NewGame")
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("player-name").String(playerName))
+	span.SetAttributes(attribute.Key("player-id").String(partnerID))
+
 	// get partner instance
 	partner, err := s.partnerStorage.GetPartner(ctx, partnerID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to fetch partner instance due: %w", err)
 	}
 	if partner == nil {
@@ -58,20 +78,35 @@ func (s *service) NewGame(ctx context.Context, playerName string, partnerID stri
 	}
 	game, err := entity.NewGame(cfg)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to initialize game instance due: %w", err)
 	}
 	// store the game instance on storage
 	err = s.gameStorage.SaveGame(ctx, *game)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to save game instance due: %w", err)
 	}
 	return game, nil
 }
 
 func (s *service) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "PlayService: GetGame")
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
 	// get game instance from storage
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to get game instance due: %w", err)
 	}
 	if game == nil {

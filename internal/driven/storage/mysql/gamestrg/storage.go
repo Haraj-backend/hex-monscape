@@ -6,7 +6,11 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -32,6 +36,10 @@ func New(cfg Config) (*Storage, error) {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GameStorage: GetGame", trace.WithSpanKind(trace.SpanKindClient))
+	defer span.End()
+
 	var game GameRow
 	query := `
 		SELECT
@@ -53,10 +61,17 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 		WHERE g.id = ?
 	`
 
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+	span.SetAttributes(attribute.Key("db.system").String("mysql"))
+	span.SetAttributes(attribute.Key("db.statement").String(query))
+
 	if err := s.sqlClient.GetContext(ctx, &game, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
+
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
 	}
 
@@ -64,8 +79,11 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "GameStorage: SaveGame", trace.WithSpanKind(trace.SpanKindClient))
+	defer span.End()
+
 	gameRow := NewGameRow(&game)
-	fmt.Println(gameRow)
 	query := `
 		REPLACE INTO games (
 			id, player_name, created_at, battle_won, scenario, partner_id
@@ -73,6 +91,11 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 			:id, :player_name, :created_at, :battle_won, :scenario, :partner_id
 		)
 	`
+
+	span.SetAttributes(attribute.Key("game-id").String(game.ID))
+	span.SetAttributes(attribute.Key("db.system").String("mysql"))
+	span.SetAttributes(attribute.Key("db.statement").String(query))
+
 	_, err := s.sqlClient.NamedExecContext(ctx, query, map[string]interface{}{
 		"id":          gameRow.ID,
 		"player_name": gameRow.PlayerName,
@@ -82,6 +105,9 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 		"partner_id":  gameRow.Partner.ID,
 	})
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return fmt.Errorf("unable to execute query due: %w", err)
 	}
 	return nil

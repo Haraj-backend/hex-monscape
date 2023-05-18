@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/dynamodb/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/apex/gateway"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -18,10 +20,31 @@ import (
 	_ "github.com/gosidekick/goconfig/yaml"
 )
 
+const (
+	serviceName = "rest-lambda-ddb"
+)
+
+type config struct {
+	LocalDeployment          localDeploymentConfig `yaml:"local_deployment" cfg:"local_deployment"`
+	Dynamo                   dynamoConfig          `yaml:"ddb" cfg:"ddb"`
+	OtelExporterOTLPEndPoint string                `yaml:"otel_exporter_otlp_endpoint" cfg:"otel_exporter_otlp_endpoint"`
+}
+
+type localDeploymentConfig struct {
+	Enabled  bool   `cfg:"enabled"`
+	Endpoint string `cfg:"endpoint"`
+	Port     int    `cfg:"port" cfgDefault:"9186"`
+}
+
+type dynamoConfig struct {
+	BattleTable  string `cfg:"battle_table" cfgDefault:"Battles"`
+	GameTable    string `cfg:"game_table" cfgDefault:"Games"`
+	PokemonTable string `cfg:"pokemon_table" cfgDefault:"Pokemons"`
+}
+
 func main() {
 	// read config
 	var cfg config
-	goconfig.File = "config.yml"
 	err := goconfig.Parse(&cfg)
 	if err != nil {
 		log.Fatalf("unable to parse config due: %v", err)
@@ -32,6 +55,25 @@ func main() {
 	if cfg.LocalDeployment.Enabled {
 		awsSess.Config.Endpoint = &cfg.LocalDeployment.Endpoint
 	}
+
+	// initialize tracing
+	traceExporter, err := telemetry.NewXRayTracerProvider(cfg.OtelExporterOTLPEndPoint, serviceName)
+	if err != nil {
+		log.Fatalf("unable to initialize tracer exporter due: %v", err)
+	}
+
+	// initialize telemetry tracer
+	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
+		Exporter:    *traceExporter,
+		ServiceName: serviceName,
+		BaseContext: context.Background(),
+	})
+	if err != nil {
+		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
+	}
+
+	// set singleton tracer
+	telemetry.SetTracer(&telemetryTracer)
 
 	// initialize dynamodb client
 	ddbClient := dynamodb.New(awsSess)
@@ -86,6 +128,7 @@ func main() {
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playSvc,
 		BattleService:  battleSvc,
+		ServiceName:    serviceName,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)

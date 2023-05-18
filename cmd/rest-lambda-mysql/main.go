@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
@@ -12,20 +12,49 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/apex/gateway"
+	"github.com/gosidekick/goconfig"
 	"github.com/jmoiron/sqlx"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const addr = ":9186"
-const envKeySQLDSN = "SQL_DSN"
+type config struct {
+	ServiceName              string `cfg:"service_name" cfgRequired:"true" cfgDefault:"rest-lambda-mysql"`
+	Port                     string `cfg:"port" cfgDefault:"9186"`
+	SQLDSN                   string `cfg:"sql_dsn" cfgRequired:"true"`
+	OtelExporterOTLPEndpoint string `cfg:"otel_exporter_otlp_endpoint" cfgRequired:"true"`
+	IsServer                 bool   `cfg:"server_deployment" cfgDefault:"false"`
+}
 
 func main() {
-	isServer := os.Getenv("SERVER_DEPLOYMENT") == "true"
+	var cfg config
+	err := goconfig.Parse(&cfg)
+	if err != nil {
+		log.Fatalf("unable to parse configs due: %v", err)
+	}
 
-	sqlDSN := os.Getenv(envKeySQLDSN)
-	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
+	// initialize tracing
+	traceExporter, err := telemetry.NewXRayTracerProvider(cfg.OtelExporterOTLPEndpoint, cfg.ServiceName)
+	if err != nil {
+		log.Fatalf("unable to initialize tracer exporter due: %v", err)
+	}
+
+	// initialize telemetry tracer
+	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
+		Exporter:    *traceExporter,
+		ServiceName: cfg.ServiceName,
+		BaseContext: context.Background(),
+	})
+	if err != nil {
+		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
+	}
+
+	// set singleton tracer
+	telemetry.SetTracer(&telemetryTracer)
+
+	sqlClient, err := sqlx.Connect("mysql", cfg.SQLDSN)
 	if err != nil {
 		log.Fatalf("unable to init db connection: %v", err)
 	}
@@ -75,13 +104,14 @@ func main() {
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playService,
 		BattleService:  battleService,
+		ServiceName:    cfg.ServiceName,
 	})
 	if err != nil {
 		log.Fatalf("unable to init rest service: %v", err)
 	}
 
 	// run server
-	err = listenAndServe(isServer, addr, api.GetHandler())
+	err = listenAndServe(cfg.IsServer, ":"+cfg.Port, api.GetHandler())
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("unable to start server due: %v", err)
 	}

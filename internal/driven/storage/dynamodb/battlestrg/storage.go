@@ -5,9 +5,13 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
+	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -17,6 +21,12 @@ type Storage struct {
 }
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle", trace.WithSpanKind(trace.SpanKindClient))
+	defer span.End()
+
+	span.SetAttributes(attribute.Key("game-id").String(gameID))
+
 	// construct params
 	key := battleKey{GameID: gameID}
 	input := &dynamodb.GetItemInput{
@@ -26,6 +36,9 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	// execute get item
 	output, err := s.dynamoClient.GetItemWithContext(ctx, input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
 	// if item is not found, returns nil as expected by battle interface
@@ -36,6 +49,9 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	battle := battle.Battle{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
@@ -43,6 +59,10 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 }
 
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
+	tr := telemetry.GetTracer()
+	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle", trace.WithSpanKind(trace.SpanKindClient))
+	defer span.End()
+
 	// construct params
 	item, _ := dynamodbattribute.MarshalMap(&b)
 	input := &dynamodb.PutItemInput{
@@ -52,6 +72,9 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	// execute put item
 	_, err := s.dynamoClient.PutItemWithContext(ctx, input)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
 
