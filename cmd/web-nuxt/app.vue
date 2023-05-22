@@ -15,14 +15,14 @@ let selectedBg = utils.randomPick(backgrounds);
 onMounted(() => {
   const gw = document.getElementById("game-wrapper");
   if (gw) {
-    gw.style.backgroundImage = `url(${selectedBg})`
+    gw.style.backgroundImage = `url(${selectedBg})`;
   }
-})
+});
 
 </script>
 
 <template>
   <div id="game-wrapper">
-    <h1>Hex Pokebattle Nuxt</h1>
+    <NuxtPage />
   </div>
 </template>

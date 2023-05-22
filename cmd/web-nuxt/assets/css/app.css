@@ -31,3 +31,7 @@ h1.game-title {
 span.player-name {
   @apply font-bold;
 }
+
+.button {
+  @apply bg-white rounded-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_rgba(0,0,0,0.2)] text-2xl text-center py-2;
+}
