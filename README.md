@@ -2,15 +2,21 @@
 
 Welcome to this repo!
 
-In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its [Go](https://go.dev/) implementation through simple server-client game called `Hex Monscape`.
+In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its implementation through simple server-client game called `Hex Monscape`.
 
-We are using [Hexagonal Architecture](./docs/hex_arch.md) to implement the game server in [Go](https://go.dev/) while the client implemented using [Vue 3](https://vuejs.org/). To know the API details for this game, please see [this document](./docs/http_api.md).
+In the game you will play as a 10 years old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek 3 strong wild monsters and defeat them. 💥💪🏻
 
-In the game you will play as a 10 years old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek 3 strong wild monsters and defeat them. 🥷🏻🥷🏻🥷🏻
+We are applying the concept of [Hexagonal Architecture](./docs/hex_arch.md) to implement the game server while coding it using [Golang](https://go.dev/). For the web client, we implemented it using [Vue 3](https://vuejs.org/).
 
-As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/hex_arch.md) is mandatory since it is the main architecture we used for building Haraj production systems. So if you understand this architecture well, you will be in no time contributing to Haraj production.
+To see the API details for this game, please refer to [this doc](./docs/http_api.md).
 
-Please refer to [Primary References](#primary-references) section to start learning about the concepts presented in this repo.
+> **Note:**
+>
+> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/hex_arch.md) is mandatory since it is the main architecture we used for building Haraj production systems.
+>
+> So if you understand this architecture well, you will be in no time contributing to Haraj production.
+>
+> Please refer to [Primary References](#primary-references) section to start learning about these concepts.
 
 ## How to Run The Game
 
@@ -32,9 +38,9 @@ All of these servers could be run by using this command:
 > make run
 ```
 
-This command will create & run the stack defined in this [docker-compose.yml](./docker-compose.yml) file. 
+This command will create & run the stack defined in this [docker-compose.yml](./docker-compose.yml). 
 
-Wait a moment until the entire stack running. You will something like this in the console after it is successfully running:
+Wait a moment until the entire stack running. You will something like this in the console after it is done:
 
 ```bash
 hex_mem_1     | 2022/05/11 16:29:50 server is listening on :9185...
@@ -50,11 +56,11 @@ After that you could access each of these servers by visiting endpoint below:
 
 ## Primary References
 
-To start learning the concept of [Hexagonal Architecture](./docs/hex_arch.md) please use [this document](./docs/hex_arch.md) as your primary source for learning. This is so you won't be having too much confusion when learning it from other online resources.
+To start learning the concept of [Hexagonal Architecture](./docs/hex_arch.md) please use [this doc](./docs/hex_arch.md) as your primary source of learning. This is so you won't be having too much confusion when learning it from other online resources.
 
-To know more about the game design, please refer to [this document](./docs/game_design.md).
+To know more about the game design, please refer to [this doc](./docs/game_design.md).
 
-To learn about the methodology on how to implement [Hexagonal Architecture](./docs/hex_arch.md) on a project, please refer to [this document](./docs/project_method.md).
+To learn about the methodology on how to implement [Hexagonal Architecture](./docs/hex_arch.md) on a project, please refer to [this doc](./docs/project_method.md).
 
 ## Attribution
 
