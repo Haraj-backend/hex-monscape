@@ -1,5 +1,25 @@
 # Hexagonal Architecture
 
+![Hexagonal Architecture Diagram](./assets/hex-diagram.drawio.png)
+
+## Why Hexagonal Architecture?
+
+In Solutions Team we always try work with small services. Even in the relatively complex system such as `Haraj Bill` or `Chat Next`, we always break them down to much smaller services depending on the focus of their business usecase.
+
+The reason why we are doing this is because it is much easier for us to maintain smaller services rather than the big ones. So when the service require bug fix or need new feature, it is much easier to understand the code & do the changes to it because the code itself is relatively small.
+
+However since we have a lot of small services, we need some kind of standard on how to develop these services. This is so every Solutions Team members can easily maintaining them.
+
+On top of code maintainability, we also need to automate testing of our code. This is to ensure our changes is working as expected and it doesn't break another functionalities in the service.
+
+After studying several architectural patterns, we found out that `Hexagonal Architecture` is the most suitable for our workflow.
+
+Unlike its sibling `Clean Architecture` & `Onion Architecture` which focus on layers, `Hexagonal Architecture` focus on application business logic. This make it very easy to implement, especially in our workflow.
+
+In the upcoming sections we will be discussing in-depth details about `Hexagonal Architecture`.
+
+## What is Hexagonal Architecture?
+
 Hexagonal architecture is architectural pattern that put the business logic as centre of everything in application codebase.
 
 There are 3 main principles we need to follow when we want to implement this architecture:
@@ -14,8 +34,6 @@ From these principles we can infer 4 constructing parts of Hexagonal Architectur
 - [Actors](#actors) => Any external entities interacting with our application core
 - [Ports](#ports) => Interface that define how actors should interact with application core 
 - [Adapters](#adapters) => Transforming request from actors to the core & vice versa. Implement ports.
-
-![Hexagonal Architecture Diagram](hex_diagram.png)
 
 Understanding these entities is crucial for understanding the implementation of Hexagonal Architecture. Each of them will be explained thoroughly in the upcoming sections. To make the explanation easier to be understood, we will use Hex PokeBattle project as example.
 
