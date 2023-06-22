@@ -1,14 +1,25 @@
-# Hex PokeBattle
+# Hex Monscape Go
 
-Hex PokeBattle is a simple web game implemented using [Hexagonal Architecture](./docs/hex_arch.md).
+Welcome to this repo!
 
-It is intended to become Solutions Team reference when they want to implement web app using Hexagonal Architecture.
+In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its Go implementation through simple server-client game called `Hex Monscape`.
 
-To learn more about API for this game check out [HTTP API](./docs/http_api.md) doc.
+In the game you will play as a 10 years old monster hunter that dreams to become the very best. In order to reach that, you make journey together with your monster partner to seek 3 strong wild monsters and defeat them. 🥷🏻🥷🏻🥷🏻
 
-To learn the methodology of how to create web app using Hexagonal Architecture, check out [Project Methodology](./docs/project_method.md) doc.
+As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/hex_arch.md) is mandatory since it is the main architecture we used for building production-grade systems for Haraj. So if you understand this architecture very well, you will be in no time to contribute to Haraj production systems.
 
-## Game Concept
+Table of contents:
+
+- [Why Hexagonal Architecture?](#why-hexagonal-architecture)
+- [Game Design](#game-design)
+- [How to Run The Game](#how-to-run-the-game)
+- [Project Methodology](#project-methodology)
+
+## Why Hexagonal Architecture?
+
+Some of you might be wondering why we need to learn about [Hexagonal Architecture](./docs/hex_arch.md) rather than 
+
+## Game Design
 
 The game concept is pretty simple, player just need to choose his/her pokemon partner & won battle for 3 times to beat the game.
 
@@ -24,7 +35,7 @@ Here is the flowchart for each battle in the game:
     <img src="./docs/battle_flow.svg" alt="Battle Flow" height="400" />
 </p>
 
-## How to Run
+## How to Run The Game
 
 There are 3 variants of server in this project:
 
@@ -53,3 +64,5 @@ After that we could access each of variants by visiting the urls below:
 - Memory storage => http://localhost:9185
 - DynamoDB storage => http://localhost:9186
 - MySQL storage => http://localhost:9187
+
+## Project Methodology
