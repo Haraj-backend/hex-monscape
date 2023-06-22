@@ -2,38 +2,15 @@
 
 Welcome to this repo!
 
-In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its Go implementation through simple server-client game called `Hex Monscape`.
+In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its [Go](https://go.dev/) implementation through simple server-client game called `Hex Monscape`.
 
-In the game you will play as a 10 years old monster hunter that dreams to become the very best. In order to reach that, you make journey together with your monster partner to seek 3 strong wild monsters and defeat them. 🥷🏻🥷🏻🥷🏻
+We are using [Hexagonal Architecture](./docs/hex_arch.md) to implement the game server in [Go](https://go.dev/) while the client implemented using [Vue 3](https://vuejs.org/). To know the API details for this game, please see [this document](./docs/http_api.md).
 
-As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/hex_arch.md) is mandatory since it is the main architecture we used for building production-grade systems for Haraj. So if you understand this architecture very well, you will be in no time to contribute to Haraj production systems.
+In the game you will play as a 10 years old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek 3 strong wild monsters and defeat them. 🥷🏻🥷🏻🥷🏻
 
-Table of contents:
+As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/hex_arch.md) is mandatory since it is the main architecture we used for building Haraj production systems. So if you understand this architecture well, you will be in no time contributing to Haraj production.
 
-- [Why Hexagonal Architecture?](#why-hexagonal-architecture)
-- [Game Design](#game-design)
-- [How to Run The Game](#how-to-run-the-game)
-- [Project Methodology](#project-methodology)
-
-## Why Hexagonal Architecture?
-
-Some of you might be wondering why we need to learn about [Hexagonal Architecture](./docs/hex_arch.md) rather than 
-
-## Game Design
-
-The game concept is pretty simple, player just need to choose his/her pokemon partner & won battle for 3 times to beat the game.
-
-Here is the flowchart of the game:
-
-<p align="center">
-    <img src="./docs/game_flow.svg" alt="Game Flow" height="400" />
-</p>
-
-Here is the flowchart for each battle in the game:
-
-<p align="center">
-    <img src="./docs/battle_flow.svg" alt="Battle Flow" height="400" />
-</p>
+Please refer to [Primary References](#primary-references) section to start learning about the concepts presented in this repo.
 
 ## How to Run The Game
 
@@ -65,4 +42,18 @@ After that we could access each of variants by visiting the urls below:
 - DynamoDB storage => http://localhost:9186
 - MySQL storage => http://localhost:9187
 
-## Project Methodology
+## Primary References
+
+To start learning the concept of [Hexagonal Architecture](./docs/hex_arch.md) please use [this document](./docs/hex_arch.md) as your primary source for learning. This is so you won't be having too much confusion when learning it from other online resources.
+
+To know more about the game design, please refer to [this document](./docs/game_design.md).
+
+To learn about the methodology on how to implement [Hexagonal Architecture](./docs/hex_arch.md) on a project, please refer to [this document](./docs/project_method.md).
+
+## Attribution
+
+The monster characters used in this project is designed by [Freepik](http://www.freepik.com). To be exact we are using [this asset](https://www.freepik.com/free-vector/set-funny-monsters-hand-drawn-style_1933029.htm).
+
+## License
+
+MIT
