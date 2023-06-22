@@ -14,13 +14,19 @@ Please refer to [Primary References](#primary-references) section to start learn
 
 ## How to Run The Game
 
-There are 3 variants of server in this project:
+When we are using [Hexagonal Architecture](./docs/hex_arch.md) to design a system, it is quite easy to swap its infrastructure code with another technologies.
+
+So for example, if initially we used in memory storage to store our data, we could easily swap it with MySQL storage or something else.
+
+To prove this point, there are 3 variants of game server in this project:
 
 - Server using Memory storage
 - Server using DynamoDB storage
 - Server using MySQL storage
 
-These variants could be run by using this command:
+All of them will serve the same game, the only difference is the place where they store the game data.
+
+All of these servers could be run by using this command:
 
 ```bash
 > make run
@@ -28,15 +34,15 @@ These variants could be run by using this command:
 
 This command will create & run the stack defined in this [docker-compose.yml](./docker-compose.yml) file. 
 
-Wait a moment until the entire stack setup done. You will something like this in the console log after the setup is done:
+Wait a moment until the entire stack running. You will something like this in the console after it is successfully running:
 
 ```bash
-hex_mem_1     | 2022/05/11 16:29:50 server is listening on :9186...
-hex_mysql_1   | 2022/05/11 16:30:21 Running in server mode at :9186
-hex_ddb_1     | 2022/05/11 16:30:21 Running in server mode at :9186
+hex_mem_1     | 2022/05/11 16:29:50 server is listening on :9185...
+hex_mysql_1   | 2022/05/11 16:30:21 server is listening on :9186...
+hex_ddb_1     | 2022/05/11 16:30:21 server is listening on :9187...
 ```
 
-After that we could access each of variants by visiting the urls below:
+After that you could access each of these servers by visiting endpoint below:
 
 - Memory storage => http://localhost:9185
 - DynamoDB storage => http://localhost:9186
