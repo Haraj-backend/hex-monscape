@@ -4,11 +4,11 @@ Welcome to this repo!
 
 In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its implementation through simple server-client game called `Hex Monscape`.
 
-In the game you will play as a 10 years old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek 3 strong wild monsters and defeat them. 💥💪🏻
+In the game you will play as a `10 years` old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek `3` strong wild monsters and kick them in the butt. 💥💪🏻
 
 We are applying the concept of [Hexagonal Architecture](./docs/hex_arch.md) to implement the game server while coding it using [Golang](https://go.dev/). For the web client, we implemented it using [Vue 3](https://vuejs.org/).
 
-To see the API details for this game, please refer to [this doc](./docs/http_api.md).
+To see the API specification for this game, please see to [this doc](./docs/http_api.md).
 
 > **Note:**
 >
