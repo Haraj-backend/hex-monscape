@@ -40,7 +40,7 @@ All of these servers could be run by using this command:
 
 This command will create & run the stack defined in this [docker-compose.yml](./deploy/local/deployment/docker-compose.yml). 
 
-Wait a moment until the entire stack running. You will something like this in the console after it is done:
+Wait a moment until the entire stack is running. You will see something like this in the console after it is done:
 
 ```bash
 hex_mem_1     | 2022/05/11 16:29:50 server is listening on :9185...
@@ -48,7 +48,7 @@ hex_mysql_1   | 2022/05/11 16:30:21 server is listening on :9186...
 hex_ddb_1     | 2022/05/11 16:30:21 server is listening on :9187...
 ```
 
-After that you could access each of these servers by visiting endpoint below:
+After that you could access each of these servers by visiting endpoints below:
 
 - Memory storage => http://localhost:9185
 - DynamoDB storage => http://localhost:9186
