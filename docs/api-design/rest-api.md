@@ -1,4 +1,4 @@
-# HTTP API
+# REST API
 
 Available endpoints for this API:
 

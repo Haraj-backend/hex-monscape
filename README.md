@@ -2,17 +2,17 @@
 
 Welcome to this repo!
 
-In this repo you will learn the concept of [Hexagonal Architecture](./docs/hex_arch.md) and its implementation through simple server-client game called `Hex Monscape`.
+In this repo you will learn the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) and its implementation through simple server-client game called `Hex Monscape`.
 
 In the game you will play as a `10 years` old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek `3` strong wild monsters and kick them in the butt. 💥💪🏻
 
-We are applying the concept of [Hexagonal Architecture](./docs/hex_arch.md) to implement the game server while coding it using [Golang](https://go.dev/). For the web client, we implemented it using [Vue 3](https://vuejs.org/).
+We are applying the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) to implement the game server while coding it using [Golang](https://go.dev/). For the web client, we implemented it using [Vue 3](https://vuejs.org/).
 
-To see the API specification for this game, please see to [this doc](./docs/http_api.md).
+To see the REST API specification for this game, please see [this doc](./docs/api-design/rest-api.md).
 
 > **Note:**
 >
-> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/hex_arch.md) is mandatory since it is the main architecture we used for building Haraj production systems.
+> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the main architecture we used for building Haraj production systems.
 >
 > So if you understand this architecture well, you will be in no time contributing to Haraj production.
 >
@@ -20,11 +20,11 @@ To see the API specification for this game, please see to [this doc](./docs/http
 
 ## How to Run The Game
 
-When we are using [Hexagonal Architecture](./docs/hex_arch.md) to design a system, it is quite easy to swap its infrastructure code with another technologies.
+When we are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to design a system, it is quite easy to swap its infrastructure code with another technologies.
 
 So for example, if initially we used in memory storage to store our data, we could easily swap it with MySQL storage or something else.
 
-To prove this point, there are 3 variants of game server in this project:
+To demonstrate this point, there are `3` variants of game server in this project:
 
 - Server using Memory storage
 - Server using DynamoDB storage
@@ -38,7 +38,7 @@ All of these servers could be run by using this command:
 > make run
 ```
 
-This command will create & run the stack defined in this [docker-compose.yml](./docker-compose.yml). 
+This command will create & run the stack defined in this [docker-compose.yml](./deploy/local/deployment/docker-compose.yml). 
 
 Wait a moment until the entire stack running. You will something like this in the console after it is done:
 
@@ -56,11 +56,11 @@ After that you could access each of these servers by visiting endpoint below:
 
 ## Primary References
 
-To start learning the concept of [Hexagonal Architecture](./docs/hex_arch.md) please use [this doc](./docs/hex_arch.md) as your primary source of learning. This is so you won't be having too much confusion when learning it from other online resources.
+To start learning the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) please use [this doc](./docs/reference/hex-architecture.md) as your primary source of learning. This is so you won't be having too much confusion when learning it from other online resources.
 
-To know more about the game design, please refer to [this doc](./docs/game_design.md).
+To know more about the game design, please refer to [this doc](./docs/reference/game-design.md).
 
-To learn about the methodology on how to implement [Hexagonal Architecture](./docs/hex_arch.md) on a project, please refer to [this doc](./docs/project_method.md).
+To learn about the methodology on how to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) on a project, please refer to [this doc](./docs/reference/project-methodology.md).
 
 ## Attribution
 
