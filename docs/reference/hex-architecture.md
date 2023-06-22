@@ -1,7 +1,5 @@
 # Hexagonal Architecture
 
-![Hexagonal Architecture Diagram](./assets/hex-diagram.drawio.png)
-
 ## Background Story
 
 In Solutions Team, we always try to work with small services. Even in the relatively complex system such as `Haraj Bill` or `Chat Next`, we always break them down to much smaller services depending on the focus of their business usecases.
@@ -10,23 +8,35 @@ The reason why we are doing it like this is because small service will have much
 
 However since we will have a lot of small services, we need some kind of standard on how to write them. This is so everyone in the Solutions Team could easily understand them even if they never work with those services before.
 
+<p align="center">
+    <img width=512 src="./assets/memes/one-does-not-simply-write-maintainable-code.jpg" alt="One Does Not Simply Write Maintainable Code">
+</p>
+
 On top of that, we also need to automate the testing for our code. This is to ensure our changes (especially bug fix) is working as expected and it doesn't break another functionalities in the service.
 
 After studying several architectural patterns, we found out that `Hexagonal Architecture` is the most suitable for our workflow.
 
 ## Why Hexagonal Architecture?
 
-Unlike its sibling architectures which focus on layers like `Clean Architecture` & `Onion Architecture`, `Hexagonal Architecture` focus on application business logic. This make it very easy to understand & implement because it has less formalities.
+Unlike its sibling architectures which focus on layers like `Clean Architecture` & `Onion Architecture`, `Hexagonal Architecture` focus on business logic. This what make it very easy to understand & implement because it is focus on what's matter.
+
+When everyone can easily understand our code, this means everyone in the team will be able to handle it. This means when we are getting sick or going on vacation, someone from our team could easily cover our back. This is what it means to have maintainable code.
 
 On top of that, `Hexagonal Architecture` also provide a very good way to write automated tests for our code. This is because it clearly separate the business logic from its dependencies. So we can easily mock the dependencies when writing the tests.
 
-However unlike its sibling architectures, `Hexagonal Architecture` doesn't provide a clear way to structure our code. This is because `Hexagonal Architecture` is more like a concept rather than a strict architecture. This is why when we read online articles about implementation of `Hexagonal Architecture`, they usually come up with their own ways to implement it.
+<p align="center">
+    <img width=512 src="./assets/memes/we-want-maintainable-code.jpg" alt="We Want Maintainable Code">
+</p>
 
-This is also the reason why we suggest you to use this document as your primary reference when start learning about `Hexagonal Architecture` rather than searching for it online. Yeah, because everyone has their own ways to implement it including the Solutions Team.
+However unlike its sibling architectures, `Hexagonal Architecture` doesn't provide a clear way to structure our code. This is because `Hexagonal Architecture` is more like a concept rather than a strict architecture. This is why when we read online articles about its implementation, the authors usually come up with their own ways to implement it.
 
-In the upcoming sections we will be discussing the details of `Hexagonal Architecture` implementation in the Solutions Team. We will also be using `Hex Monscape` as example to make the explanation more relatable.
+This is also the reason why we suggest you to use this document as your primary reference when learning about `Hexagonal Architecture` rather than searching for it online. Yeah, because everyone have their own ways to implement it including the Solutions Team.
+
+In the upcoming sections we will be discussing about the details of `Hexagonal Architecture` implementation that suitable for Solutions Team projects. We will be using our `Hex Monscape` project as example for the implementation.
 
 ## What is Hexagonal Architecture?
+
+![Hexagonal Architecture Diagram](./assets/hex-diagram.drawio.png)
 
 `Hexagonal Architecture` is architectural pattern that put the business logic as centre of everything in application codebase.
 
@@ -43,7 +53,7 @@ From these principles we can infer `4` constructing entities in `Hexagonal Archi
 - [Ports](#ports) => Interface that define how actors should interact with application core.
 - [Adapters](#adapters) => Transforming request from actors to the core & vice versa. Implement ports.
 
-Understanding these entities is crucial for understanding the implementation of `Hexagonal Architecture`. Each of them will be explained thoroughly in the upcoming sections.
+Understanding each of these entities is crucial for understanding the implementation of `Hexagonal Architecture`. Each of them will be explained thoroughly in the upcoming sections.
 
 To make the explanation more relatable, we will be using this project as example.
 
