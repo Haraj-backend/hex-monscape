@@ -6,7 +6,7 @@ In Solutions Team, we always try to work with small services. Even in the relati
 
 The reason why we are doing it like this is because small service will have much less code rather than the big one. Less code means less complexity in maintaining it. So when the service requires bug fix or in need of new feature, it will be much easier to write the necessary changes for it.
 
-However since we will have a lot of small services, we need some kind of standard on how to write them. This is so everyone in the Solutions Team could easily understand them even if they never work with those services before.
+However since we will have a lot of small services, we need some kind of standard on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those services before.
 
 <p align="center">
     <img width=512 src="./assets/memes/one-does-not-simply-write-maintainable-code.jpg" alt="One Does Not Simply Write Maintainable Code">
@@ -20,7 +20,7 @@ After studying several architectural patterns, we found out that `Hexagonal Arch
 
 Unlike its sibling architectures which focus on layers like `Clean Architecture` & `Onion Architecture`, `Hexagonal Architecture` focus on business logic. This what make it very easy to understand & implement because it is focus on what's matter.
 
-When everyone can easily understand our code, this means everyone in the team will be able to handle it. This means when we are getting sick or going on vacation, someone from our team could easily cover our back. This is what it means to have maintainable code.
+When everyone can easily understand our code, this means everyone in the team will be able to handle it. This means when we are getting sick or going on vacation, someone from our team can easily cover our back. This is what it means to have maintainable code.
 
 On top of that, `Hexagonal Architecture` also provide a very good way to write automated tests for our code. This is because it clearly separate the business logic from its dependencies. So we can easily mock the dependencies when writing the tests.
 
