@@ -59,7 +59,7 @@ To make the explanation more relatable, we will be using this project as example
 
 ## Core
 
-Core is the place where we put application business logic & its data model (including ports).
+Core is the place where we put application business logic & its data model (including [Ports](#ports)).
 
 Sometimes it is not easy to determine what code should goes into the core. In such situation try to analyze the business requirements for our application first. Try to understand the context of what our application should do in order to fulfil the requirements. The "what our application should do" is basically our business logic.
 
@@ -78,63 +78,63 @@ As for the [`entity`](../../internal/core/entity/) package, it contains the enti
 
 Actors are external entities that interact with our application.
 
-There are 2 types of actors:
+There are `2` types of actors:
 
-- `Driver Actor` => Actor that initiating interaction with our application
-- `Driven Actor` => Actor that being called by our application as the result of interaction with driver
+- `Driver Actor` => Actor that initiates interaction with our application.
+- `Driven Actor` => Actor that being called by our application as the result of interaction with `Driver Actor`.
 
-In the case of `Hex Monscape`, REST API is the driver of our application & in-memory storages (for storing game, battle, & pokemon) are the driven ones.
+In the case of `Hex Monscape` the incoming HTTP requests are the examples of `Driver Actor` while the `MySQL` database is the example of `Driven Actor`.
 
 [Back to Top](#hexagonal-architecture)
 
 ## Ports
 
-Ports are interfaces defined inside core that define how actors should interact with the core & vice versa.
+Ports are interfaces defined inside the core that define how actors should interact with the core & vice versa.
 
-There are 2 types of ports:
+There are `2` types of ports:
 
 - `Driver Port` => Ports for defining interaction between driver actor & core.
 - `Driven Port` => Ports for defining interaction between core & driven actors.
 
 In the case of `Hex Monscape`, the examples for `Driver Ports` are:
 
-- `battle.Service`
-- `play.Service`
+- [`battle.Service`](../../internal/core/battle/service.go)
+- [`play.Service`](../../internal/core/play/service.go)
 
 As for the examples for `Driven Ports` are:
 
-- `battle.BattleStorage`
-- `battle.GameStorage`
-- `battle.PokemonStorage`
+- [`battle.BattleStorage`](../../internal/core/battle/storage.go)
+- [`battle.GameStorage`](../../internal/core/battle/storage.go)
+- [`battle.PokemonStorage`](../../internal/core/battle/storage.go)
 
 [Back to Top](#hexagonal-architecture)
 
 ## Adapters
 
-Adapters are components used to transform request from actors to application core & vice. They implements ports defined in the core.
+Adapters are components used to translate interaction from actors to application core & vice versa. They implements ports defined in the core.
 
-There are 2 types of adapters:
+There are `2` types of adapters:
 
-- `Driver Adapter` => Adapter for transforming a specific technology request from driver actor into a call acceptable by application core.
-- `Driven Adapter` => Adapter for transforming a technology agnostic request from the core into an a specific technology request on the driven actor.
+- `Driver Adapter` => Adapter for translating interaction from the `Driver Actor` into a call acceptable by application core.
+- `Driven Adapter` => Adapter for translating the command given by application core to `Driven Actor`.
 
-In the case of `Hex Monscape`, the example for `Driver Adapters` is `rest.API`.
+In the case of `Hex Monscape`, the example for `Driver Adapters` is [`rest.API`](../../internal/driver/rest/api.go).
 
 As for the examples for `Driven Adapters` are:
 
-- `battlestrg.Storage`
-- `gamestrg.Storage`
-- `pokestrg.Storage`
+- [`battlestrg.Storage`](../../internal/driven/storage/memory/battlestrg/storage.go)
+- [`gamestrg.Storage`](../../internal/driven/storage/memory/gamestrg/storage.go)
+- [`pokestrg.Storage`](../../internal/driven/storage/memory/pokestrg/storage.go)
 
 [Back to Top](#hexagonal-architecture)
 
-## DDD Relation
+## Relation with DDD
 
-Domain-Driven Design (DDD) & Hexagonal Architecture is commonly paired together. Some people even used the terms interchangeably.
+`Domain-Driven Design` (DDD) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
 
-In reality, DDD & Hexagonal Architecture are two separate things. DDD is an approach to spot out application components from business model perspective, while Hexagonal Architecture give our application a structure. 
+In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is an approach to spot out application logic components from business model perspective, while `Hexagonal Architecture` gives our application a structure. 
 
-DDD basically provides a way to define application core for Hexagonal Architecture. But it is not a must for us to use DDD when implementing Hexagonal Architecture.
+`DDD` basically provides a formalized way to define application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
 
 [Back to Top](#hexagonal-architecture)
 
