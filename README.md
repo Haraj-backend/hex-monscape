@@ -18,13 +18,25 @@ To see the REST API specification for this game, please see [this doc](./docs/ap
 >
 > Please refer to [Primary References](#primary-references) section to start learning about these concepts.
 
+## Game Design
+
+The game design is pretty simple, player just need to choose monster partner then won battle for `3` times to beat the game. After that player may choose to end the game or continue playing.
+
+Here is the flowchart for the game scenario:
+
+<p align="center">
+    <img src="./docs/reference/assets/game-flow.drawio.svg" alt="Game Flow" height="400" />
+</p>
+
+Here is the flowchart for each battle in the game:
+
+<p align="center">
+    <img src="./docs/reference/assets/battle-flow.drawio.svg" alt="Battle Flow" height="400" />
+</p>
+
 ## How to Run The Game
 
-When we are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to design a system, it is quite easy to swap its infrastructure code with another technologies.
-
-So for example, if initially we used in memory storage to store our data, we could easily swap it with MySQL storage or something else.
-
-To demonstrate this point, there are `3` variants of game server in this project:
+There are `3` variants of game server in this project:
 
 - Server using Memory storage
 - Server using DynamoDB storage
@@ -54,11 +66,15 @@ After that you could access each of these servers by visiting endpoints below:
 - DynamoDB storage => http://localhost:9186
 - MySQL storage => http://localhost:9187
 
+> **Note:**
+>
+> When we use [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build a system, it is quite easy to swap its infrastructure code with another technologies.
+>
+> So for example, if initially we used in-memory storage to store our data, we could easily swap it with MySQL storage or something else. This is why in this project we provide `3` variants of game server for you, this is to demonstrate exactly this point.
+
 ## Primary References
 
 To start learning the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) please use [this doc](./docs/reference/hex-architecture.md) as your primary source of learning. This is so you won't be having too much confusion when learning it from other online resources.
-
-To know more about the game design, please refer to [this doc](./docs/reference/game-design.md).
 
 To learn about the methodology on how to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) on a project, please refer to [this doc](./docs/reference/project-methodology.md).
 
