@@ -1,14 +1,14 @@
 # Project Methodology
 
-This document contains how-to guidelines to create web app project using Hexagonal Architecture.
+This document contains guidelines on how to implement [Hexagonal Architecture](../reference/hex-architecture.md) in Solutions Team projects.
 
-1. Understand business requirements.
+1. Understand business requirements. This is very important because it gives us context on what we are building.
 2. Validate your understanding by creating document that contains high level overview of the application. Usually we use `README.md` for this.
-3. Create use case list for the app. This list better accompanied by use case diagrams.
-4. Create list of the API based on the use case list. Write it on `docs/http_api.md`. By creating the API documentation first, it will be easier for you to implement the API because everything already clear from the beginning.
-5. Find the usage context of your API, this is to spot out your core components.
-6. Create class diagram for the core components. By creating the class diagram, it will be easier for you to structure your code. Use [UMLet](https://www.umlet.com/) to create the class diagram.
-7. Finish up the class diagram until you satisfied enough.
-8. Implement your application, make any necessary adjustment to the docs.
-9. Create test for your application.
-10. Dockerize your application.
+3. Write down the expected use cases for the project. It will be much better if we can also provide use case diagrams when writing this.
+4. Write API specification for the project based on the use cases we wrote in `step 3`.
+5. Identify the usage context of your API, this is to spot out your `Core` componentes for your project.
+6. Create class diagram for the core components. By creating it, it will be easier for you to structure your code. We can use [UMLet](https://www.umlet.com/) to create the class diagram. It is okay to skip this test if the `Core` components are not that complex.
+7. Start writing your code & make any necessary adjustment to the docs.
+8. Create necessary tests for your project.
+9. Dockerize your project so it could be run easily by other team members.
+10. Open pull request & ask review from your teammates.
