@@ -1,39 +1,39 @@
 # DynamoDB Schema
 
-## Table `Pokemons`
+## Table `Monsters`
 
-Table that holds records of all available pokemons.
+Table that holds monster records.
 
 **Relevant Fields:**
 
-- `id`, String => identifier of a pokemon
-- `name`, String => name of a pokemon
-- `battle_stats`, Map => holds battle stats related information of a pokemon
-  - `max_health`, Number => maximum health (on battle start) of a pokemon
-  - `attack`, Number => number of damage that can be inflicted by a pokemon
-  - `defense`, Number => number of damage reducer for a pokemon (damage = enemy.attack - your_partner.defense)
+- `id`, String => identifier of a monster
+- `name`, String => name of a monster
+- `battle_stats`, Map => holds battle stats related information of a monster
+  - `max_health`, Number => maximum health (on battle start) of a monster
+  - `attack`, Number => number of damage that can be inflicted by a monster
+  - `defense`, Number => number of damage reducer for a monster (damage = enemy.attack - your_partner.defense)
   - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
-- `avatar_url`, String => url for avatar image of a pokemon
-- `extra_role`, String, *OPTIONAL* => the pokemon type, valid values: `PARTNER`
+- `avatar_url`, String => url for avatar image of a monster
+- `extra_role`, String, *OPTIONAL* => the monster type, valid values: `PARTNER`
 
 **Example Record:**
 
-```
+```json
 {
     "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-    "name": "Pikachu",
+    "name": "Bluebub",
     "battle_stats": {
         "max_health": 100,
         "attack": 25,
         "defense": 5,
         "speed": 15
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
+    "avatar_url": "https://assets.monster.com/assets/025.png",
     "extra_role": "PARTNER"
 },
 ```
 
-**Relevant Indexes:**
+**Indexes:**
 - `PRIMARY_KEY` => `id`
 - `extra_role`, GSI => `extra_role`
 
@@ -41,7 +41,7 @@ Table that holds records of all available pokemons.
 
 ## Table `Games`
 
-Table that holds records of every games that has been/being played
+Table that holds records of every games that has been/being played.
 
 **Relevant Fields:**
 
@@ -54,7 +54,7 @@ Table that holds records of every games that has been/being played
 
 **Example Record:**
 
-```
+```json
 {
     "id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
     "player_name": "Alfonso",
@@ -65,7 +65,7 @@ Table that holds records of every games that has been/being played
 }
 ```
 
-**Relevant Indexes:**
+**Indexes:**
 - `PRIMARY_KEY` => `id`
 
 [Back to Top](#dynamodb-schema)
@@ -73,12 +73,12 @@ Table that holds records of every games that has been/being played
 
 ## Table `Battles`
 
-Table that holds records of running battle for each games
+Table that holds records of running battle for each games.
 
 **Relevant Fields:**
 - `game_id`, String => identifier of a game that the battle resides
 - `state`, String => current state of a battle, valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
-- `partner`, Map => holds information of player's pokemon
+- `partner`, Map => holds information of player's monster
   - `id`, String => identifier of a player's partner
   - `name`, String => name of a player's partner
   - `battle_stats`, Map => holds battle stats related information of partner
@@ -88,10 +88,10 @@ Table that holds records of running battle for each games
     - `defense`, Number => number of damage reducer for the partner (damage = enemy.attack - your_partner.defense)
     - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
   - `avatar_url`, String => url for avatar image
-- `enemy`, Map => holds information of enemy's pokemon
-  - `id`, String => identifier of a pokemon
-  - `name`, String => name of a pokemon
-  - `battle_stats`, Map => holds battle stats related information of a pokemon
+- `enemy`, Map => holds information of enemy's monster
+  - `id`, String => identifier of a monster
+  - `name`, String => name of a monster
+  - `battle_stats`, Map => holds battle stats related information of a monster
   - - `health`, Number => remaining health of the enemy
     - `max_health`, Number => maximum health (on battle start) of the enemy
     - `attack`, Number => number of damage that can be inflicted by the enemy
@@ -110,7 +110,7 @@ Table that holds records of running battle for each games
     "state": "DECIDE_TURN",
     "partner": {
         "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-        "name": "Pikachu",
+        "name": "Bluebub",
         "battle_stats": {
             "max_health": 100,
             "attack": 25,
@@ -118,7 +118,7 @@ Table that holds records of running battle for each games
             "speed": 15,
             "health": 75
         },
-        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
+        "avatar_url": "https://assets.monster.com/assets/025.png",
         "extra_role": "PARTNER"
     },
     "enemy":{
@@ -131,7 +131,7 @@ Table that holds records of running battle for each games
             "speed": 15,
             "health": 60
         },
-        "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png"
+        "avatar_url": "https://assets.monster.com/assets/007.png"
     },
     "last_damage": {
         "partner": 10,
@@ -140,7 +140,8 @@ Table that holds records of running battle for each games
 }
 ```
 
-**Relevant Indexes:**
+**Indexes:**
+
 - `PRIMARY_KEY` => `game_id`
 
 
