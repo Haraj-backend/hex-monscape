@@ -2,7 +2,7 @@
 
 Available endpoints for this API:
 
-- [Get Available Pokemon Partner](#get-availaible-pokemon-partner)
+- [Get Available Partners](#get-available-partners)
 - [New Game](#new-game)
 - [Get Game Details](#get-game-details)
 - [Get Next Scenario](#get-next-scenario)
@@ -12,11 +12,11 @@ Available endpoints for this API:
 - [Attack](#attack)
 - [Surrender](#surrender)
 
-## Get Availaible Pokemon Partners
+## Get Available Partners
 
 GET: `/partners`
 
-This endpoint is used for fetching available pokemon partner. Player need to choose from one of these pokemons when starting new game.
+This endpoint is used for fetching available monster partner. Player need to choose from one of these monsters when starting new game.
 
 **Example Request:**
 
@@ -36,7 +36,7 @@ Content-Type: application/json
         "partners": [
             {
                 "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-                "name": "Pikachu",
+                "name": "Bluebub",
                 "battle_stats": {
                     "health": 100,
                     "max_health": 100,
@@ -44,7 +44,7 @@ Content-Type: application/json
                     "defense": 5,
                     "speed": 10,
                 },
-                "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+                "avatar_url": "https://assets.monster.com/assets/025.png"
             }
         ]
     },
@@ -65,7 +65,7 @@ This endpoint is used for starting new game.
 **Body Fields:**
 
 - `player_name`, String => name of the player
-- `partner_id`, String => id of pokemon partner
+- `partner_id`, String => id of monster partner
 
 **Example Request:**
 
@@ -92,7 +92,7 @@ Content-Type: application/json
         "player_name": "Riandy R.N",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-            "name": "Pikachu",
+            "name": "Bluebub",
             "battle_stats": {
                 "health": 100,
                 "max_health": 100,
@@ -100,7 +100,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.monster.com/assets/025.png"
         }
     },
     "ts": 1644934528
@@ -154,7 +154,7 @@ Content-Type: application/json
         "player_name": "Riandy R.N",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-            "name": "Pikachu",
+            "name": "Bluebub",
             "battle_stats": {
                 "health": 100,
                 "max_health": 100,
@@ -162,7 +162,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.monster.com/assets/025.png"
         },
         "created_at": 1644934528,
         "battle_won": 0,
@@ -256,7 +256,7 @@ PUT: `/games/{game_id}/battle`
 
 This endpoint is used for initializing new battle for given game. The enemy that will be faced by player will be randomized by the system.
 
-Everytime player finish from battle, health point for pokemon partner will be set back to full.
+Everytime player finish from battle, health point for monster partner will be set back to full.
 
 **Example Request:**
 
@@ -277,7 +277,7 @@ Content-Type: application/json
         "state": "DECIDE_TURN",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-            "name": "Pikachu",
+            "name": "Bluebub",
             "battle_stats": {
                 "health": 100,
                 "max_health": 100,
@@ -285,7 +285,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.monster.com/assets/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -297,7 +297,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.monster.com/assets/004.png"
         },
         "last_damage": {
             "partner": 0,
@@ -380,7 +380,7 @@ Content-Type: application/json
         "state": "LOSE",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-            "name": "Pikachu",
+            "name": "Bluebub",
             "battle_stats": {
                 "health": 100,
                 "max_health": 0,
@@ -388,7 +388,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.monster.com/assets/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -400,7 +400,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.monster.com/assets/004.png"
         },
         "last_damage": {
             "partner": 100,
@@ -453,9 +453,9 @@ Content-Type: application/json
 
 PUT: `/games/{game_id}/battle/turn`
 
-This endpoint is used for deciding whether it is player or enemy turn to attack. If it is enemy turn, the pokemon partner will take some damage from enemy.
+This endpoint is used for deciding whether it is player or enemy turn to attack. If it is enemy turn, the monster partner will take some damage from enemy.
 
-Turn is being randomized based on speed stats from both pokemon partner & enemy.
+Turn is being randomized based on speed stats from both monster partner & enemy.
 
 **Example Request:**
 
@@ -478,7 +478,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
           "state": "DECIDE_TURN",
           "partner": {
               "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-              "name": "Pikachu",
+              "name": "Bluebub",
               "battle_stats": {
                   "health": 80,
                   "max_health": 100,
@@ -486,7 +486,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                   "defense": 5,
                   "speed": 10,
               },
-              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+              "avatar_url": "https://assets.monster.com/assets/025.png"
           },
           "enemy": {
               "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -498,7 +498,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                   "defense": 4,
                   "speed": 10,
               },
-              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+              "avatar_url": "https://assets.monster.com/assets/004.png"
           },
           "last_damage": {
               "partner": 20,
@@ -522,7 +522,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
           "state": "PARTNER_TURN",
           "partner": {
               "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-              "name": "Pikachu",
+              "name": "Bluebub",
               "battle_stats": {
                   "health": 100,
                   "max_health": 100,
@@ -530,7 +530,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                   "defense": 5,
                   "speed": 10,
               },
-              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+              "avatar_url": "https://assets.monster.com/assets/025.png"
           },
           "enemy": {
               "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -542,7 +542,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
                   "defense": 4,
                   "speed": 10,
               },
-              "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+              "avatar_url": "https://assets.monster.com/assets/004.png"
           },
           "last_damage": {
               "partner": 0,
@@ -632,7 +632,7 @@ Content-Type: application/json
         "state": "DECIDE_TURN",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-            "name": "Pikachu",
+            "name": "Bluebub",
             "battle_stats": {
                 "health": 100,
                 "max_health": 100,
@@ -640,7 +640,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.monster.com/assets/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -652,7 +652,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.monster.com/assets/004.png"
         },
         "last_damage": {
             "partner": 0,
@@ -742,7 +742,7 @@ Content-Type: application/json
         "state": "LOSE",
         "partner": {
             "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-            "name": "Pikachu",
+            "name": "Bluebub",
             "battle_stats": {
                 "health": 100,
                 "max_health": 100,
@@ -750,7 +750,7 @@ Content-Type: application/json
                 "defense": 5,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "avatar_url": "https://assets.monster.com/assets/025.png"
         },
         "enemy": {
             "id": "28933dde-b04c-46cc-9be7-5e785c62adfa",
@@ -762,7 +762,7 @@ Content-Type: application/json
                 "defense": 4,
                 "speed": 10,
             },
-            "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "avatar_url": "https://assets.monster.com/assets/004.png"
         },
         "last_damage": {
             "partner": 0,
