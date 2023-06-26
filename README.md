@@ -6,7 +6,7 @@ In this repo you will learn the concept of [Hexagonal Architecture](./docs/refer
 
 In the game you will play as a `10 years` old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek `3` strong wild monsters and kick them in the butt. 💥💪🏻
 
-We are applying the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) to implement the game server while coding it using [Golang](https://go.dev/). For the web client, we implemented it using [Vue 3](https://vuejs.org/).
+We are applying the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build the game server while coding it using [Golang](https://go.dev/). For the web client, we code it using [Vue 3](https://vuejs.org/).
 
 To see the REST API specification for this game, please see [this doc](./docs/api-design/rest-api.md).
 
