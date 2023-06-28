@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -14,7 +13,6 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
-	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/gosidekick/goconfig"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
@@ -27,25 +25,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse configs due: %v", err)
 	}
-
-	// initialize tracer exporter
-	traceExporter, err := telemetry.NewJaegerTracerProvider(cfg.JaegerEndpointURL, cfg.ServiceName)
-	if err != nil {
-		log.Fatalf("unable to initialize tracer exporter due: %v", err)
-	}
-
-	// initialize telemetry tracer
-	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
-		Exporter:    *traceExporter,
-		ServiceName: cfg.ServiceName,
-		BaseContext: context.Background(),
-	})
-	if err != nil {
-		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
-	}
-
-	// set singleton tracer
-	telemetry.SetTracer(&telemetryTracer)
 
 	// initialize pokemon storage
 	partnersData, err := ioutil.ReadFile("/partners.json")

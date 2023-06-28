@@ -37,28 +37,6 @@ services:
     logging:
       driver: none
 
-  jaeger:
-    image: jaegertracing/all-in-one:1.45
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-      - LOG_LEVEL=debug
-    ports:
-      - 14268:14268 # for jaeger endpoint
-      - 16686:16686 # for serving jaeger front-end
-    logging:
-      driver: none
-
-  aws-ot-collector:
-    image: amazon/aws-otel-collector:v0.23.1
-    environment:
-      - AWS_REGION=eu-west-1
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    ports:
-      - 4317:4317
-    logging:
-      driver: none
-
   rest-http-mem:
     build:
       context: ../../../

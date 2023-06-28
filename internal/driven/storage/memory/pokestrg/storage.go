@@ -4,9 +4,6 @@ import (
 	"context"
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -16,10 +13,6 @@ type Storage struct {
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "PokeStorage: GetAvailablePartners", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
 	var partners []entity.Pokemon
 	for _, partner := range s.partnerMap {
 		partners = append(partners, partner)
@@ -28,12 +21,6 @@ func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, e
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "PokeStorage: GetPartner", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
-	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
-
 	partner, ok := s.partnerMap[partnerID]
 	if !ok {
 		return nil, nil
@@ -42,10 +29,6 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 }
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	_, span := tr.Trace(ctx, "PokeStorage: GetPossibleEnemies", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
 	var enemies []entity.Pokemon
 	for _, enemy := range s.enemyMap {
 		enemies = append(enemies, enemy)

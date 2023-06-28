@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"log"
 	"net/http"
@@ -12,7 +11,6 @@ import (
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/gamestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/pokestrg"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
-	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/apex/gateway"
 	"github.com/gosidekick/goconfig"
 	"github.com/jmoiron/sqlx"
@@ -34,25 +32,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse configs due: %v", err)
 	}
-
-	// initialize tracing
-	traceExporter, err := telemetry.NewXRayTracerProvider(cfg.OtelExporterOTLPEndpoint, cfg.ServiceName)
-	if err != nil {
-		log.Fatalf("unable to initialize tracer exporter due: %v", err)
-	}
-
-	// initialize telemetry tracer
-	telemetryTracer, err := telemetry.NewOpenTelemetryTracer(telemetry.OpenTelemetryConfig{
-		Exporter:    *traceExporter,
-		ServiceName: cfg.ServiceName,
-		BaseContext: context.Background(),
-	})
-	if err != nil {
-		log.Fatalf("unable to initialize telemetry tracer due: %v", err)
-	}
-
-	// set singleton tracer
-	telemetry.SetTracer(&telemetryTracer)
 
 	sqlClient, err := sqlx.Connect("mysql", cfg.SQLDSN)
 	if err != nil {

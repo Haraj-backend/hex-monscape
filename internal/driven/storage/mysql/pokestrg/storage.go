@@ -7,11 +7,7 @@ import (
 
 	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
 	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
-	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
 	"github.com/jmoiron/sqlx"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -42,26 +38,14 @@ func New(cfg Config) (*Storage, error) {
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: GetAvailablePartners", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
 	return s.getPokemonsByRole(ctx, partner)
 }
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: GetPossibleEnemies", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
 	return s.getPokemonsByRole(ctx, enemy)
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: GetPartner", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
 	var pokemon shared.PokeRow
 	query := `
 		SELECT
@@ -77,17 +61,11 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 		WHERE id = ?
 	`
 
-	span.SetAttributes(attribute.Key("partner-id").String(partnerID))
-	span.SetAttributes(attribute.Key("db.system").String("mysql"))
-	span.SetAttributes(attribute.Key("db.statement").String(query))
-
 	if err := s.sqlClient.GetContext(ctx, &pokemon, query, partnerID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
 
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
 	}
 
@@ -95,10 +73,6 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 }
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "PokeStorage: getPokemonsByRole", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
 	var pokemons shared.PokeRows
 
 	query := `
@@ -114,17 +88,10 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 		FROM pokemons
 		WHERE is_partnerable = ?
 	`
-
-	span.SetAttributes(attribute.Key("db.system").String("mysql"))
-	span.SetAttributes(attribute.Key("db.statement").String(query))
-
 	if err := s.sqlClient.SelectContext(ctx, &pokemons, query, isPartnerable); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
 		return nil, fmt.Errorf("unable to find pokemon's role %d: %v", isPartnerable, err)
 	}
 
