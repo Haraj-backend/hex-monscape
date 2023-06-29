@@ -41,9 +41,6 @@ services:
     build:
       context: ../../../
       dockerfile: ./build/package/rest-http-mem/Dockerfile
-    depends_on:
-      jaeger:
-        condition: service_started
     volumes:
       - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
       - ../../../cmd/rest-http-mem:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem
@@ -51,7 +48,6 @@ services:
     ports:
       - 9185:9186
     environment:
-      - JAEGER_ENDPOINT_URL=http://jaeger:14268/api/traces
       - SERVICE_NAME=rest-http-mem
       - PORT=9186
 
@@ -62,8 +58,6 @@ services:
     depends_on:
       localstack:
         condition: service_healthy
-      aws-ot-collector:
-        condition: service_started
     ports:
       - 9186:9186
     volumes:
@@ -74,7 +68,6 @@ services:
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
-      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:4317
       - LOCAL_DEPLOYMENT_ENABLED=true
       - LOCAL_DEPLOYMENT_ENDPOINT=http://localstack:4566
       - LOCAL_DEPLOYMENT_PORT=9186
@@ -91,7 +84,6 @@ services:
       SERVER_DEPLOYMENT: "true"
       SERVICE_NAME: rest-lambda-mysql
       SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
-      OTEL_EXPORTER_OTLP_ENDPOINT: aws-ot-collector:4317
     volumes:
       - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
       - ../../../cmd/rest-lambda-mysql:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-mysql
@@ -99,7 +91,5 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      aws-ot-collector:
-        condition: service_started
     ports:
       - 9187:9186

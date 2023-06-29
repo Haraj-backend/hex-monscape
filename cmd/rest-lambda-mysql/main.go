@@ -19,11 +19,10 @@ import (
 )
 
 type config struct {
-	ServiceName              string `cfg:"service_name" cfgRequired:"true" cfgDefault:"rest-lambda-mysql"`
-	Port                     string `cfg:"port" cfgDefault:"9186"`
-	SQLDSN                   string `cfg:"sql_dsn" cfgRequired:"true"`
-	OtelExporterOTLPEndpoint string `cfg:"otel_exporter_otlp_endpoint" cfgRequired:"true"`
-	IsServer                 bool   `cfg:"server_deployment" cfgDefault:"false"`
+	ServiceName string `cfg:"service_name" cfgRequired:"true" cfgDefault:"rest-lambda-mysql"`
+	Port        string `cfg:"port" cfgDefault:"9186"`
+	SQLDSN      string `cfg:"sql_dsn" cfgRequired:"true"`
+	IsServer    bool   `cfg:"server_deployment" cfgDefault:"false"`
 }
 
 func main() {
