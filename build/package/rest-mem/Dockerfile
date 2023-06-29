@@ -4,7 +4,7 @@ WORKDIR /web
 COPY ./cmd/web .
 
 # FRONTEND_MODE define .env | .env.staging | .env.production that will be used
-ARG FRONTEND_MODE="production"
+ARG FRONTEND_MODE="production" 
 
 RUN yarn install
 RUN yarn build:${FRONTEND_MODE}
@@ -15,14 +15,17 @@ WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ./cmd/rest-lambda-ddb ./cmd/rest-lambda-ddb
+COPY ./cmd ./cmd
 COPY ./build ./build
 COPY ./internal ./internal
 
-# copy artifacts to a clean image
+COPY cmd/rest-mem/partners.json /partners.json
+COPY cmd/rest-mem/enemies.json /enemies.json
+
+# Copy compiled frontend to current directory
 COPY --from=frontend_build /web/dist /dist
 
 RUN go install github.com/cosmtrek/air@v1.27.3
 RUN mkdir -p tmp
 
-ENTRYPOINT ["air", "-c", "build/package/rest-lambda-ddb/.air.toml"]
+ENTRYPOINT ["air", "-c", "build/package/rest-mem/.air.toml"]
