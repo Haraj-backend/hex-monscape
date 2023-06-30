@@ -1,11 +1,10 @@
 FROM node:lts-alpine3.15 as frontend_build
 WORKDIR /web
+
 COPY ./cmd/web .
 
 # FRONTEND_MODE define .env | .env.staging | .env.production that will be used
-ARG FRONTEND_MODE="production"
-ARG VITE_API_STAGE_PATH
-ARG VITE_POKEBATTLE_URL
+ARG FRONTEND_MODE="production" 
 
 RUN yarn install
 RUN yarn build:${FRONTEND_MODE}
@@ -16,13 +15,17 @@ WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ./cmd/rest-mysql ./cmd/rest-mysql
+COPY ./cmd ./cmd
 COPY ./build ./build
 COPY ./internal ./internal
 
+COPY cmd/rest-http-mem/partners.json /partners.json
+COPY cmd/rest-http-mem/enemies.json /enemies.json
+
+# Copy compiled frontend to current directory
 COPY --from=frontend_build /web/dist /dist
 
 RUN go install github.com/cosmtrek/air@v1.27.3
 RUN mkdir -p tmp
 
-ENTRYPOINT ["air", "-c", "build/package/rest-mysql/.air.toml"]
+ENTRYPOINT ["air", "-c", "build/package/rest-http-mem/.air.toml"]

@@ -17,16 +17,16 @@ WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ./cmd/rest-ddb ./cmd/rest-ddb
+COPY ./cmd/rest-lambda-ddb ./cmd/rest-lambda-ddb
 COPY ./internal ./internal
 
-WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-ddb
+WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-ddb
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server
 
 # copy artifacts to a clean image
 FROM public.ecr.aws/lambda/go:1.2022.02.01.10
 
-COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-ddb/server ${LAMBDA_TASK_ROOT}
+COPY --from=build /go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-ddb/server ${LAMBDA_TASK_ROOT}
 COPY --from=frontend_build /web/dist /dist
 
 CMD [ "server" ]

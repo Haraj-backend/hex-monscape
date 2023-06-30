@@ -19,7 +19,7 @@ import (
 )
 
 type config struct {
-	ServiceName string `cfg:"service_name" cfgRequired:"true" cfgDefault:"rest-mysql"`
+	ServiceName string `cfg:"service_name" cfgRequired:"true" cfgDefault:"rest-lambda-mysql"`
 	Port        string `cfg:"port" cfgDefault:"9186"`
 	SQLDSN      string `cfg:"sql_dsn" cfgRequired:"true"`
 	IsServer    bool   `cfg:"server_deployment" cfgDefault:"false"`
