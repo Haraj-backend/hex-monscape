@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	serviceName = "rest-lambda-ddb"
+	serviceName = "rest-ddb"
 )
 
 type config struct {

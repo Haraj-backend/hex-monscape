@@ -37,24 +37,24 @@ services:
     logging:
       driver: none
 
-  rest-http-mem:
+  rest-mem:
     build:
       context: ../../../
-      dockerfile: ./build/package/rest-http-mem/Dockerfile
+      dockerfile: ./build/package/rest-mem/Dockerfile
     volumes:
       - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
-      - ../../../cmd/rest-http-mem:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-http-mem
-      - ../../../build/package/rest-http-mem/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-http-mem/.air.toml
+      - ../../../cmd/rest-mem:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-mem
+      - ../../../build/package/rest-mem/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-mem/.air.toml
     ports:
       - 9185:9186
     environment:
-      - SERVICE_NAME=rest-http-mem
+      - SERVICE_NAME=rest-mem
       - PORT=9186
 
-  rest-lambda-ddb:
+  rest-ddb:
     build:
       context: ../../../
-      dockerfile: ./build/package/rest-lambda-ddb/Dockerfile.local
+      dockerfile: ./build/package/rest-ddb/Dockerfile.local
     depends_on:
       localstack:
         condition: service_healthy
@@ -62,8 +62,8 @@ services:
       - 9186:9186
     volumes:
       - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
-      - ../../../cmd/rest-lambda-ddb:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-ddb
-      - ../../../build/package/rest-lambda-ddb/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-lambda-ddb/.air.toml
+      - ../../../cmd/rest-ddb:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-ddb
+      - ../../../build/package/rest-ddb/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-ddb/.air.toml
     environment:
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
@@ -75,19 +75,19 @@ services:
       - DDB_GAME_TABLE=Games
       - DDB_POKEMON_TABLE=Pokemons
 
-  rest-lambda-mysql:
+  rest-mysql:
     build:
       context: ../../../
-      dockerfile: ./build/package/rest-lambda-mysql/Dockerfile.local
+      dockerfile: ./build/package/rest-mysql/Dockerfile.local
     environment:
       PORT: 9186
       SERVER_DEPLOYMENT: "true"
-      SERVICE_NAME: rest-lambda-mysql
+      SERVICE_NAME: rest-mysql
       SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
     volumes:
       - ../../../internal:/go/src/github.com/Haraj-backend/hex-pokebattle/internal
-      - ../../../cmd/rest-lambda-mysql:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-lambda-mysql
-      - ../../../build/package/rest-lambda-mysql/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-lambda-mysql/.air.toml
+      - ../../../cmd/rest-mysql:/go/src/github.com/Haraj-backend/hex-pokebattle/cmd/rest-mysql
+      - ../../../build/package/rest-mysql/.air.toml:/go/src/github.com/Haraj-backend/hex-pokebattle/build/package/rest-mysql/.air.toml
     depends_on:
       mysql:
         condition: service_healthy
