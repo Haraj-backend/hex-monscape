@@ -31,10 +31,10 @@ services:
     ports:
       - "3316:3306"
 
-  integration-test:
+  exec-tests:
     build:
       context: ../../../
-      dockerfile: ./build/package/integration-test/Dockerfile
+      dockerfile: ./build/package/tests/Dockerfile
     depends_on:
       localstack:
         condition: service_healthy

@@ -50,7 +50,7 @@ All of these servers could be run by using this command:
 > make run
 ```
 
-This command will create & run the stack defined in this [docker-compose.yml](./deploy/local/deployment/docker-compose.yml). 
+This command will create & run the stack defined in this [docker-compose.yml](./deploy/local/run/docker-compose.yml). 
 
 Wait a moment until the entire stack is running. You will see something like this in the console after it is done:
 
