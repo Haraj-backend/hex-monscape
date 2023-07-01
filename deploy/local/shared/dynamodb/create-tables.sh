@@ -1,6 +1,8 @@
-# Create dynamodb table for Pokemons
+#!/bin/bash
+
+# Create monster table
 awslocal dynamodb create-table \
-    --table-name Pokemons \
+    --table-name monster \
     --attribute-definitions \
         AttributeName=id,AttributeType=S \
         AttributeName=extra_role,AttributeType=S \
@@ -11,7 +13,7 @@ awslocal dynamodb create-table \
     --global-secondary-indexes \
         "[
             {
-                \"IndexName\": \"index_extra_role\",
+                \"IndexName\": \"extra_role\",
                 \"KeySchema\": [{\"AttributeName\":\"extra_role\",\"KeyType\":\"HASH\"}],
                 \"Projection\": {
                     \"ProjectionType\": \"ALL\"
@@ -23,9 +25,9 @@ awslocal dynamodb create-table \
             }
         ]"
 
-# Create dynamodb table for Games
+# Create game table
 awslocal dynamodb create-table \
-    --table-name Games \
+    --table-name game \
     --attribute-definitions \
         AttributeName=id,AttributeType=S \
     --key-schema \
@@ -33,9 +35,9 @@ awslocal dynamodb create-table \
     --provisioned-throughput \
         ReadCapacityUnits=1,WriteCapacityUnits=1
 
-# Create dynamodb table for Battles
+# Create battle table
 awslocal dynamodb create-table \
-    --table-name Battles \
+    --table-name battle \
     --attribute-definitions \
         AttributeName=game_id,AttributeType=S \
     --key-schema \

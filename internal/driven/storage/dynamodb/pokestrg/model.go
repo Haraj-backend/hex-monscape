@@ -8,7 +8,7 @@ import (
 type extraRole string
 
 const (
-	indexExtraRole = "index_extra_role"
+	indexExtraRole = "extra_role"
 
 	partnerRole extraRole = "PARTNER"
 	enemyRole   extraRole = "ENEMY"

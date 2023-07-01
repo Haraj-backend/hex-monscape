@@ -1,6 +1,6 @@
 # DynamoDB Schema
 
-## Table `Monsters`
+## Table `monster`
 
 Table that holds monster records.
 
@@ -20,26 +20,27 @@ Table that holds monster records.
 
 ```json
 {
-    "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-    "name": "Bluebub",
-    "battle_stats": {
-        "max_health": 100,
-        "attack": 25,
-        "defense": 5,
-        "speed": 15
-    },
-    "avatar_url": "https://assets.monster.com/assets/025.png",
-    "extra_role": "PARTNER"
-},
+  "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+  "name": "Bluebub",
+  "battle_stats": {
+    "max_health": 100,
+    "attack": 25,
+    "defense": 5,
+    "speed": 15
+  },
+  "avatar_url": "https://assets.monster.com/assets/025.png",
+  "extra_role": "PARTNER"
+}
 ```
 
 **Indexes:**
+
 - `PRIMARY_KEY` => `id`
-- `extra_role`, GSI => `extra_role`
+- `extra_role` => `extra_role`
 
 [Back to Top](#dynamodb-schema)
 
-## Table `Games`
+## Table `game`
 
 Table that holds records of every games that has been/being played.
 
@@ -56,22 +57,23 @@ Table that holds records of every games that has been/being played.
 
 ```json
 {
-    "id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
-    "player_name": "Alfonso",
-    "created_at": 1646205996,
-    "battle_won": 2,
-    "scenario": "BATTLE_3",
-    "partner_id": "b1c87c5c-2ac3-471d-9880-4812552ee15d"
+  "id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
+  "player_name": "Alfonso",
+  "created_at": 1646205996,
+  "battle_won": 2,
+  "scenario": "BATTLE_3",
+  "partner_id": "b1c87c5c-2ac3-471d-9880-4812552ee15d"
 }
 ```
 
 **Indexes:**
+
 - `PRIMARY_KEY` => `id`
 
 [Back to Top](#dynamodb-schema)
 
 
-## Table `Battles`
+## Table `battle`
 
 Table that holds records of running battle for each games.
 
@@ -104,39 +106,39 @@ Table that holds records of running battle for each games.
 
 **Example Record:**
 
-```
+```json
 {
-    "game_id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
-    "state": "DECIDE_TURN",
-    "partner": {
-        "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-        "name": "Bluebub",
-        "battle_stats": {
-            "max_health": 100,
-            "attack": 25,
-            "defense": 5,
-            "speed": 15,
-            "health": 75
-        },
-        "avatar_url": "https://assets.monster.com/assets/025.png",
-        "extra_role": "PARTNER"
+  "game_id": "1a34a63d-afe6-4186-8628-13a25eaa6076",
+  "state": "DECIDE_TURN",
+  "partner": {
+    "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+    "name": "Bluebub",
+    "battle_stats": {
+      "max_health": 100,
+      "attack": 25,
+      "defense": 5,
+      "speed": 15,
+      "health": 75
     },
-    "enemy":{
-        "id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
-        "name": "Squirtle",
-        "battle_stats": {
-            "max_health": 100,
-            "attack": 20,
-            "defense": 10,
-            "speed": 15,
-            "health": 60
-        },
-        "avatar_url": "https://assets.monster.com/assets/007.png"
+    "avatar_url": "https://assets.monster.com/assets/025.png",
+    "extra_role": "PARTNER"
+  },
+  "enemy":{
+    "id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+    "name": "Squirtle",
+    "battle_stats": {
+      "max_health": 100,
+      "attack": 20,
+      "defense": 10,
+      "speed": 15,
+      "health": 60
     },
-    "last_damage": {
-        "partner": 10,
-        "enemy": 25
-    }
+    "avatar_url": "https://assets.monster.com/assets/007.png"
+  },
+  "last_damage": {
+    "partner": 10,
+    "enemy": 25
+  }
 }
 ```
 

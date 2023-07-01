@@ -2,36 +2,29 @@ version: "2.4"
 
 services:
   localstack:
-    image: localstack/localstack:0.14
-    logging:
-      driver: none
-    ports:
-      - 4576:4566
+    image: localstack/localstack:2.1.0
+    # ports:
+    #   - 4576:4566
     environment:
-      - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
     healthcheck:
-      test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
-    entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
+      test: "curl -f -s http://localhost:4566/_localstack/health > /dev/null"
     volumes:
-      - '../shared/ddb-create-tables.sh:/docker-entrypoint-initaws.d/ddb-create-tables.sh'
-      - '../shared/wait-localstack.sh:/wait-localstack.sh'
+      - ../shared/dynamodb/create-tables.sh:/etc/localstack/init/ready.d/create-tables.sh
 
   mysql:
     image: bitnami/mysql:5.7
-    logging:
-      driver: none
     environment:
       MYSQL_ROOT_PASSWORD: "test1234"
-      MYSQL_DATABASE: "db_pokebattle"
+      MYSQL_DATABASE: "db_monscape"
     healthcheck:
       test: "mysqladmin ping"
     volumes:
-      - ../shared/mysql-schema.sql:/docker-entrypoint-initdb.d/mysql-schema.sql
-    ports:
-      - "3316:3306"
+      - ../shared/mysql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    # ports:
+    #   - "3316:3306"
 
-  exec-tests:
+  tests:
     build:
       context: ../../../
       dockerfile: ./build/package/tests/Dockerfile
@@ -44,10 +37,12 @@ services:
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
-      - DDB_TABLE_BATTLE_NAME=Battles
-      - DDB_TABLE_GAME_NAME=Games
-      - DDB_TABLE_POKEMON_NAME=Pokemons
+      - DDB_TABLE_BATTLE_NAME=battle
+      - DDB_TABLE_GAME_NAME=game
+      - DDB_TABLE_POKEMON_NAME=monster
       - LOCALSTACK_ENDPOINT=http://localstack:4566
-      - TEST_SQL_DSN=root:test1234@tcp(mysql:3306)/db_pokebattle?timeout=5s
+      - TEST_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
       - CGO_ENABLED=0
-    command: "go test ./... -count=1"
+    command: "go test ./... -p=1 -count=1"
+    volumes:
+      - ../../../tmp/go/pkg:/go/pkg # enable caching for go modules
