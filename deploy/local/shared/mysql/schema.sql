@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS pokemons (
+CREATE TABLE IF NOT EXISTS monster (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   health INT(11) NOT NULL,
@@ -11,20 +11,19 @@ CREATE TABLE IF NOT EXISTS pokemons (
   KEY `is_partnerable` (`is_partnerable`)
 );
 
-CREATE TABLE IF NOT EXISTS games (
+CREATE TABLE IF NOT EXISTS game (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   player_name VARCHAR(255) NOT NULL,
   created_at BIGINT(20) NOT NULL,
   battle_won INT(11) NOT NULL,
   scenario VARCHAR(30) NOT NULL,
-  partner_id VARCHAR(36) NOT NULL,
-  FOREIGN KEY (partner_id) REFERENCES pokemons(id)
+  partner_id VARCHAR(36) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS battles (
+CREATE TABLE IF NOT EXISTS battle (
   game_id VARCHAR(36) NOT NULL PRIMARY KEY,
   state VARCHAR(30) NOT NULL,
-  partner_pokemon_id VARCHAR(36) NOT NULL,
+  partner_monster_id VARCHAR(36) NOT NULL,
   partner_name VARCHAR(255) NOT NULL,
   partner_max_health INT(11) NOT NULL,
   partner_health INT(11) NOT NULL,
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS battles (
   partner_speed INT(11) NOT NULL,
   partner_avatar_url TEXT NOT NULL,
   partner_last_damage INT(11) NOT NULL,
-  enemy_pokemon_id VARCHAR(36) NOT NULL,
+  enemy_monster_id VARCHAR(36) NOT NULL,
   enemy_name VARCHAR(255) NOT NULL,
   enemy_max_health INT(11) NOT NULL,
   enemy_health INT(11) NOT NULL,
@@ -41,7 +40,5 @@ CREATE TABLE IF NOT EXISTS battles (
   enemy_defense INT(11) NOT NULL,
   enemy_speed INT(11) NOT NULL,
   enemy_avatar_url TEXT NOT NULL,
-  enemy_last_damage INT(11) NOT NULL,
-  FOREIGN KEY (partner_pokemon_id) REFERENCES pokemons(id),
-  FOREIGN KEY (enemy_pokemon_id) REFERENCES pokemons(id)
+  enemy_last_damage INT(11) NOT NULL
 );

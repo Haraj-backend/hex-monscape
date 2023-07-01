@@ -4,7 +4,7 @@
 
 Table that holds monster records.
 
-**Relevant Fields:**
+**Fields:**
 
 - `id`, String => identifier of a monster
 - `name`, String => name of a monster
@@ -14,7 +14,7 @@ Table that holds monster records.
   - `defense`, Number => number of damage reducer for a monster (damage = enemy.attack - your_partner.defense)
   - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
 - `avatar_url`, String => url for avatar image of a monster
-- `extra_role`, String, *OPTIONAL* => the monster type, valid values: `PARTNER`
+- `extra_role`, String, *OPTIONAL* => extra flag to define monster type, valid values: `PARTNER`
 
 **Example Record:**
 
@@ -44,7 +44,7 @@ Table that holds monster records.
 
 Table that holds records of every games that has been/being played.
 
-**Relevant Fields:**
+**Fields:**
 
 - `id`, String => identifier of a game
 - `player_name`, String => name of game player
@@ -77,7 +77,8 @@ Table that holds records of every games that has been/being played.
 
 Table that holds records of running battle for each games.
 
-**Relevant Fields:**
+**Fields:**
+
 - `game_id`, String => identifier of a game that the battle resides
 - `state`, String => current state of a battle, valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
 - `partner`, Map => holds information of player's monster

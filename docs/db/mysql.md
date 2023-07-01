@@ -1,10 +1,10 @@
 # Mysql Schema
 
-## Table `monsters`
+## Table `monster`
 
 Table that holds records of all available monsters.
 
-**Relevant Fields:**
+**Fields:**
 
 - `id`, VARCHAR(36) => identifier of a monster
 - `name`, VARCHAR(255) => name of a monster
@@ -31,18 +31,18 @@ Table that holds records of all available monsters.
 },
 ```
 
-**Relevant Indexes:**
+**Indexes:**
 
 - `PRIMARY_KEY` => `id`
 - `is_partnerable` => `is_partnerable`
 
 [Back to Top](#mysql-schema)
 
-## Table `games`
+## Table `game`
 
 Table that holds records of every games that has been/being played
 
-**Relevant Fields:**
+**Fields:**
 
 - `id`, VARCHAR(36) => identifier of a game
 - `player_name`, VARCHAR(255) => name of game player
@@ -64,18 +64,17 @@ Table that holds records of every games that has been/being played
 }
 ```
 
-**Relevant Indexes:**
+**Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `FOREIGN_KEY` => `partner_id` ref to `monsters.id`.
 
 [Back to Top](#mysql-schema)
 
-## Table `battles`
+## Table `battle`
 
 This table is used for holding complete information for single battle.
 
-**Relevant Fields:**
+**Fields:**
 
 - `game_id`, VARCHAR(36) => id of the game where this battle is occurring
 - `state`, VARCHAR(30) => current battle state, valid values: `DECIDE_TURN`, `ENEMY_TURN`, `PARTNER_TURN`, `WIN`, `LOSE`
@@ -123,9 +122,8 @@ This table is used for holding complete information for single battle.
 }
 ```
 
-**Relevant Indexes:**
+**Indexes:**
 
 - `PRIMARY_KEY` => `game_id`
-- `FOREIGN_KEY` => `partner_monster_id`, `enemy_monster_id` ref to `monsters.id`.
 
 [Back to Top](#mysql-schema)
