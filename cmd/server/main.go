@@ -99,7 +99,6 @@ func main() {
 }
 
 type config struct {
-	Port              string `cfg:"port" cfgDefault:"9186"`
-	ServiceName       string `cfg:"service_name" cfgDefault:"rest-mem"`
-	JaegerEndpointURL string `cfg:"jaeger_endpoint_url" cfgDefault:"http://localhost:14268/api/traces"`
+	Port        string `cfg:"port" cfgDefault:"9186"`
+	ServiceName string `cfg:"service_name" cfgDefault:"rest-mem"`
 }

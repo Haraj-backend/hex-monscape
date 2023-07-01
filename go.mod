@@ -3,7 +3,6 @@ module github.com/Haraj-backend/hex-pokebattle
 go 1.18
 
 require (
-	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-sdk-go v1.44.162
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/render v1.0.1
@@ -15,10 +14,7 @@ require (
 	gopkg.in/validator.v2 v2.0.0-20210331031555-b37d688a7fb0
 )
 
-require github.com/pkg/errors v0.9.1 // indirect
-
 require (
-	github.com/aws/aws-lambda-go v1.34.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
