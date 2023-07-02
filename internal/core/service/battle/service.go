@@ -46,7 +46,7 @@ type Service interface {
 type service struct {
 	gameStorage    GameStorage
 	battleStorage  BattleStorage
-	pokemonStorage PokemonStorage
+	pokemonStorage MonsterStorage
 }
 
 func (s *service) StartBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
@@ -197,7 +197,7 @@ func (s *service) Surrender(ctx context.Context, gameID string) (*entity.Battle,
 type ServiceConfig struct {
 	GameStorage    GameStorage    `validate:"nonnil"`
 	BattleStorage  BattleStorage  `validate:"nonnil"`
-	PokemonStorage PokemonStorage `validate:"nonnil"`
+	PokemonStorage MonsterStorage `validate:"nonnil"`
 }
 
 func (c ServiceConfig) Validate() error {

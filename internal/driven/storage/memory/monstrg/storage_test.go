@@ -1,4 +1,4 @@
-package pokestrg
+package monstrg
 
 import (
 	"context"

@@ -6,7 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/aws/aws-sdk-go/aws"
@@ -23,9 +22,9 @@ func TestSaveBattle(t *testing.T) {
 	require.NoError(t, err)
 
 	// save battle
-	battle := battle.Battle{
+	battle := entity.Battle{
 		GameID: uuid.NewString(),
-		State:  battle.DECIDE_TURN,
+		State:  entity.DECIDE_TURN,
 		Partner: &entity.Monster{
 			ID:   "partner-id",
 			Name: "my-partner",
@@ -34,7 +33,7 @@ func TestSaveBattle(t *testing.T) {
 			ID:   "enemy-id",
 			Name: "my-enemy",
 		},
-		LastDamage: battle.LastDamage{
+		LastDamage: entity.LastDamage{
 			Partner: 10,
 			Enemy:   10,
 		},
@@ -58,9 +57,9 @@ func TestGetBattle(t *testing.T) {
 
 	// create new battle, notice that we use `storage.SaveBattle()` here since
 	// it is already tested, so we can sure it is already correctly implemented
-	bt := battle.Battle{
+	bt := entity.Battle{
 		GameID: uuid.NewString(),
-		State:  battle.DECIDE_TURN,
+		State:  entity.DECIDE_TURN,
 		Partner: &entity.Monster{
 			ID:   "partner-id",
 			Name: "my-partner",
@@ -69,7 +68,7 @@ func TestGetBattle(t *testing.T) {
 			ID:   "enemy-id",
 			Name: "my-enemy",
 		},
-		LastDamage: battle.LastDamage{
+		LastDamage: entity.LastDamage{
 			Partner: 10,
 			Enemy:   10,
 		},
@@ -82,7 +81,7 @@ func TestGetBattle(t *testing.T) {
 	testCases := []struct {
 		Name      string
 		GameID    string
-		ExpBattle *battle.Battle
+		ExpBattle *entity.Battle
 	}{
 		{
 			Name:      "Test Battle Not Found",
@@ -121,7 +120,7 @@ func newStorage() (*Storage, error) {
 	return s, nil
 }
 
-func getBattle(dynamoClient *dynamodb.DynamoDB, gameID string) (*battle.Battle, error) {
+func getBattle(dynamoClient *dynamodb.DynamoDB, gameID string) (*entity.Battle, error) {
 	output, err := dynamoClient.GetItem(&dynamodb.GetItemInput{
 		Key:       (battleKey{GameID: gameID}).toDDBKey(),
 		TableName: aws.String(os.Getenv(shared.TestConfig.EnvKeyBattleTableName)),
@@ -134,7 +133,7 @@ func getBattle(dynamoClient *dynamodb.DynamoDB, gameID string) (*battle.Battle, 
 		// implementation, in here when item is not found we return error
 		return nil, fmt.Errorf("battle is not found")
 	}
-	var b battle.Battle
+	var b entity.Battle
 	err = dynamodbattribute.UnmarshalMap(output.Item, &b)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse item due: %w", err)

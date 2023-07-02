@@ -11,12 +11,12 @@ import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/pokestrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driver/rest"
 	"github.com/gosidekick/goconfig"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
-	"github.com/Haraj-backend/hex-monscape/internal/core/play"
+	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
 )
 
 func main() {
@@ -45,8 +45,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to parse enemies data due: %v", err)
 	}
-	pokemonStorage, err := pokestrg.New(
-		pokestrg.Config{
+	pokemonStorage, err := monstrg.New(
+		monstrg.Config{
 			Partners: partners,
 			Enemies:  enemies,
 		},

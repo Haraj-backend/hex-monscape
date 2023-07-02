@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -16,7 +16,7 @@ type Storage struct {
 	tableName    string
 }
 
-func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
+func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	// construct params
 	key := battleKey{GameID: gameID}
 	input := &dynamodb.GetItemInput{
@@ -33,7 +33,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 		return nil, nil
 	}
 	// parse item
-	battle := battle.Battle{}
+	battle := entity.Battle{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
@@ -42,7 +42,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	return &battle, nil
 }
 
-func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
+func (s *Storage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	// construct params
 	item, _ := dynamodbattribute.MarshalMap(&b)
 	input := &dynamodb.PutItemInput{

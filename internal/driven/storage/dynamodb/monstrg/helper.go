@@ -1,4 +1,4 @@
-package pokestrg
+package monstrg
 
 import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
