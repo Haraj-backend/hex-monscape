@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
 	"github.com/jmoiron/sqlx"
 	"gopkg.in/validator.v2"
 )

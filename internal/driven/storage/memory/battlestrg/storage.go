@@ -3,7 +3,7 @@ package battlestrg
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
 )
 
 type Storage struct {

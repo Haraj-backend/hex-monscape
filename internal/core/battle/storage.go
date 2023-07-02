@@ -3,7 +3,7 @@ package battle
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
 type BattleStorage interface {

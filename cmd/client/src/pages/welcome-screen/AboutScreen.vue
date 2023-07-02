@@ -25,7 +25,7 @@ export default {
                     This is a simple web game implemented using Hexagonal Architecture. It is intended to become Solutions Team reference when they want to implement web app using Hexagonal Architecture. You can see more details
                     <a
                         class="underline"
-                        href="https://github.com/Haraj-backend/hex-pokebattle"
+                        href="https://github.com/Haraj-backend/hex-monscape"
                         target="_blank"
                         rel="noopener noreferrer"
                     >here.</a>

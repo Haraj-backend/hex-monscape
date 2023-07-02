@@ -8,15 +8,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/battlestrg"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/gamestrg"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/memory/pokestrg"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driver/rest"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/pokestrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driver/rest"
 	"github.com/gosidekick/goconfig"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/play"
+	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/play"
 )
 
 func main() {

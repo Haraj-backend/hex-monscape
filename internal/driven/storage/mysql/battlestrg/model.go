@@ -1,8 +1,8 @@
 package battlestrg
 
 import (
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
 type battleRow struct {

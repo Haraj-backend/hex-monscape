@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

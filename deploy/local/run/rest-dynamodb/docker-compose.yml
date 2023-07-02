@@ -1,0 +1,44 @@
+version: '2.4'
+services:
+  localstack:
+    image: localstack/localstack:0.14
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=dynamodb
+      - AWS_DEFAULT_REGION=eu-west-1
+      - DONT_SEED_POKEMON=false
+    healthcheck:
+      test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
+    entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
+    volumes:
+      - ../shared/wait-localstack.sh:/wait-localstack.sh
+      - ../shared/ddb-create-tables.sh:/docker-entrypoint-initaws.d/1.sh
+      - ./ddb-write-data.sh:/docker-entrypoint-initaws.d/2.sh
+      - ./ddb-data.json:/ddb-data.json
+    logging:
+      driver: none
+
+  rest-ddb:
+    build:
+      context: ../../../
+      dockerfile: ./build/package/rest-ddb/Dockerfile.local
+    depends_on:
+      localstack:
+        condition: service_healthy
+    ports:
+      - 9186:9186
+    volumes:
+      - ../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../cmd/rest-ddb:/go/src/github.com/Haraj-backend/hex-monscape/cmd/rest-ddb
+      - ../../../build/package/rest-ddb/.air.toml:/go/src/github.com/Haraj-backend/hex-monscape/build/package/rest-ddb/.air.toml
+    environment:
+      - AWS_ACCESS_KEY_ID=awslocal
+      - AWS_REGION=eu-west-1
+      - AWS_SECRET_ACCESS_KEY=awslocal
+      - LOCAL_DEPLOYMENT_ENABLED=true
+      - LOCAL_DEPLOYMENT_ENDPOINT=http://localstack:4566
+      - LOCAL_DEPLOYMENT_PORT=9186
+      - DDB_BATTLE_TABLE=Battles
+      - DDB_GAME_TABLE=Games
+      - DDB_POKEMON_TABLE=Pokemons

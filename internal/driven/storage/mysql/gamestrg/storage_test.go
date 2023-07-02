@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 	"github.com/stretchr/testify/require"
 
 	_ "github.com/go-sql-driver/mysql"

@@ -1,4 +1,4 @@
-module github.com/Haraj-backend/hex-pokebattle
+module github.com/Haraj-backend/hex-monscape
 
 go 1.18
 

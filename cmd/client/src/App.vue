@@ -8,12 +8,12 @@ export default {
   setup() {
     const store = useStore()
     const backgrounds = [
-      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-pokebattle-backgrounds/bulbasaur.jpg',
-      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-pokebattle-backgrounds/charmander.jpg',
-      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-pokebattle-backgrounds/charmeleon.jpg',
-      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-pokebattle-backgrounds/ivysaur.jpg',
-      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-pokebattle-backgrounds/pikachu.jpg',
-      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-pokebattle-backgrounds/squirtle.jpg'
+      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/bulbasaur.jpg',
+      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/charmander.jpg',
+      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/charmeleon.jpg',
+      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/ivysaur.jpg',
+      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/pikachu.jpg',
+      'https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/squirtle.jpg'
     ]
 
     let selectedBg = store.gameBackground

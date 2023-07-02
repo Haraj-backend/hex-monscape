@@ -1,19 +1,8 @@
-FROM node:lts-alpine3.15 as frontend_build
-WORKDIR /web
-
-COPY ./cmd/web .
-
-# FRONTEND_MODE define .env | .env.staging | .env.production that will be used
-ARG FRONTEND_MODE="production" 
-
-RUN yarn install
-RUN yarn build:${FRONTEND_MODE}
-
-FROM golang:1.18-alpine3.15 as build
-WORKDIR /go/src/github.com/Haraj-backend/hex-pokebattle
+FROM golang:1.20.5-alpine3.18 as build
+WORKDIR /go/src/github.com/Haraj-backend/hex-monscape
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN go mod download -x
 
 COPY ./cmd ./cmd
 COPY ./build ./build
@@ -21,9 +10,6 @@ COPY ./internal ./internal
 
 COPY cmd/rest-mem/partners.json /partners.json
 COPY cmd/rest-mem/enemies.json /enemies.json
-
-# Copy compiled frontend to current directory
-COPY --from=frontend_build /web/dist /dist
 
 RUN go install github.com/cosmtrek/air@v1.27.3
 RUN mkdir -p tmp

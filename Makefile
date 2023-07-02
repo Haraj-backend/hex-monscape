@@ -1,11 +1,19 @@
 .PHONY: *
 
 run:
-	-make down
-	docker compose -f ./deploy/local/run/docker-compose.yml up --build
+	make run-rest-memory
 
-down:
-	docker compose -f ./deploy/local/run/docker-compose.yml down --remove-orphans
+run-rest-memory:
+	-docker compose -f ./deploy/local/run/rest-memory/docker-compose.yml down --remove-orphans
+	docker compose -f ./deploy/local/run/rest-memory/docker-compose.yml up --build
+
+run-rest-mysql:
+	-docker compose -f ./deploy/local/run/rest-mysql/docker-compose.yml down --remove-orphans
+	docker compose -f ./deploy/local/run/rest-mysql/docker-compose.yml up --build
+
+run-rest-dynamodb:
+	-docker compose -f ./deploy/local/run/rest-dynamodb/docker-compose.yml down --remove-orphans
+	docker compose -f ./deploy/local/run/rest-dynamodb/docker-compose.yml up --build
 
 test:
 	-docker compose -f ./deploy/local/tests/docker-compose.yml down --remove-orphans
