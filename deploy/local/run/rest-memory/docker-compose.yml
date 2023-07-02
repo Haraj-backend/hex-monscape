@@ -1,16 +1,13 @@
 version: "2.4"
 
 services:
-  rest-mem:
+  server:
     build:
-      context: ../../../
-      dockerfile: ./build/package/rest-mem/Dockerfile
+      context: ../../../../
+      dockerfile: ./build/package/server/Dockerfile
     volumes:
-      - ../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
-      - ../../../cmd/rest-mem:/go/src/github.com/Haraj-backend/hex-monscape/cmd/rest-mem
-      - ../../../build/package/rest-mem/.air.toml:/go/src/github.com/Haraj-backend/hex-monscape/build/package/rest-mem/.air.toml
+      - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
+      - ../../../../tmp/go/pkg:/go/pkg
     ports:
-      - 9185:9186
-    environment:
-      - SERVICE_NAME=rest-mem
-      - PORT=9186
+      - 9186:9186
