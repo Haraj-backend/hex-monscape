@@ -12,11 +12,11 @@ import (
 var ErrInvalidState = errors.New("invalid state for given action")
 
 type Battle struct {
-	GameID     string     `json:"game_id"`
-	State      State      `json:"state"`
-	Partner    *Monster   `json:"partner"`
-	Enemy      *Monster   `json:"enemy"`
-	LastDamage LastDamage `json:"last_damage"`
+	GameID     string
+	State      State
+	Partner    *Monster
+	Enemy      *Monster
+	LastDamage LastDamage
 }
 
 // PartnerAttack is used for executing partner attack. The battle state must

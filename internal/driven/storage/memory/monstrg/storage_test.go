@@ -1,86 +1,164 @@
-package monstrg
+package monstrg_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
-	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/google/uuid"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetAvailablePartners(t *testing.T) {
-	partners := []entity.Monster{
-		*newSamplePokemon(),
-	}
-	strg, err := New(Config{
-		Partners: partners,
-		Enemies: []entity.Monster{
-			*newSamplePokemon(),
+	// init storage
+	strg := initStorage(t)
+
+	// get available partners
+	partners, err := strg.GetAvailablePartners(context.Background())
+	require.NoError(t, err)
+
+	// we got the expected partners from monsterData variable
+	expPartners := []entity.Monster{
+		{
+			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+			Name: "Waneye",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    25,
+				Defense:   5,
+				Speed:     15,
+			},
+			AvatarURL: "https://monster.com/waneye.png",
 		},
-	})
-	if err != nil {
-		t.Fatalf("unable to init new storage, due: %v", err)
 	}
-	newPartners, err := strg.GetAvailablePartners(context.Background())
-	if err != nil {
-		t.Fatalf("unable to get available partners from storage, due: %v", err)
-	}
-	require.Equal(t, partners, newPartners, "partners is not equal")
+
+	// ensure partners is equal to expected partners
+	require.Equal(t, partners, expPartners, "unexpected partners")
 }
 
 func TestGetPartner(t *testing.T) {
-	partner := newSamplePokemon()
-	strg, err := New(Config{
-		Partners: []entity.Monster{*partner},
-		Enemies: []entity.Monster{
-			*newSamplePokemon(),
+	// init storage
+	strg := initStorage(t)
+
+	// define test cases
+	testCases := []struct {
+		Name       string
+		PartnerID  string
+		ExpPartner *entity.Monster
+	}{
+		{
+			Name:      "Partner Found",
+			PartnerID: "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+			ExpPartner: &entity.Monster{
+				ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+				Name: "Waneye",
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    25,
+					Defense:   5,
+					Speed:     15,
+				},
+				AvatarURL: "https://monster.com/waneye.png",
+			},
 		},
-	})
-	if err != nil {
-		t.Fatalf("unable to init new storage, due: %v", err)
+		{
+			Name:       "Partner Not Found",
+			PartnerID:  "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+			ExpPartner: nil,
+		},
 	}
-	newPartner, err := strg.GetPartner(context.Background(), partner.ID)
-	if err != nil {
-		t.Fatalf("unable to get partner from storage, due: %v", err)
+
+	// execute test cases
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			partner, err := strg.GetPartner(context.Background(), testCase.PartnerID)
+			assert.NoError(t, err)
+			assert.Equal(t, testCase.ExpPartner, partner, "unexpected partner")
+		})
 	}
-	require.Equal(t, partner, newPartner, "partner is not equal")
 }
 
 func TestGetPossibleEnemies(t *testing.T) {
-	enemies := []entity.Monster{
-		*newSamplePokemon(),
-	}
-	strg, err := New(Config{
-		Partners: []entity.Monster{
-			*newSamplePokemon(),
-		},
-		Enemies: enemies,
-	})
-	if err != nil {
-		t.Fatalf("unable to init new storage, due: %v", err)
-	}
-	newEnemies, err := strg.GetPossibleEnemies(context.Background())
+	// init storage
+	strg := initStorage(t)
+
+	// get possible enemies
+	possibleEnemies, err := strg.GetPossibleEnemies(context.Background())
 	if err != nil {
 		t.Fatalf("unable to get possible enemies from storage, due: %v", err)
 	}
-	require.Equal(t, enemies, newEnemies, "enemies is not equal")
+
+	// we got the expected enemies from monsterData variable
+	expPossibleEnemies := []entity.Monster{
+		{
+			ID:   "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+			Name: "Bluebub",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    20,
+				Defense:   10,
+				Speed:     15,
+			},
+			AvatarURL: "https://monster.com/bluebub.png",
+		},
+		{
+			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+			Name: "Waneye",
+			BattleStats: entity.BattleStats{
+				Health:    100,
+				MaxHealth: 100,
+				Attack:    25,
+				Defense:   5,
+				Speed:     15,
+			},
+			AvatarURL: "https://monster.com/waneye.png",
+		},
+	}
+
+	// ensure possible enemies is equal to expected possible enemies
+	require.Equal(t, expPossibleEnemies, possibleEnemies, "enemies is not equal")
 }
 
-func newSamplePokemon() *entity.Monster {
-	currentTs := time.Now().Unix()
-	return &entity.Monster{
-		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("pokemon_%v", currentTs),
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    100,
-			Defense:   100,
-			Speed:     100,
+var monsterData = []byte(`
+	[
+		{
+			"id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
+			"name": "Bluebub",
+			"battle_stats": {
+				"health": 100,
+				"max_health": 100,
+				"attack": 20,
+				"defense": 10,
+				"speed": 15
+			},
+			"avatar_url": "https://monster.com/bluebub.png",
+			"is_partnerable": false
 		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
-	}
+		{
+			"id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
+			"name": "Waneye",
+			"battle_stats": {
+				"health": 100,
+				"max_health": 100,
+				"attack": 25,
+				"defense": 5,
+				"speed": 15
+			},
+			"avatar_url": "https://monster.com/waneye.png",
+			"is_partnerable": true
+		}
+	]
+`)
+
+func initStorage(t *testing.T) *monstrg.Storage {
+	strg, err := monstrg.New(monstrg.Config{
+		MonsterData: monsterData,
+	})
+	require.NoError(t, err)
+
+	return strg
 }

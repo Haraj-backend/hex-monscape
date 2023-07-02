@@ -3,10 +3,10 @@ package entity
 const minDamage = 5
 
 type Monster struct {
-	ID          string      `json:"id"`
-	Name        string      `json:"name"`
-	BattleStats BattleStats `json:"battle_stats"`
-	AvatarURL   string      `json:"avatar_url"`
+	ID          string
+	Name        string
+	BattleStats BattleStats
+	AvatarURL   string
 }
 
 // ResetBattleStats is used to reset partner health
@@ -28,11 +28,11 @@ func (p *Monster) InflictDamage(enemy Monster) (int, error) {
 }
 
 type BattleStats struct {
-	Health    int `json:"health"`
-	MaxHealth int `json:"max_health"`
-	Attack    int `json:"attack"`
-	Defense   int `json:"defense"`
-	Speed     int `json:"speed"`
+	Health    int
+	MaxHealth int
+	Attack    int
+	Defense   int
+	Speed     int
 }
 
 func max(a, b int) int {

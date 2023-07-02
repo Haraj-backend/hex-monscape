@@ -15,12 +15,12 @@ const (
 )
 
 type Game struct {
-	ID         string   `json:"id"`
-	PlayerName string   `json:"player_name"`
-	Partner    *Monster `json:"partner"`
-	CreatedAt  int64    `json:"created_at"`
-	BattleWon  int      `json:"battle_won"`
-	Scenario   Scenario `json:"scenario"`
+	ID         string
+	PlayerName string
+	Partner    *Monster
+	CreatedAt  int64
+	BattleWon  int
+	Scenario   Scenario
 }
 
 type GameConfig struct {
