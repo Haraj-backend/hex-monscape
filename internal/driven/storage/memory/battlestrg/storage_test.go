@@ -1,10 +1,11 @@
-package battlestrg
+package battlestrg_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/util"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
@@ -12,7 +13,7 @@ import (
 
 func TestSaveGetBattle(t *testing.T) {
 	// init storage & battle
-	strg := New()
+	strg := battlestrg.New()
 	expBattle := newBattle()
 
 	// save battle
