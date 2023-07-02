@@ -1,65 +1,39 @@
-package gamestrg
+package gamestrg_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/google/uuid"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/util"
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetGame(t *testing.T) {
-	strg := New()
-	game := initNewGame()
-	err := strg.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
-	}
-	newGame, err := strg.GetGame(context.Background(), game.ID)
-	if err != nil {
-		t.Fatalf("unable to get game, due: %v", err)
-	}
-	require.Equal(t, game, newGame, "game is not equal")
-}
+func TestSaveGetGame(t *testing.T) {
+	// init storage & game
+	strg := gamestrg.New()
+	expGame := initNewGame()
 
-func TestSaveGame(t *testing.T) {
-	strg := New()
-	game := initNewGame()
-	err := strg.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
-	}
-	newGame, err := strg.GetGame(context.Background(), game.ID)
-	if err != nil {
-		t.Fatalf("unable to get game, due: %v", err)
-	}
-	require.Equal(t, game, newGame, "game is not equal")
-}
+	// save game
+	err := strg.SaveGame(context.Background(), *expGame)
+	require.NoError(t, err)
 
-func newSamplePokemon() *entity.Monster {
-	currentTs := time.Now().Unix()
-	return &entity.Monster{
-		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("pokemon_%v", currentTs),
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    100,
-			Defense:   100,
-			Speed:     100,
-		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
-	}
+	// get game
+	game, err := strg.GetGame(context.Background(), expGame.ID)
+	require.NoError(t, err)
+
+	// ensure game is equal to newGame
+	require.Equal(t, expGame, game, "unexpected game")
 }
 
 func initNewGame() *entity.Game {
+	currentTs := time.Now().Unix()
 	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
-		Partner:    newSamplePokemon(),
-		CreatedAt:  time.Now().Unix(),
+		Partner:    util.NewMonster(),
+		CreatedAt:  currentTs,
 	})
 	return game
 }
