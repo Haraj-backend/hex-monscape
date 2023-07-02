@@ -1,7 +1,6 @@
 package battlestrg
 
 import (
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
@@ -28,10 +27,10 @@ type battleRow struct {
 	EnemyLastDamage   int    `db:"enemy_last_damage"`
 }
 
-func (r battleRow) ToBattle() *battle.Battle {
-	return &battle.Battle{
+func (r battleRow) ToBattle() *entity.Battle {
+	return &entity.Battle{
 		GameID: r.GameID,
-		State:  battle.State(r.State),
+		State:  entity.State(r.State),
 		Partner: &entity.Monster{
 			ID:   r.PartnerPokemonID,
 			Name: r.PartnerName,
@@ -56,14 +55,14 @@ func (r battleRow) ToBattle() *battle.Battle {
 			},
 			AvatarURL: r.EnemyAvatarURL,
 		},
-		LastDamage: battle.LastDamage{
+		LastDamage: entity.LastDamage{
 			Partner: r.PartnerLastDamage,
 			Enemy:   r.EnemyLastDamage,
 		},
 	}
 }
 
-func newBattleRow(b battle.Battle) battleRow {
+func newBattleRow(b entity.Battle) battleRow {
 	return battleRow{
 		GameID:            b.GameID,
 		State:             string(b.State),

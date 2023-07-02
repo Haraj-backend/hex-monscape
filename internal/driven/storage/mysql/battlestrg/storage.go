@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/jmoiron/sqlx"
 	"gopkg.in/validator.v2"
 )
@@ -31,7 +31,7 @@ func New(cfg Config) (*Storage, error) {
 	return s, nil
 }
 
-func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
+func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	query := `SELECT * FROM battle WHERE game_id = ?`
 	var row battleRow
 	if err := s.sqlClient.GetContext(ctx, &row, query, gameID); err != nil {
@@ -43,7 +43,7 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	return row.ToBattle(), nil
 }
 
-func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
+func (s *Storage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	battleRow := newBattleRow(b)
 	query := `
 		REPLACE INTO battle (

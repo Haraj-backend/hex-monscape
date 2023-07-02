@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 	"github.com/google/uuid"
@@ -61,7 +60,7 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// override battle state
-	b.State = battle.ENEMY_TURN
+	b.State = entity.ENEMY_TURN
 	// save again
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
@@ -92,7 +91,7 @@ func TestGetBattle(t *testing.T) {
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// override battle state
-	b.State = battle.ENEMY_TURN
+	b.State = entity.ENEMY_TURN
 	// save again
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
@@ -116,7 +115,7 @@ func TestGetBattleNotFound(t *testing.T) {
 	require.Nil(t, savedBattle)
 }
 
-func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
+func getBattle(sqlClient *sqlx.DB, gameID string) (*entity.Battle, error) {
 	var row battleRow
 	query := `SELECT * FROM battle WHERE game_id = ?`
 	err := sqlClient.Get(&row, query, gameID)
@@ -126,13 +125,13 @@ func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
 	return row.ToBattle(), nil
 }
 
-func newBattle(partner entity.Monster, enemy entity.Monster) battle.Battle {
-	return battle.Battle{
+func newBattle(partner entity.Monster, enemy entity.Monster) entity.Battle {
+	return entity.Battle{
 		GameID:  uuid.NewString(),
-		State:   battle.DECIDE_TURN,
+		State:   entity.DECIDE_TURN,
 		Partner: &partner,
 		Enemy:   &enemy,
-		LastDamage: battle.LastDamage{
+		LastDamage: entity.LastDamage{
 			Partner: 0,
 			Enemy:   10,
 		},
