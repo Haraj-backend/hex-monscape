@@ -9,5 +9,9 @@ services:
       - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
       - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
       - ../../../../tmp/go/pkg:/go/pkg
+      - ./data.json:/data/data.json
     ports:
       - 9186:9186
+    environment:
+      - STORAGE_TYPE=memory
+      - STORAGE_MEMORY_MONSTER_DATA_PATH=/data/data.json

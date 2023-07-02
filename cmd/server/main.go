@@ -79,7 +79,7 @@ func main() {
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playService,
 		BattleService:  battleService,
-		ServiceName:    cfg.ServiceName,
+		ServiceName:    "",
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)
@@ -96,9 +96,4 @@ func main() {
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("unable to start server due: %v", err)
 	}
-}
-
-type config struct {
-	Port        string `cfg:"port" cfgDefault:"9186"`
-	ServiceName string `cfg:"service_name" cfgDefault:"rest-mem"`
 }
