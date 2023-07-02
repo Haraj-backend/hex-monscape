@@ -1,11 +1,10 @@
-package battle
+package entity
 
 import (
 	"fmt"
 	"testing"
 	"time"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -56,18 +55,18 @@ func TestPartnerAttack(t *testing.T) {
 	testCases := []struct {
 		Name                string
 		State               State
-		Partner             entity.Monster
-		Enemy               entity.Monster
+		Partner             Monster
+		Enemy               Monster
 		IsError             bool
 		ExpectedEnemyHealth int
 	}{
 		{
 			Name:  "Validate State PARTNER_TURN",
 			State: PARTNER_TURN,
-			Partner: entity.Monster{
+			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -76,10 +75,10 @@ func TestPartnerAttack(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Monster{
+			Enemy: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -167,18 +166,18 @@ func TestEnemyAttack(t *testing.T) {
 	testCases := []struct {
 		Name                  string
 		State                 State
-		Partner               entity.Monster
-		Enemy                 entity.Monster
+		Partner               Monster
+		Enemy                 Monster
 		IsError               bool
 		ExpectedPartnerHealth int
 	}{
 		{
 			Name:  "Validate State ENEMY_TURN",
 			State: ENEMY_TURN,
-			Partner: entity.Monster{
+			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -187,10 +186,10 @@ func TestEnemyAttack(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Monster{
+			Enemy: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -292,8 +291,8 @@ func TestDecideTurn(t *testing.T) {
 	testCases := []struct {
 		Name          string
 		State         State
-		Partner       entity.Monster
-		Enemy         entity.Monster
+		Partner       Monster
+		Enemy         Monster
 		IsError       bool
 		ExpectedState State
 	}{
@@ -314,10 +313,10 @@ func TestDecideTurn(t *testing.T) {
 		{
 			Name:  "Validate PARTNER_TURN",
 			State: DECIDE_TURN,
-			Partner: entity.Monster{
+			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -326,10 +325,10 @@ func TestDecideTurn(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Monster{
+			Enemy: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -344,10 +343,10 @@ func TestDecideTurn(t *testing.T) {
 		{
 			Name:  "Validate ENEMY_TURN",
 			State: DECIDE_TURN,
-			Partner: entity.Monster{
+			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -356,10 +355,10 @@ func TestDecideTurn(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Monster{
+			Enemy: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: entity.BattleStats{
+				BattleStats: BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -397,20 +396,4 @@ func initNewBattle() *Battle {
 		Enemy:   newSamplePokemon(),
 	})
 	return game
-}
-
-func newSamplePokemon() *entity.Monster {
-	currentTs := time.Now().Unix()
-	return &entity.Monster{
-		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("pokemon_%v", currentTs),
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    100,
-			Defense:   100,
-			Speed:     100,
-		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
-	}
 }

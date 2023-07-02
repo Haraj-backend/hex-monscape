@@ -13,8 +13,8 @@ import (
 	"github.com/go-chi/render"
 	"gopkg.in/validator.v2"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/battle"
-	"github.com/Haraj-backend/hex-monscape/internal/core/play"
+	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
+	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
 )
 
 const (

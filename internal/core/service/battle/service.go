@@ -20,10 +20,10 @@ var (
 type Service interface {
 	// StartBattle is used for starting new battle for given game id. Battle could only
 	// be started when there is no previous battle or it is already ended.
-	StartBattle(ctx context.Context, gameID string) (*Battle, error)
+	StartBattle(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// GetBattle returns ongoing battle for given game id.
-	GetBattle(ctx context.Context, gameID string) (*Battle, error)
+	GetBattle(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// DecideTurn is used for deciding turn for the battle. There are 3 possible outcome
 	// battle states from this action:
@@ -32,15 +32,15 @@ type Service interface {
 	// 					returned back to DECIDE_TURN
 	// - LOSE => partner has been attacked by enemy and already lose
 	// - PARTNER_TURN => it is partner turn, client may commence attack or surrender
-	DecideTurn(ctx context.Context, gameID string) (*Battle, error)
+	DecideTurn(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// Attack is used for executing attack to enemy. The possible battle state outcome
 	// is DECIDE_TURN or WIN.
-	Attack(ctx context.Context, gameID string) (*Battle, error)
+	Attack(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// Surrender is used for executing surrender action. Battle will immediately ended
 	// with player losing the battle.
-	Surrender(ctx context.Context, gameID string) (*Battle, error)
+	Surrender(ctx context.Context, gameID string) (*entity.Battle, error)
 }
 
 type service struct {
@@ -49,7 +49,7 @@ type service struct {
 	pokemonStorage PokemonStorage
 }
 
-func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) StartBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	// get existing battle, make sure there is no ongoing battle
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
@@ -71,7 +71,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	enemy := enemies[rnd.Intn(len(enemies))]
 	// create new battle instance
-	battle, err = NewBattle(BattleConfig{
+	battle, err = entity.NewBattle(entity.BattleConfig{
 		GameID:  gameID,
 		Partner: game.Partner,
 		Enemy:   &enemy,
@@ -87,7 +87,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*Battle, erro
 	return battle, nil
 }
 
-func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if game == nil {
 		return nil, ErrGameNotFound
@@ -100,7 +100,7 @@ func (s *service) GetBattle(ctx context.Context, gameID string) (*Battle, error)
 
 // getGameAndBattleInstance returns game & battle for given game id, if game is not found both game
 // and battle will be returned nil. If battle is not found, the battle will be returned nil.
-func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (*entity.Game, *Battle, error) {
+func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (*entity.Game, *entity.Battle, error) {
 	game, err := s.gameStorage.GetGame(ctx, gameID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get game due: %w", err)
@@ -118,19 +118,19 @@ func (s *service) getGameAndBattleInstance(ctx context.Context, gameID string) (
 	return game, battle, nil
 }
 
-func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) DecideTurn(ctx context.Context, gameID string) (*entity.Battle, error) {
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
-	if battle.State != DECIDE_TURN {
+	if battle.State != entity.DECIDE_TURN {
 		return nil, ErrInvalidBattleState
 	}
 	_, err = battle.DecideTurn()
 	if err != nil {
 		return nil, fmt.Errorf("unable to decide turn due: %w", err)
 	}
-	if battle.State == ENEMY_TURN {
+	if battle.State == entity.ENEMY_TURN {
 		err = battle.EnemyAttack()
 		if err != nil {
 			return nil, fmt.Errorf("unable to make enemy attack due: %w", err)
@@ -143,7 +143,7 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*Battle, error
 	return battle, nil
 }
 
-func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) Attack(ctx context.Context, gameID string) (*entity.Battle, error) {
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
@@ -154,7 +154,7 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	if battle == nil {
 		return nil, ErrBattleNotFound
 	}
-	if battle.State != PARTNER_TURN {
+	if battle.State != entity.PARTNER_TURN {
 		return nil, ErrInvalidBattleState
 	}
 	err = battle.PartnerAttack()
@@ -165,7 +165,7 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to save battle due: %w", err)
 	}
-	if battle.State == WIN {
+	if battle.State == entity.WIN {
 		game.IncBattleWon()
 		err = s.gameStorage.SaveGame(ctx, *game)
 		if err != nil {
@@ -175,12 +175,12 @@ func (s *service) Attack(ctx context.Context, gameID string) (*Battle, error) {
 	return battle, nil
 }
 
-func (s *service) Surrender(ctx context.Context, gameID string) (*Battle, error) {
+func (s *service) Surrender(ctx context.Context, gameID string) (*entity.Battle, error) {
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
-	if battle.State != PARTNER_TURN {
+	if battle.State != entity.PARTNER_TURN {
 		return nil, ErrInvalidBattleState
 	}
 	err = battle.PartnerSurrender()

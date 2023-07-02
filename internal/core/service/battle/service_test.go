@@ -2,10 +2,12 @@ package battle
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -84,7 +86,7 @@ func TestServiceStartBattle(t *testing.T) {
 		IsError bool
 	}{
 		{
-			Name:    "Test Get Battle Valid",
+			Name:    "Test Get entity.Battle Valid",
 			Enemy:   enemy,
 			Game:    game,
 			IsError: false,
@@ -139,7 +141,7 @@ func TestServiceGetBattle(t *testing.T) {
 		CreatedAt:  time.Now().Unix(),
 	})
 
-	battle, _ := NewBattle(BattleConfig{
+	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   newSamplePokemon(),
@@ -147,12 +149,12 @@ func TestServiceGetBattle(t *testing.T) {
 
 	testCases := []struct {
 		Name    string
-		Battle  *Battle
+		Battle  *entity.Battle
 		Game    *entity.Game
 		IsError bool
 	}{
 		{
-			Name:    "Test Get Battle Valid",
+			Name:    "Test Get entity.Battle Valid",
 			Battle:  battle,
 			Game:    game,
 			IsError: false,
@@ -164,7 +166,7 @@ func TestServiceGetBattle(t *testing.T) {
 			IsError: true,
 		},
 		{
-			Name:    "Test Battle Not Found",
+			Name:    "Test entity.Battle Not Found",
 			Battle:  nil,
 			Game:    game,
 			IsError: true,
@@ -216,7 +218,7 @@ func TestServiceDecideTurn(t *testing.T) {
 		t.Fatalf("unable to init new game, due: %v", err)
 	}
 
-	battle, _ := NewBattle(BattleConfig{
+	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   newSamplePokemon(),
@@ -264,12 +266,12 @@ func TestServiceAttack(t *testing.T) {
 		t.Fatalf("unable to init new game, due: %v", err)
 	}
 
-	battle, _ := NewBattle(BattleConfig{
+	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   newSamplePokemon(),
 	})
-	battle.State = PARTNER_TURN
+	battle.State = entity.PARTNER_TURN
 
 	err = gameStorage.SaveGame(context.Background(), *game)
 	if err != nil {
@@ -309,12 +311,12 @@ func TestServiceSurrender(t *testing.T) {
 		t.Fatalf("unable to init new game, due: %v", err)
 	}
 
-	battle, _ := NewBattle(BattleConfig{
+	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   newSamplePokemon(),
 	})
-	battle.State = PARTNER_TURN
+	battle.State = entity.PARTNER_TURN
 
 	err = gameStorage.SaveGame(context.Background(), *game)
 	if err != nil {
@@ -338,7 +340,7 @@ func TestServiceSurrender(t *testing.T) {
 		t.Fatalf("unable to surrender, due: %v", err)
 	}
 	expectedBattle := battle
-	expectedBattle.State = LOSE
+	expectedBattle.State = entity.LOSE
 	assert.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
 }
 
@@ -366,10 +368,10 @@ func newMockGameStorage() *mockGameStorage {
 }
 
 type mockBattleStorage struct {
-	data map[string]Battle
+	data map[string]entity.Battle
 }
 
-func (gs *mockBattleStorage) GetBattle(ctx context.Context, gameID string) (*Battle, error) {
+func (gs *mockBattleStorage) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	battle, ok := gs.data[gameID]
 	if !ok {
 		return nil, nil
@@ -377,14 +379,14 @@ func (gs *mockBattleStorage) GetBattle(ctx context.Context, gameID string) (*Bat
 	return &battle, nil
 }
 
-func (gs *mockBattleStorage) SaveBattle(ctx context.Context, b Battle) error {
+func (gs *mockBattleStorage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	gs.data[b.GameID] = b
 	return nil
 }
 
 func newMockBattleStorage() *mockBattleStorage {
 	return &mockBattleStorage{
-		data: map[string]Battle{},
+		data: map[string]entity.Battle{},
 	}
 }
 
@@ -403,5 +405,21 @@ func (gs *mockPokemonStorage) GetPossibleEnemies(ctx context.Context) ([]entity.
 func newMockPokemonStorage() *mockPokemonStorage {
 	return &mockPokemonStorage{
 		enemyMap: map[string]entity.Monster{},
+	}
+}
+
+func newSamplePokemon() *entity.Monster {
+	currentTs := time.Now().Unix()
+	return &entity.Monster{
+		ID:   uuid.NewString(),
+		Name: fmt.Sprintf("pokemon_%v", currentTs),
+		BattleStats: entity.BattleStats{
+			Health:    100,
+			MaxHealth: 100,
+			Attack:    100,
+			Defense:   100,
+			Speed:     100,
+		},
+		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
 	}
 }

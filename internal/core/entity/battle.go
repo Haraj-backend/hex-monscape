@@ -1,4 +1,4 @@
-package battle
+package entity
 
 import (
 	"errors"
@@ -6,18 +6,17 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"gopkg.in/validator.v2"
 )
 
 var ErrInvalidState = errors.New("invalid state for given action")
 
 type Battle struct {
-	GameID     string          `json:"game_id"`
-	State      State           `json:"state"`
-	Partner    *entity.Monster `json:"partner"`
-	Enemy      *entity.Monster `json:"enemy"`
-	LastDamage LastDamage      `json:"last_damage"`
+	GameID     string     `json:"game_id"`
+	State      State      `json:"state"`
+	Partner    *Monster   `json:"partner"`
+	Enemy      *Monster   `json:"enemy"`
+	LastDamage LastDamage `json:"last_damage"`
 }
 
 // PartnerAttack is used for executing partner attack. The battle state must
@@ -121,9 +120,9 @@ func (b *Battle) DecideTurn() (State, error) {
 }
 
 type BattleConfig struct {
-	GameID  string          `validate:"nonzero"`
-	Partner *entity.Monster `validate:"nonnil"`
-	Enemy   *entity.Monster `validate:"nonnil"`
+	GameID  string   `validate:"nonzero"`
+	Partner *Monster `validate:"nonnil"`
+	Enemy   *Monster `validate:"nonnil"`
 }
 
 func (c BattleConfig) Validate() error {
