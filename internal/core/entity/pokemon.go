@@ -2,7 +2,7 @@ package entity
 
 const minDamage = 5
 
-type Pokemon struct {
+type Monster struct {
 	ID          string      `json:"id"`
 	Name        string      `json:"name"`
 	BattleStats BattleStats `json:"battle_stats"`
@@ -11,17 +11,17 @@ type Pokemon struct {
 
 // ResetBattleStats is used to reset partner health
 // after lost or surrender from the battle
-func (p *Pokemon) ResetBattleStats() {
+func (p *Monster) ResetBattleStats() {
 	p.BattleStats.Health = p.BattleStats.MaxHealth
 }
 
-func (p Pokemon) IsDead() bool {
+func (p Monster) IsDead() bool {
 	return p.BattleStats.Health <= 0
 }
 
 // InflictDamage is used for inflicting damage to self based
 // on given enemy. Returned the damage amount.
-func (p *Pokemon) InflictDamage(enemy Pokemon) (int, error) {
+func (p *Monster) InflictDamage(enemy Monster) (int, error) {
 	dmg := max(enemy.BattleStats.Attack-p.BattleStats.Defense, minDamage)
 	p.BattleStats.Health -= dmg
 	return dmg, nil

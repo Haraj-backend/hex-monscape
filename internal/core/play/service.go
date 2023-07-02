@@ -16,8 +16,8 @@ var (
 )
 
 type Service interface {
-	// GetAvailablePartners returns pokemons that available to be selected as player partner.
-	GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error)
+	// GetAvailablePartners returns monsters that available to be selected as player partner.
+	GetAvailablePartners(ctx context.Context) ([]entity.Monster, error)
 
 	// NewGame is used for initiating new game in storage. If the given `partnerID` not found in storage,
 	// it returns `ErrPartnerNotFound`. Upon success it returns game instance that being saved on storage.
@@ -33,7 +33,7 @@ type service struct {
 	partnerStorage PartnerStorage
 }
 
-func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+func (s *service) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
 	partners, err := s.partnerStorage.GetAvailablePartners(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get available partners due: %w", err)

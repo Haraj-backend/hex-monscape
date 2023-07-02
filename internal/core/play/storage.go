@@ -18,9 +18,9 @@ type GameStorage interface {
 type PartnerStorage interface {
 	// GetAvailablePartners returns list of pokemon that selectable as partner.
 	// Returns nil when there is no partners available.
-	GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error)
+	GetAvailablePartners(ctx context.Context) ([]entity.Monster, error)
 
 	// GetPartner returns partner instance from given partner id. Returns nil
 	// when given partnerID is not found.
-	GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error)
+	GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error)
 }

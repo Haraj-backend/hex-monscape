@@ -8,7 +8,7 @@ import (
 type battleRow struct {
 	GameID            string `db:"game_id"`
 	State             string `db:"state"`
-	PartnerPokemonID  string `db:"partner_pokemon_id"`
+	PartnerPokemonID  string `db:"partner_monster_id"`
 	PartnerName       string `db:"partner_name"`
 	PartnerMaxHealth  int    `db:"partner_max_health"`
 	PartnerHealth     int    `db:"partner_health"`
@@ -17,7 +17,7 @@ type battleRow struct {
 	PartnerSpeed      int    `db:"partner_speed"`
 	PartnerAvatarURL  string `db:"partner_avatar_url"`
 	PartnerLastDamage int    `db:"partner_last_damage"`
-	EnemyPokemonID    string `db:"enemy_pokemon_id"`
+	EnemyPokemonID    string `db:"enemy_monster_id"`
 	EnemyName         string `db:"enemy_name"`
 	EnemyMaxHealth    int    `db:"enemy_max_health"`
 	EnemyHealth       int    `db:"enemy_health"`
@@ -32,7 +32,7 @@ func (r battleRow) ToBattle() *battle.Battle {
 	return &battle.Battle{
 		GameID: r.GameID,
 		State:  battle.State(r.State),
-		Partner: &entity.Pokemon{
+		Partner: &entity.Monster{
 			ID:   r.PartnerPokemonID,
 			Name: r.PartnerName,
 			BattleStats: entity.BattleStats{
@@ -44,7 +44,7 @@ func (r battleRow) ToBattle() *battle.Battle {
 			},
 			AvatarURL: r.PartnerAvatarURL,
 		},
-		Enemy: &entity.Pokemon{
+		Enemy: &entity.Monster{
 			ID:   r.EnemyPokemonID,
 			Name: r.EnemyName,
 			BattleStats: entity.BattleStats{

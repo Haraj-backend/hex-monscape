@@ -39,9 +39,9 @@ func TestSaveGame(t *testing.T) {
 	require.Equal(t, game, newGame, "game is not equal")
 }
 
-func newSamplePokemon() *entity.Pokemon {
+func newSamplePokemon() *entity.Monster {
 	currentTs := time.Now().Unix()
-	return &entity.Pokemon{
+	return &entity.Monster{
 		ID:   uuid.NewString(),
 		Name: fmt.Sprintf("pokemon_%v", currentTs),
 		BattleStats: entity.BattleStats{

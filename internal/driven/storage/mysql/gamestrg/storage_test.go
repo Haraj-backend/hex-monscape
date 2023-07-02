@@ -48,7 +48,7 @@ func TestGetGameNotFound(t *testing.T) {
 	require.Nil(t, savedGame)
 }
 
-func newGame(partner entity.Pokemon) entity.Game {
+func newGame(partner entity.Monster) entity.Game {
 	return entity.Game{
 		ID:         uuid.NewString(),
 		PlayerName: "player1",

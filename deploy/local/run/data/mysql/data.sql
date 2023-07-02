@@ -1,4 +1,4 @@
-INSERT INTO pokemons (id, name, max_health, health, attack, defense, speed, avatar_url, is_partnerable) VALUES
+INSERT INTO monster (id, name, max_health, health, attack, defense, speed, avatar_url, is_partnerable) VALUES
   ("b1c87c5c-2ac3-471d-9880-4812552ee15d", 'Pikachu', 100, 100, 49, 49, 45, "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png", 1),
   ("0f9b84b6-a768-4ba9-8800-207740fc993d", 'Bulbasaur', 100, 100, 49, 49, 45, "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png", 1),
   ("52939c53-2ef1-4bc7-b896-894c80cb2eca", 'Charmander', 100, 100, 49, 49, 45, "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png", 1),

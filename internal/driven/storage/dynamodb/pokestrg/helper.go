@@ -7,8 +7,8 @@ import (
 )
 
 type PokemonSeeder struct {
-	partners []entity.Pokemon
-	enemies  []entity.Pokemon
+	partners []entity.Monster
+	enemies  []entity.Monster
 }
 
 func (s PokemonSeeder) toBatchWriteInput(tableName string) *dynamodb.BatchWriteItemInput {
@@ -27,7 +27,7 @@ func (s PokemonSeeder) isEmpty() bool {
 	return (len(s.enemies) + len(s.partners)) == 0
 }
 
-func pokemonListToWriteRequests(pokemons []entity.Pokemon, role extraRole) []*dynamodb.WriteRequest {
+func pokemonListToWriteRequests(pokemons []entity.Monster, role extraRole) []*dynamodb.WriteRequest {
 	writeRequests := make([]*dynamodb.WriteRequest, 0)
 
 	for _, pokemon := range pokemons {

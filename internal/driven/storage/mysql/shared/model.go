@@ -17,8 +17,8 @@ type PokeRow struct {
 
 type PokeRows []PokeRow
 
-func (r *PokeRow) ToPokemon() *entity.Pokemon {
-	return &entity.Pokemon{
+func (r *PokeRow) ToPokemon() *entity.Monster {
+	return &entity.Monster{
 		ID:   r.ID,
 		Name: r.Name,
 		BattleStats: entity.BattleStats{
@@ -32,15 +32,15 @@ func (r *PokeRow) ToPokemon() *entity.Pokemon {
 	}
 }
 
-func (r PokeRows) ToPokemons() []entity.Pokemon {
-	var pokemons []entity.Pokemon
+func (r PokeRows) ToPokemons() []entity.Monster {
+	var pokemons []entity.Monster
 	for _, row := range r {
 		pokemons = append(pokemons, *row.ToPokemon())
 	}
 	return pokemons
 }
 
-func NewPokeRow(pokemon *entity.Pokemon) *PokeRow {
+func NewPokeRow(pokemon *entity.Monster) *PokeRow {
 	return &PokeRow{
 		ID:        pokemon.ID,
 		Name:      pokemon.Name,

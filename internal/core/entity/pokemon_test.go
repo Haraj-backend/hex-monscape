@@ -13,12 +13,12 @@ func TestIsDead(t *testing.T) {
 	// define test cases
 	testCases := []struct {
 		Name     string
-		Pokemon  Pokemon
+		Pokemon  Monster
 		Expected bool
 	}{
 		{
 			Name: "Pokemon is Not Dead",
-			Pokemon: Pokemon{
+			Pokemon: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -34,7 +34,7 @@ func TestIsDead(t *testing.T) {
 		},
 		{
 			Name: "Pokemon Has 0 Health",
-			Pokemon: Pokemon{
+			Pokemon: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -50,7 +50,7 @@ func TestIsDead(t *testing.T) {
 		},
 		{
 			Name: "Pokemon Has Negative Health",
-			Pokemon: Pokemon{
+			Pokemon: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -79,13 +79,13 @@ func TestInflictDamage(t *testing.T) {
 	// define test cases
 	testCases := []struct {
 		Name                 string
-		Pokemon              Pokemon
-		Enemy                Pokemon
+		Pokemon              Monster
+		Enemy                Monster
 		ExpectedHealthAmount int
 	}{
 		{
 			Name: "Pokemon Get Zero Damage",
-			Pokemon: Pokemon{
+			Pokemon: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -97,7 +97,7 @@ func TestInflictDamage(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: Pokemon{
+			Enemy: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("enemy_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -113,7 +113,7 @@ func TestInflictDamage(t *testing.T) {
 		},
 		{
 			Name: "Pokemon Get 50 Damage",
-			Pokemon: Pokemon{
+			Pokemon: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -125,7 +125,7 @@ func TestInflictDamage(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: Pokemon{
+			Enemy: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("enemy_%v", time.Now().Unix()),
 				BattleStats: BattleStats{

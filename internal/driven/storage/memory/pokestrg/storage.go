@@ -8,19 +8,19 @@ import (
 )
 
 type Storage struct {
-	partnerMap map[string]entity.Pokemon
-	enemyMap   map[string]entity.Pokemon
+	partnerMap map[string]entity.Monster
+	enemyMap   map[string]entity.Monster
 }
 
-func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
-	var partners []entity.Pokemon
+func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
+	var partners []entity.Monster
 	for _, partner := range s.partnerMap {
 		partners = append(partners, partner)
 	}
 	return partners, nil
 }
 
-func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
+func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
 	partner, ok := s.partnerMap[partnerID]
 	if !ok {
 		return nil, nil
@@ -28,8 +28,8 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	return &partner, nil
 }
 
-func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
-	var enemies []entity.Pokemon
+func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
+	var enemies []entity.Monster
 	for _, enemy := range s.enemyMap {
 		enemies = append(enemies, enemy)
 	}
@@ -37,8 +37,8 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, err
 }
 
 type Config struct {
-	Partners []entity.Pokemon `validate:"min=1"`
-	Enemies  []entity.Pokemon `validate:"min=1"`
+	Partners []entity.Monster `validate:"min=1"`
+	Enemies  []entity.Monster `validate:"min=1"`
 }
 
 func (c Config) Validate() error {
@@ -50,11 +50,11 @@ func New(cfg Config) (*Storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	partnerMap := map[string]entity.Pokemon{}
+	partnerMap := map[string]entity.Monster{}
 	for _, partner := range cfg.Partners {
 		partnerMap[partner.ID] = partner
 	}
-	enemyMap := map[string]entity.Pokemon{}
+	enemyMap := map[string]entity.Monster{}
 	for _, enemy := range cfg.Enemies {
 		enemyMap[enemy.ID] = enemy
 	}

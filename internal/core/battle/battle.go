@@ -15,8 +15,8 @@ var ErrInvalidState = errors.New("invalid state for given action")
 type Battle struct {
 	GameID     string          `json:"game_id"`
 	State      State           `json:"state"`
-	Partner    *entity.Pokemon `json:"partner"`
-	Enemy      *entity.Pokemon `json:"enemy"`
+	Partner    *entity.Monster `json:"partner"`
+	Enemy      *entity.Monster `json:"enemy"`
 	LastDamage LastDamage      `json:"last_damage"`
 }
 
@@ -122,8 +122,8 @@ func (b *Battle) DecideTurn() (State, error) {
 
 type BattleConfig struct {
 	GameID  string          `validate:"nonzero"`
-	Partner *entity.Pokemon `validate:"nonnil"`
-	Enemy   *entity.Pokemon `validate:"nonnil"`
+	Partner *entity.Monster `validate:"nonnil"`
+	Enemy   *entity.Monster `validate:"nonnil"`
 }
 
 func (c BattleConfig) Validate() error {

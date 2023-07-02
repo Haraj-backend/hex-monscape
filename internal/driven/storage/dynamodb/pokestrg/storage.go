@@ -16,7 +16,7 @@ type Storage struct {
 	tableName    string
 }
 
-func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Pokemon, error) {
+func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Monster, error) {
 	query := pokemonExtraRoleQuery{
 		ExtraRole: extraRole,
 	}
@@ -37,7 +37,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 		return nil, nil
 	}
 
-	results := make([]entity.Pokemon, len(output.Items))
+	results := make([]entity.Monster, len(output.Items))
 	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &results)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal items from %s due to: %w", s.tableName, err)
@@ -46,15 +46,15 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 	return results, nil
 }
 
-func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
 	return s.getPokemonsByRole(ctx, partnerRole)
 }
 
-func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
+func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
 	return s.getPokemonsByRole(ctx, enemyRole)
 }
 
-func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
+func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
 	key := pokemonKey{
 		ID: partnerID,
 	}
@@ -73,7 +73,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 		return nil, nil
 	}
 
-	partner := entity.Pokemon{}
+	partner := entity.Monster{}
 	err = dynamodbattribute.UnmarshalMap(output.Item, &partner)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)

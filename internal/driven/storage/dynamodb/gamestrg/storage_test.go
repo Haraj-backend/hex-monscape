@@ -23,7 +23,7 @@ func TestSaveGame(t *testing.T) {
 	game := entity.Game{
 		ID:         uuid.NewString(),
 		PlayerName: "Alfat",
-		Partner: &entity.Pokemon{
+		Partner: &entity.Monster{
 			ID: "partner-id",
 		},
 		BattleWon: 2,
@@ -45,7 +45,7 @@ func TestGetGame(t *testing.T) {
 	game := entity.Game{
 		ID:         uuid.NewString(),
 		PlayerName: "Alfat",
-		Partner: &entity.Pokemon{
+		Partner: &entity.Monster{
 			ID: "partner-id",
 		},
 		BattleWon: 2,

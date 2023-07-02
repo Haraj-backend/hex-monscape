@@ -31,7 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to read partners data due: %v", err)
 	}
-	var partners []entity.Pokemon
+	var partners []entity.Monster
 	err = json.Unmarshal(partnersData, &partners)
 	if err != nil {
 		log.Fatalf("unable to parse partners data due: %v", err)
@@ -40,7 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to read enemies data due: %v", err)
 	}
-	var enemies []entity.Pokemon
+	var enemies []entity.Monster
 	err = json.Unmarshal(enemiesData, &enemies)
 	if err != nil {
 		log.Fatalf("unable to parse enemies data due: %v", err)

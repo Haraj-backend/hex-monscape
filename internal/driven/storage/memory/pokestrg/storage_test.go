@@ -12,12 +12,12 @@ import (
 )
 
 func TestGetAvailablePartners(t *testing.T) {
-	partners := []entity.Pokemon{
+	partners := []entity.Monster{
 		*newSamplePokemon(),
 	}
 	strg, err := New(Config{
 		Partners: partners,
-		Enemies: []entity.Pokemon{
+		Enemies: []entity.Monster{
 			*newSamplePokemon(),
 		},
 	})
@@ -34,8 +34,8 @@ func TestGetAvailablePartners(t *testing.T) {
 func TestGetPartner(t *testing.T) {
 	partner := newSamplePokemon()
 	strg, err := New(Config{
-		Partners: []entity.Pokemon{*partner},
-		Enemies: []entity.Pokemon{
+		Partners: []entity.Monster{*partner},
+		Enemies: []entity.Monster{
 			*newSamplePokemon(),
 		},
 	})
@@ -50,11 +50,11 @@ func TestGetPartner(t *testing.T) {
 }
 
 func TestGetPossibleEnemies(t *testing.T) {
-	enemies := []entity.Pokemon{
+	enemies := []entity.Monster{
 		*newSamplePokemon(),
 	}
 	strg, err := New(Config{
-		Partners: []entity.Pokemon{
+		Partners: []entity.Monster{
 			*newSamplePokemon(),
 		},
 		Enemies: enemies,
@@ -69,9 +69,9 @@ func TestGetPossibleEnemies(t *testing.T) {
 	require.Equal(t, enemies, newEnemies, "enemies is not equal")
 }
 
-func newSamplePokemon() *entity.Pokemon {
+func newSamplePokemon() *entity.Monster {
 	currentTs := time.Now().Unix()
-	return &entity.Pokemon{
+	return &entity.Monster{
 		ID:   uuid.NewString(),
 		Name: fmt.Sprintf("pokemon_%v", currentTs),
 		BattleStats: entity.BattleStats{

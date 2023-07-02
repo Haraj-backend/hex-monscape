@@ -25,8 +25,8 @@ func TestSeedData(t *testing.T) {
 	enemy := newSamplePokemon()
 
 	seeder := PokemonSeeder{
-		partners: []entity.Pokemon{*partner},
-		enemies:  []entity.Pokemon{*enemy},
+		partners: []entity.Monster{*partner},
+		enemies:  []entity.Monster{*enemy},
 	}
 
 	err = storage.SeedData(context.Background(), &seeder)
@@ -53,7 +53,7 @@ func TestGetPartner(t *testing.T) {
 
 	partner := newSamplePokemon()
 	seeder := PokemonSeeder{
-		partners: []entity.Pokemon{*partner},
+		partners: []entity.Monster{*partner},
 	}
 
 	err = storage.SeedData(context.Background(), &seeder)
@@ -62,7 +62,7 @@ func TestGetPartner(t *testing.T) {
 	testCases := []struct {
 		Name       string
 		PartnerID  string
-		ExpPartner *entity.Pokemon
+		ExpPartner *entity.Monster
 	}{
 		{
 			Name:       "Test Partner Not Found",
@@ -101,15 +101,15 @@ func TestGetPossibleEnemies(t *testing.T) {
 
 	testCases := []struct {
 		Name    string
-		Enemies []entity.Pokemon
+		Enemies []entity.Monster
 	}{
 		{
 			Name:    "Test Empty Possible Enemies",
-			Enemies: []entity.Pokemon{},
+			Enemies: []entity.Monster{},
 		},
 		{
 			Name:    "Test Exists Possible Enemies",
-			Enemies: []entity.Pokemon{*enemy},
+			Enemies: []entity.Monster{*enemy},
 		},
 	}
 
@@ -144,15 +144,15 @@ func TestGetAvailablePartners(t *testing.T) {
 
 	testCases := []struct {
 		Name     string
-		Partners []entity.Pokemon
+		Partners []entity.Monster
 	}{
 		{
 			Name:     "Test Empty Available Partners",
-			Partners: []entity.Pokemon{},
+			Partners: []entity.Monster{},
 		},
 		{
 			Name:     "Test Exists Availabel Partners",
-			Partners: []entity.Pokemon{*partner},
+			Partners: []entity.Monster{*partner},
 		},
 	}
 
@@ -192,9 +192,9 @@ func newStorage() (*Storage, error) {
 	return storage, nil
 }
 
-func newSamplePokemon() *entity.Pokemon {
+func newSamplePokemon() *entity.Monster {
 	currentTs := time.Now().Unix()
-	return &entity.Pokemon{
+	return &entity.Monster{
 		ID:   uuid.NewString(),
 		Name: fmt.Sprintf("pokemon_%v", currentTs),
 		BattleStats: entity.BattleStats{
@@ -208,7 +208,7 @@ func newSamplePokemon() *entity.Pokemon {
 	}
 }
 
-func getPokemon(dynamoClient *dynamodb.DynamoDB, ID string) (*entity.Pokemon, error) {
+func getPokemon(dynamoClient *dynamodb.DynamoDB, ID string) (*entity.Monster, error) {
 	output, err := dynamoClient.GetItem(&dynamodb.GetItemInput{
 		Key:       (pokemonKey{ID: ID}).toDDBKey(),
 		TableName: aws.String(os.Getenv(shared.TestConfig.EnvKeyPokemonTableName)),
@@ -221,7 +221,7 @@ func getPokemon(dynamoClient *dynamodb.DynamoDB, ID string) (*entity.Pokemon, er
 		return nil, fmt.Errorf("pokemon is not found")
 	}
 
-	var p entity.Pokemon
+	var p entity.Monster
 	err = dynamodbattribute.UnmarshalMap(output.Item, &p)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse item due: %w", err)

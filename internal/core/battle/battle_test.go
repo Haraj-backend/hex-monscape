@@ -56,15 +56,15 @@ func TestPartnerAttack(t *testing.T) {
 	testCases := []struct {
 		Name                string
 		State               State
-		Partner             entity.Pokemon
-		Enemy               entity.Pokemon
+		Partner             entity.Monster
+		Enemy               entity.Monster
 		IsError             bool
 		ExpectedEnemyHealth int
 	}{
 		{
 			Name:  "Validate State PARTNER_TURN",
 			State: PARTNER_TURN,
-			Partner: entity.Pokemon{
+			Partner: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -76,7 +76,7 @@ func TestPartnerAttack(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Pokemon{
+			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -167,15 +167,15 @@ func TestEnemyAttack(t *testing.T) {
 	testCases := []struct {
 		Name                  string
 		State                 State
-		Partner               entity.Pokemon
-		Enemy                 entity.Pokemon
+		Partner               entity.Monster
+		Enemy                 entity.Monster
 		IsError               bool
 		ExpectedPartnerHealth int
 	}{
 		{
 			Name:  "Validate State ENEMY_TURN",
 			State: ENEMY_TURN,
-			Partner: entity.Pokemon{
+			Partner: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -187,7 +187,7 @@ func TestEnemyAttack(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Pokemon{
+			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -292,8 +292,8 @@ func TestDecideTurn(t *testing.T) {
 	testCases := []struct {
 		Name          string
 		State         State
-		Partner       entity.Pokemon
-		Enemy         entity.Pokemon
+		Partner       entity.Monster
+		Enemy         entity.Monster
 		IsError       bool
 		ExpectedState State
 	}{
@@ -314,7 +314,7 @@ func TestDecideTurn(t *testing.T) {
 		{
 			Name:  "Validate PARTNER_TURN",
 			State: DECIDE_TURN,
-			Partner: entity.Pokemon{
+			Partner: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -326,7 +326,7 @@ func TestDecideTurn(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Pokemon{
+			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -344,7 +344,7 @@ func TestDecideTurn(t *testing.T) {
 		{
 			Name:  "Validate ENEMY_TURN",
 			State: DECIDE_TURN,
-			Partner: entity.Pokemon{
+			Partner: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -356,7 +356,7 @@ func TestDecideTurn(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: entity.Pokemon{
+			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: entity.BattleStats{
@@ -399,9 +399,9 @@ func initNewBattle() *Battle {
 	return game
 }
 
-func newSamplePokemon() *entity.Pokemon {
+func newSamplePokemon() *entity.Monster {
 	currentTs := time.Now().Unix()
-	return &entity.Pokemon{
+	return &entity.Monster{
 		ID:   uuid.NewString(),
 		Name: fmt.Sprintf("pokemon_%v", currentTs),
 		BattleStats: entity.BattleStats{

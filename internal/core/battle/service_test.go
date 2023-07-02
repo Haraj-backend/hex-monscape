@@ -79,7 +79,7 @@ func TestServiceStartBattle(t *testing.T) {
 
 	testCases := []struct {
 		Name    string
-		Enemy   *entity.Pokemon
+		Enemy   *entity.Monster
 		Game    *entity.Game
 		IsError bool
 	}{
@@ -389,11 +389,11 @@ func newMockBattleStorage() *mockBattleStorage {
 }
 
 type mockPokemonStorage struct {
-	enemyMap map[string]entity.Pokemon
+	enemyMap map[string]entity.Monster
 }
 
-func (gs *mockPokemonStorage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
-	var enemies []entity.Pokemon
+func (gs *mockPokemonStorage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
+	var enemies []entity.Monster
 	for _, enemy := range gs.enemyMap {
 		enemies = append(enemies, enemy)
 	}
@@ -402,6 +402,6 @@ func (gs *mockPokemonStorage) GetPossibleEnemies(ctx context.Context) ([]entity.
 
 func newMockPokemonStorage() *mockPokemonStorage {
 	return &mockPokemonStorage{
-		enemyMap: map[string]entity.Pokemon{},
+		enemyMap: map[string]entity.Monster{},
 	}
 }

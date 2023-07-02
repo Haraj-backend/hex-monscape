@@ -26,11 +26,11 @@ func TestSaveBattle(t *testing.T) {
 	battle := battle.Battle{
 		GameID: uuid.NewString(),
 		State:  battle.DECIDE_TURN,
-		Partner: &entity.Pokemon{
+		Partner: &entity.Monster{
 			ID:   "partner-id",
 			Name: "my-partner",
 		},
-		Enemy: &entity.Pokemon{
+		Enemy: &entity.Monster{
 			ID:   "enemy-id",
 			Name: "my-enemy",
 		},
@@ -61,11 +61,11 @@ func TestGetBattle(t *testing.T) {
 	bt := battle.Battle{
 		GameID: uuid.NewString(),
 		State:  battle.DECIDE_TURN,
-		Partner: &entity.Pokemon{
+		Partner: &entity.Monster{
 			ID:   "partner-id",
 			Name: "my-partner",
 		},
-		Enemy: &entity.Pokemon{
+		Enemy: &entity.Monster{
 			ID:   "enemy-id",
 			Name: "my-enemy",
 		},

@@ -37,15 +37,15 @@ func New(cfg Config) (*Storage, error) {
 	return s, nil
 }
 
-func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
+func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
 	return s.getPokemonsByRole(ctx, partner)
 }
 
-func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Pokemon, error) {
+func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
 	return s.getPokemonsByRole(ctx, enemy)
 }
 
-func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
+func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
 	var pokemon shared.PokeRow
 	query := `
 		SELECT
@@ -57,7 +57,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 			defense,
 			speed,
 			avatar_url
-		FROM pokemons
+		FROM monster
 		WHERE id = ?
 	`
 
@@ -72,7 +72,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Pok
 	return pokemon.ToPokemon(), nil
 }
 
-func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Pokemon, error) {
+func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Monster, error) {
 	var pokemons shared.PokeRows
 
 	query := `
@@ -85,7 +85,7 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 			defense,
 			speed,
 			avatar_url
-		FROM pokemons
+		FROM monster
 		WHERE is_partnerable = ?
 	`
 	if err := s.sqlClient.SelectContext(ctx, &pokemons, query, isPartnerable); err != nil {

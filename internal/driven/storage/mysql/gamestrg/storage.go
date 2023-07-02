@@ -48,8 +48,8 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 			p.attack as 'partner.attack',
 			p.defense as 'partner.defense',
 			p.speed as 'partner.speed'
-		FROM games g
-		LEFT JOIN pokemons p on partner_id = p.id
+		FROM game g
+		LEFT JOIN monster p on partner_id = p.id
 		WHERE g.id = ?
 	`
 
@@ -67,7 +67,7 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 	gameRow := NewGameRow(&game)
 	query := `
-		REPLACE INTO games (
+		REPLACE INTO game (
 			id, player_name, created_at, battle_won, scenario, partner_id
 		) VALUES (
 			:id, :player_name, :created_at, :battle_won, :scenario, :partner_id

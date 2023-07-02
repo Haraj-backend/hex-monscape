@@ -118,7 +118,7 @@ func TestGetBattleNotFound(t *testing.T) {
 
 func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
 	var row battleRow
-	query := `SELECT * FROM battles WHERE game_id = ?`
+	query := `SELECT * FROM battle WHERE game_id = ?`
 	err := sqlClient.Get(&row, query, gameID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to execute query due: %w", err)
@@ -126,7 +126,7 @@ func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
 	return row.ToBattle(), nil
 }
 
-func newBattle(partner entity.Pokemon, enemy entity.Pokemon) battle.Battle {
+func newBattle(partner entity.Monster, enemy entity.Monster) battle.Battle {
 	return battle.Battle{
 		GameID:  uuid.NewString(),
 		State:   battle.DECIDE_TURN,

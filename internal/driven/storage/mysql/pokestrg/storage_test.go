@@ -56,15 +56,15 @@ func TestGetAvailablePartners(t *testing.T) {
 
 	testCases := []struct {
 		Name     string
-		Partners []entity.Pokemon
+		Partners []entity.Monster
 	}{
 		{
 			Name:     "Test Empty Available Partners",
-			Partners: []entity.Pokemon{},
+			Partners: []entity.Monster{},
 		},
 		{
 			Name:     "Test Exists Available Partners",
-			Partners: []entity.Pokemon{partner},
+			Partners: []entity.Monster{partner},
 		},
 	}
 
@@ -101,15 +101,15 @@ func TestGetAvailableEnemies(t *testing.T) {
 
 	testCases := []struct {
 		Name    string
-		Enemies []entity.Pokemon
+		Enemies []entity.Monster
 	}{
 		{
 			Name:    "Test Empty Available Enemies",
-			Enemies: []entity.Pokemon{},
+			Enemies: []entity.Monster{},
 		},
 		{
 			Name:    "Test Exists Available Enemies",
-			Enemies: []entity.Pokemon{enemy},
+			Enemies: []entity.Monster{enemy},
 		},
 	}
 
@@ -139,15 +139,15 @@ func truncateTable(db *sqlx.DB) {
 	if err != nil {
 		panic(err)
 	}
-	_, err = db.Exec("TRUNCATE TABLE pokemons")
+	_, err = db.Exec("TRUNCATE TABLE monster")
 	if err != nil {
 		panic(err)
 	}
 }
 
-func insertPokemon(db *sqlx.DB, p entity.Pokemon, is_partnerable int) string {
+func insertPokemon(db *sqlx.DB, p entity.Monster, is_partnerable int) string {
 	_, err := db.Exec(
-		"INSERT INTO pokemons (id, name, health, max_health, attack, defense, speed, avatar_url, is_partnerable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO monster (id, name, health, max_health, attack, defense, speed, avatar_url, is_partnerable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		p.ID, p.Name, p.BattleStats.Health, p.BattleStats.MaxHealth, p.BattleStats.Attack, p.BattleStats.Defense, p.BattleStats.Speed, p.AvatarURL, is_partnerable,
 	)
 	if err != nil {
@@ -157,8 +157,8 @@ func insertPokemon(db *sqlx.DB, p entity.Pokemon, is_partnerable int) string {
 	return p.ID
 }
 
-func newPokemon() entity.Pokemon {
-	return entity.Pokemon{
+func newPokemon() entity.Monster {
+	return entity.Monster{
 		ID:        uuid.NewString(),
 		Name:      "Lala",
 		AvatarURL: "https://example.com/025.png",

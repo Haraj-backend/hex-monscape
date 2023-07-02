@@ -147,18 +147,18 @@ func newMockGameStorage() *mockGameStorage {
 }
 
 type mockPartnerStorage struct {
-	partnerMap map[string]entity.Pokemon
+	partnerMap map[string]entity.Monster
 }
 
-func (gs *mockPartnerStorage) GetAvailablePartners(ctx context.Context) ([]entity.Pokemon, error) {
-	var partners []entity.Pokemon
+func (gs *mockPartnerStorage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
+	var partners []entity.Monster
 	for _, v := range gs.partnerMap {
 		partners = append(partners, v)
 	}
 	return partners, nil
 }
 
-func (gs *mockPartnerStorage) GetPartner(ctx context.Context, partnerID string) (*entity.Pokemon, error) {
+func (gs *mockPartnerStorage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
 	partner, ok := gs.partnerMap[partnerID]
 	if !ok {
 		return nil, nil
@@ -166,17 +166,17 @@ func (gs *mockPartnerStorage) GetPartner(ctx context.Context, partnerID string) 
 	return &partner, nil
 }
 
-func newMockPartnerStorage(partners []entity.Pokemon) *mockPartnerStorage {
-	data := map[string]entity.Pokemon{}
+func newMockPartnerStorage(partners []entity.Monster) *mockPartnerStorage {
+	data := map[string]entity.Monster{}
 	for _, partner := range partners {
 		data[partner.ID] = partner
 	}
 	return &mockPartnerStorage{partnerMap: data}
 }
 
-func newNewService() (Service, []entity.Pokemon) {
+func newNewService() (Service, []entity.Monster) {
 	// generate partners
-	partners := []entity.Pokemon{
+	partners := []entity.Monster{
 		{
 			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
 			Name: "Pikachu",

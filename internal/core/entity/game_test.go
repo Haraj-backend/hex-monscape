@@ -136,9 +136,9 @@ func TestIncBattleWon(t *testing.T) {
 	require.NotEqual(t, initGameScenario, game.Scenario, "scenario is not advancing")
 }
 
-func newSamplePokemon() *Pokemon {
+func newSamplePokemon() *Monster {
 	currentTs := time.Now().Unix()
-	return &Pokemon{
+	return &Monster{
 		ID:   uuid.NewString(),
 		Name: fmt.Sprintf("pokemon_%v", currentTs),
 		BattleStats: BattleStats{

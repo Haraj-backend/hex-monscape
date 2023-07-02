@@ -32,7 +32,7 @@ func New(cfg Config) (*Storage, error) {
 }
 
 func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	query := `SELECT * FROM battles WHERE game_id = ?`
+	query := `SELECT * FROM battle WHERE game_id = ?`
 	var row battleRow
 	if err := s.sqlClient.GetContext(ctx, &row, query, gameID); err != nil {
 		if err == sql.ErrNoRows {
@@ -46,19 +46,19 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	battleRow := newBattleRow(b)
 	query := `
-		REPLACE INTO battles (
-			game_id, state, partner_pokemon_id, 
+		REPLACE INTO battle (
+			game_id, state, partner_monster_id, 
 			partner_name, partner_max_health, partner_health, 
 			partner_attack, partner_defense, partner_speed, 
-			partner_avatar_url, partner_last_damage, enemy_pokemon_id, 
+			partner_avatar_url, partner_last_damage, enemy_monster_id, 
 			enemy_name, enemy_max_health, enemy_health,
 			enemy_attack, enemy_defense, enemy_speed, 
 			enemy_avatar_url, enemy_last_damage
 		) VALUES (
-			:game_id, :state, :partner_pokemon_id, 
+			:game_id, :state, :partner_monster_id, 
 			:partner_name, :partner_max_health, :partner_health, 
 			:partner_attack, :partner_defense, :partner_speed, 
-			:partner_avatar_url, :partner_last_damage, :enemy_pokemon_id, 
+			:partner_avatar_url, :partner_last_damage, :enemy_monster_id, 
 			:enemy_name, :enemy_max_health, :enemy_health,
 			:enemy_attack, :enemy_defense, :enemy_speed, 
 			:enemy_avatar_url, :enemy_last_damage
