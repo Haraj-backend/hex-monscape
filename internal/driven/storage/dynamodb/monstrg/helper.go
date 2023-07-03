@@ -2,6 +2,7 @@ package monstrg
 
 import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
@@ -31,7 +32,7 @@ func pokemonListToWriteRequests(pokemons []entity.Monster, role extraRole) []*dy
 	writeRequests := make([]*dynamodb.WriteRequest, 0)
 
 	for _, pokemon := range pokemons {
-		item, _ := dynamodbattribute.MarshalMap(pokemon)
+		item, _ := dynamodbattribute.MarshalMap(shared.ToMonsterRow(pokemon))
 		item["extra_role"], _ = dynamodbattribute.Marshal(string(role))
 
 		putRequest := dynamodb.PutRequest{

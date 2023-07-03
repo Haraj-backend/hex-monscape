@@ -14,7 +14,7 @@ Table that holds monster records.
   - `defense`, Number => number of damage reducer for a monster (damage = enemy.attack - your_partner.defense)
   - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
 - `avatar_url`, String => url for avatar image of a monster
-- `extra_role`, String, *OPTIONAL* => extra flag to define monster type, valid values: `PARTNER`
+- `extra_role`, String, *OPTIONAL* => extra flag to define monster type, valid values: `PARTNER` or `ENEMY`
 
 **Example Record:**
 

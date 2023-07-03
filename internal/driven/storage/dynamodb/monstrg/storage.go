@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -17,7 +18,7 @@ type Storage struct {
 }
 
 func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Monster, error) {
-	query := pokemonExtraRoleQuery{
+	query := monsterExtraRoleQuery{
 		ExtraRole: extraRole,
 	}
 
@@ -37,13 +38,17 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([
 		return nil, nil
 	}
 
-	results := make([]entity.Monster, len(output.Items))
-	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &results)
+	rows := make([]shared.MonsterRow, len(output.Items))
+	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &rows)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal items from %s due to: %w", s.tableName, err)
 	}
-
-	return results, nil
+	monsters := make([]entity.Monster, len(rows))
+	for i, row := range rows {
+		m := row.ToMonster()
+		monsters[i] = *m
+	}
+	return monsters, nil
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
@@ -55,7 +60,7 @@ func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, err
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
-	key := pokemonKey{
+	key := monsterKey{
 		ID: partnerID,
 	}
 
@@ -73,13 +78,13 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Mon
 		return nil, nil
 	}
 
-	partner := entity.Monster{}
-	err = dynamodbattribute.UnmarshalMap(output.Item, &partner)
+	var monsterRow shared.MonsterRow
+	err = dynamodbattribute.UnmarshalMap(output.Item, &monsterRow)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
-	return &partner, nil
+	return monsterRow.ToMonster(), nil
 }
 
 func (s *Storage) SeedData(ctx context.Context, seeder *PokemonSeeder) error {
