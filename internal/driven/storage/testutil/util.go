@@ -1,4 +1,4 @@
-package util
+package testutil
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func NewMonster() *entity.Monster {
+func NewTestMonster() *entity.Monster {
 	now := time.Now()
 	r := rand.New(rand.NewSource(now.UnixNano()))
 

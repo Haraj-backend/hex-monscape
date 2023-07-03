@@ -3,6 +3,7 @@ package battlestrg
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/aws/aws-sdk-go/aws"
@@ -33,18 +34,20 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle,
 		return nil, nil
 	}
 	// parse item
-	battle := entity.Battle{}
-	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
+	var battleRow battleRow
+	err = dynamodbattribute.UnmarshalMap(output.Item, &battleRow)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
+	battle := battleRow.toBattle()
+	log.Printf("[RDebug] battleRow: %+v, battle: %+v", battleRow, battle)
 
-	return &battle, nil
+	return battle, nil
 }
 
 func (s *Storage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	// construct params
-	item, _ := dynamodbattribute.MarshalMap(&b)
+	item, _ := dynamodbattribute.MarshalMap(toBattleRow(b))
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(s.tableName),
 		Item:      item,

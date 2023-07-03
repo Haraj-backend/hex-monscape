@@ -157,6 +157,6 @@ const (
 )
 
 type LastDamage struct {
-	Partner int `json:"partner"`
-	Enemy   int `json:"enemy"`
+	Partner int
+	Enemy   int
 }

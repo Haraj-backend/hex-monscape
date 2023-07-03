@@ -7,7 +7,7 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/util"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,7 +32,7 @@ func initNewGame() *entity.Game {
 	currentTs := time.Now().Unix()
 	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
-		Partner:    util.NewMonster(),
+		Partner:    testutil.NewTestMonster(),
 		CreatedAt:  currentTs,
 	})
 	return game

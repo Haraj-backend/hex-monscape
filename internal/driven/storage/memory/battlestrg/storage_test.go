@@ -6,7 +6,7 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/util"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/testutil"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -31,8 +31,8 @@ func TestSaveGetBattle(t *testing.T) {
 func newBattle() *entity.Battle {
 	game, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  uuid.NewString(),
-		Partner: util.NewMonster(),
-		Enemy:   util.NewMonster(),
+		Partner: testutil.NewTestMonster(),
+		Enemy:   testutil.NewTestMonster(),
 	})
 	return game
 }
