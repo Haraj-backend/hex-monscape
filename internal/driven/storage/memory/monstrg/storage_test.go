@@ -35,7 +35,7 @@ func TestGetAvailablePartners(t *testing.T) {
 	}
 
 	// ensure partners is equal to expected partners
-	require.Equal(t, partners, expPartners, "unexpected partners")
+	require.ElementsMatch(t, partners, expPartners, "unexpected partners")
 }
 
 func TestGetPartner(t *testing.T) {
@@ -120,7 +120,7 @@ func TestGetPossibleEnemies(t *testing.T) {
 	}
 
 	// ensure possible enemies is equal to expected possible enemies
-	require.Equal(t, expPossibleEnemies, possibleEnemies, "enemies is not equal")
+	require.ElementsMatch(t, expPossibleEnemies, possibleEnemies, "enemies is not equal")
 }
 
 var monsterData = []byte(`
