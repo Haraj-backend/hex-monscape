@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
@@ -20,6 +18,7 @@ import (
 )
 
 func main() {
+	// initialize configs
 	var cfg config
 	err := goconfig.Parse(&cfg)
 	if err != nil {
@@ -27,37 +26,21 @@ func main() {
 	}
 
 	// initialize pokemon storage
-	partnersData, err := ioutil.ReadFile("/partners.json")
+	monsterData, err := ioutil.ReadFile(cfg.Storage.Memory.MonsterDataPath)
 	if err != nil {
-		log.Fatalf("unable to read partners data due: %v", err)
+		log.Fatalf("unable to read monster data due: %v", err)
 	}
-	var partners []entity.Monster
-	err = json.Unmarshal(partnersData, &partners)
-	if err != nil {
-		log.Fatalf("unable to parse partners data due: %v", err)
-	}
-	enemiesData, err := ioutil.ReadFile("/enemies.json")
-	if err != nil {
-		log.Fatalf("unable to read enemies data due: %v", err)
-	}
-	var enemies []entity.Monster
-	err = json.Unmarshal(enemiesData, &enemies)
-	if err != nil {
-		log.Fatalf("unable to parse enemies data due: %v", err)
-	}
-	pokemonStorage, err := monstrg.New(
-		monstrg.Config{
-			Partners: partners,
-			Enemies:  enemies,
-		},
-	)
+	pokemonStorage, err := monstrg.New(monstrg.Config{MonsterData: monsterData})
 	if err != nil {
 		log.Fatalf("unable to initialize pokemon storage due: %v", err)
 	}
+
 	// initialize game storage
 	gameStorage := gamestrg.New()
+
 	// initialize battle storage
 	battleStorage := battlestrg.New()
+
 	// initialize play service
 	playService, err := play.NewService(play.ServiceConfig{
 		GameStorage:    gameStorage,
@@ -66,6 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to initialize play service due: %v", err)
 	}
+
 	// initialize battle service
 	battleService, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
@@ -75,21 +59,23 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to initialize battle service due: %v", err)
 	}
+
 	// initialize rest api
 	api, err := rest.NewAPI(rest.APIConfig{
 		PlayingService: playService,
 		BattleService:  battleService,
-		ServiceName:    "",
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize rest api due: %v", err)
 	}
+
 	// initialize server
 	server := &http.Server{
 		Addr:        ":" + cfg.Port,
 		Handler:     api.GetHandler(),
 		ReadTimeout: 3 * time.Second,
 	}
+
 	// run server
 	log.Printf("server is listening on :%v...", cfg.Port)
 	err = server.ListenAndServe()

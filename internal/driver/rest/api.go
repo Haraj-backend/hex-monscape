@@ -22,8 +22,28 @@ const (
 	indexFile = "index.html"
 )
 
+type APIConfig struct {
+	PlayingService play.Service   `validate:"nonnil"`
+	BattleService  battle.Service `validate:"nonnil"`
+}
+
+func (c APIConfig) Validate() error {
+	return validator.Validate(c)
+}
+
+func NewAPI(cfg APIConfig) (*API, error) {
+	err := cfg.Validate()
+	if err != nil {
+		return nil, err
+	}
+	a := &API{
+		playService:   cfg.PlayingService,
+		battleService: cfg.BattleService,
+	}
+	return a, nil
+}
+
 type API struct {
-	serviceName   string
 	playService   play.Service
 	battleService battle.Service
 }
@@ -244,27 +264,4 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	render.Render(w, r, NewSuccessResp(bt))
-}
-
-type APIConfig struct {
-	PlayingService play.Service   `validate:"nonnil"`
-	BattleService  battle.Service `validate:"nonnil"`
-	ServiceName    string         `validate:"nonzero"`
-}
-
-func (c APIConfig) Validate() error {
-	return validator.Validate(c)
-}
-
-func NewAPI(cfg APIConfig) (*API, error) {
-	err := cfg.Validate()
-	if err != nil {
-		return nil, err
-	}
-	a := &API{
-		playService:   cfg.PlayingService,
-		battleService: cfg.BattleService,
-		serviceName:   cfg.ServiceName,
-	}
-	return a, nil
 }
