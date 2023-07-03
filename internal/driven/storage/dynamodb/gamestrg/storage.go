@@ -32,17 +32,17 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 		return nil, nil
 	}
 
-	gameItem := entity.Game{}
-	err = dynamodbattribute.UnmarshalMap(output.Item, &gameItem)
+	var gameRow gameRow
+	err = dynamodbattribute.UnmarshalMap(output.Item, &gameRow)
 	if err != nil {
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 
-	return &gameItem, nil
+	return gameRow.toGame(), nil
 }
 
 func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
-	item, _ := dynamodbattribute.MarshalMap(&game)
+	item, _ := dynamodbattribute.MarshalMap(toGameRow(game))
 	input := dynamodb.PutItemInput{
 		TableName: aws.String(s.tableName),
 		Item:      item,
