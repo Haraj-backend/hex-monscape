@@ -14,7 +14,7 @@ Table that holds monster records.
   - `defense`, Number => number of damage reducer for a monster (damage = enemy.attack - your_partner.defense)
   - `speed`, Number => chance for getting a turn in battle, higher means more likely to get a turn in battle RNG
 - `avatar_url`, String => url for avatar image of a monster
-- `extra_role`, String, *OPTIONAL* => extra flag to define monster type, valid values: `PARTNER` or `ENEMY`
+- `is_partnerable`, String, _OPTIONAL_ => extra flag to indicate if a monster can be chosen as a partner, valid value is `true`. The reason why we choose this field type to be `String` is because DynamoDB does not support boolean type in primary key, yet we want to use this field as part of primary key for global secondary index to fetch all partnerable monsters.
 
 **Example Record:**
 
@@ -29,14 +29,14 @@ Table that holds monster records.
     "speed": 15
   },
   "avatar_url": "https://assets.monster.com/assets/025.png",
-  "extra_role": "PARTNER"
+  "is_partnerable": "true"
 }
 ```
 
 **Indexes:**
 
 - `PRIMARY_KEY` => `id`
-- `extra_role` => `extra_role`
+- `is_partnerable` => `is_partnerable`
 
 [Back to Top](#dynamodb-schema)
 
