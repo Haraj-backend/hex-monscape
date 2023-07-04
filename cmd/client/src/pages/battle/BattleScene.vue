@@ -19,7 +19,7 @@ export default {
         const gw = document.getElementById("game-wrapper")
         const currentLocation = window.location.pathname.split("/")
         if (currentLocation.findIndex(loc => loc === 'battle') > -1) {
-            gw.style.backgroundImage = `url('https://idev-images-test.s3.eu-west-1.amazonaws.com/hex-monscape-backgrounds/battle_base.jpg')`
+            gw.style.backgroundImage = `url('https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/backgrounds/battle_base.jpg')`
         }
 
         // get battle state

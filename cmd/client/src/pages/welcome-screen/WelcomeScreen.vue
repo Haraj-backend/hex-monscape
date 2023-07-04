@@ -18,7 +18,7 @@ export default {
             <!-- Game title -->
             <h1 class="game-title">
                 HEX
-                <br />POKEBATTLE
+                <br />MONSCAPE
             </h1>
 
             <!-- Initial actions -->

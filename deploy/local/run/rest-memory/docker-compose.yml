@@ -1,6 +1,19 @@
 version: "2.4"
 
 services:
+
+  client:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
+    volumes:
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_POKEBATTLE_URL=http://localhost:9186
+
   server:
     build:
       context: ../../../../
@@ -15,3 +28,6 @@ services:
     environment:
       - STORAGE_TYPE=memory
       - STORAGE_MEMORY_MONSTER_DATA_PATH=/data/data.json
+
+volumes:
+  exclude:
