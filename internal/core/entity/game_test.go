@@ -71,7 +71,7 @@ func TestNewGame(t *testing.T) {
 		assert.Equal(t, cfg.Partner, game.Partner, "mismatch partner")
 		assert.Equal(t, cfg.CreatedAt, game.CreatedAt, "mismatch created_at")
 		assert.Equal(t, 0, game.BattleWon, "mismatch battle_won")
-		assert.Equal(t, BATTLE_1, game.Scenario, "mismatch scenario")
+		assert.Equal(t, ScenarioBattle1, game.Scenario, "mismatch scenario")
 	}
 	// define test cases
 	testCases := []struct {
@@ -111,7 +111,7 @@ func TestAdvanceScenario(t *testing.T) {
 	// initialize new game
 	game := initNewGame()
 	// test scenario
-	scenarios := []Scenario{BATTLE_1, BATTLE_2, BATTLE_3, END_GAME}
+	scenarios := []Scenario{ScenarioBattle1, ScenarioBattle2, ScenarioBattle3, ScenarioEndGame}
 	for i := 0; i < len(scenarios); i++ {
 		// not won any battle, scenario should be same as previous
 		game.AdvanceScenario()

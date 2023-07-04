@@ -60,7 +60,7 @@ func TestSaveBattleExistingBattle(t *testing.T) {
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// override battle state
-	b.State = entity.ENEMY_TURN
+	b.State = entity.StateEnemyTurn
 	// save again
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
@@ -91,7 +91,7 @@ func TestGetBattle(t *testing.T) {
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
 	// override battle state
-	b.State = entity.ENEMY_TURN
+	b.State = entity.StateEnemyTurn
 	// save again
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
@@ -128,7 +128,7 @@ func getBattle(sqlClient *sqlx.DB, gameID string) (*entity.Battle, error) {
 func newBattle(partner entity.Monster, enemy entity.Monster) entity.Battle {
 	return entity.Battle{
 		GameID:  uuid.NewString(),
-		State:   entity.DECIDE_TURN,
+		State:   entity.StateDecideTurn,
 		Partner: &partner,
 		Enemy:   &enemy,
 		LastDamage: entity.LastDamage{

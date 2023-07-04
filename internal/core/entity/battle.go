@@ -23,7 +23,7 @@ type Battle struct {
 // be PARTNER_TURN otherwise the action will be rejected.
 func (b *Battle) PartnerAttack() error {
 	// check battle turn
-	if b.State != PARTNER_TURN {
+	if b.State != StatePartnerTurn {
 		return ErrInvalidState
 	}
 	// inflict damage to enemy
@@ -35,9 +35,9 @@ func (b *Battle) PartnerAttack() error {
 	b.LastDamage.Enemy = damage
 	// set battle state accordingly
 	if b.Enemy.IsDead() {
-		b.State = WIN
+		b.State = StateWin
 	} else {
-		b.State = DECIDE_TURN
+		b.State = StateDecideTurn
 	}
 
 	return nil
@@ -47,11 +47,11 @@ func (b *Battle) PartnerAttack() error {
 // be PARTNER_TURN otherwise the action will be rejected.
 func (b *Battle) PartnerSurrender() error {
 	// check battle turn
-	if b.State != PARTNER_TURN {
+	if b.State != StatePartnerTurn {
 		return ErrInvalidState
 	}
 	// set state to lose
-	b.State = LOSE
+	b.State = StateLose
 	return nil
 }
 
@@ -59,7 +59,7 @@ func (b *Battle) PartnerSurrender() error {
 // ENEMY_TURN otherwise the action will be rejected.
 func (b *Battle) EnemyAttack() error {
 	// check battle state
-	if b.State != ENEMY_TURN {
+	if b.State != StateEnemyTurn {
 		return ErrInvalidState
 	}
 	// inflict damage to partner
@@ -71,9 +71,9 @@ func (b *Battle) EnemyAttack() error {
 	b.LastDamage.Partner = damage
 	// set battle state accordingly
 	if b.Partner.IsDead() {
-		b.State = LOSE
+		b.State = StateLose
 	} else {
-		b.State = DECIDE_TURN
+		b.State = StateDecideTurn
 	}
 
 	return nil
@@ -81,14 +81,14 @@ func (b *Battle) EnemyAttack() error {
 
 // IsEnded returns true when state is either WIN or LOSE
 func (b Battle) IsEnded() bool {
-	return b.State == WIN || b.State == LOSE
+	return b.State == StateWin || b.State == StateLose
 }
 
 // DecideTurn is used for deciding turn in the battle. It calculates turn based
 // on speed of both partner & enemy. The battle state must be DECIDE_TURN, otherwise
 // the action will be rejected.
 func (b *Battle) DecideTurn() (State, error) {
-	if b.State != DECIDE_TURN {
+	if b.State != StateDecideTurn {
 		return "", ErrInvalidState
 	}
 	// define slot for both partner & enemy
@@ -109,9 +109,9 @@ func (b *Battle) DecideTurn() (State, error) {
 	// decide turn
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	idx := rnd.Intn(lenSlots)
-	state := ENEMY_TURN
+	state := StateEnemyTurn
 	if slots[idx] == partnerSlot {
-		state = PARTNER_TURN
+		state = StatePartnerTurn
 	}
 	// update battle internal state
 	b.State = state
@@ -137,7 +137,7 @@ func NewBattle(cfg BattleConfig) (*Battle, error) {
 	}
 	b := &Battle{
 		GameID:     cfg.GameID,
-		State:      DECIDE_TURN,
+		State:      StateDecideTurn,
 		Partner:    cfg.Partner,
 		Enemy:      cfg.Enemy,
 		LastDamage: LastDamage{},
@@ -149,11 +149,11 @@ func NewBattle(cfg BattleConfig) (*Battle, error) {
 type State string
 
 const (
-	DECIDE_TURN  State = "DECIDE_TURN"
-	ENEMY_TURN   State = "ENEMY_TURN"
-	PARTNER_TURN State = "PARTNER_TURN"
-	WIN          State = "WIN"
-	LOSE         State = "LOSE"
+	StateDecideTurn  State = "DECIDE_TURN"
+	StateEnemyTurn   State = "ENEMY_TURN"
+	StatePartnerTurn State = "PARTNER_TURN"
+	StateWin         State = "WIN"
+	StateLose        State = "LOSE"
 )
 
 type LastDamage struct {

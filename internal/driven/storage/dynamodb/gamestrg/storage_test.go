@@ -21,7 +21,7 @@ func TestSaveGetGame(t *testing.T) {
 			ID: "partner-id",
 		},
 		BattleWon: 2,
-		Scenario:  entity.BATTLE_3,
+		Scenario:  entity.ScenarioBattle3,
 	}
 
 	err := storage.SaveGame(context.Background(), game)

@@ -8,10 +8,10 @@ import (
 type Scenario string
 
 const (
-	BATTLE_1 Scenario = "BATTLE_1"
-	BATTLE_2 Scenario = "BATTLE_2"
-	BATTLE_3 Scenario = "BATTLE_3"
-	END_GAME Scenario = "END_GAME"
+	ScenarioBattle1 Scenario = "BATTLE_1"
+	ScenarioBattle2 Scenario = "BATTLE_2"
+	ScenarioBattle3 Scenario = "BATTLE_3"
+	ScenarioEndGame Scenario = "END_GAME"
 )
 
 type Game struct {
@@ -41,11 +41,11 @@ func (g *Game) AdvanceScenario() Scenario {
 	// determine next scenario
 	nextScenario := g.Scenario
 	if g.BattleWon >= 3 {
-		nextScenario = END_GAME
+		nextScenario = ScenarioEndGame
 	} else if g.BattleWon == 2 {
-		nextScenario = BATTLE_3
+		nextScenario = ScenarioBattle3
 	} else if g.BattleWon == 1 {
-		nextScenario = BATTLE_2
+		nextScenario = ScenarioBattle2
 	}
 	// update internal scenario & return its value
 	g.Scenario = nextScenario
@@ -70,7 +70,7 @@ func NewGame(cfg GameConfig) (*Game, error) {
 		Partner:    cfg.Partner,
 		CreatedAt:  cfg.CreatedAt,
 		BattleWon:  0,
-		Scenario:   BATTLE_1,
+		Scenario:   ScenarioBattle1,
 	}
 	return g, nil
 }

@@ -271,7 +271,7 @@ func TestServiceAttack(t *testing.T) {
 		Partner: partner,
 		Enemy:   newSamplePokemon(),
 	})
-	battle.State = entity.PARTNER_TURN
+	battle.State = entity.StatePartnerTurn
 
 	err = gameStorage.SaveGame(context.Background(), *game)
 	if err != nil {
@@ -316,7 +316,7 @@ func TestServiceSurrender(t *testing.T) {
 		Partner: partner,
 		Enemy:   newSamplePokemon(),
 	})
-	battle.State = entity.PARTNER_TURN
+	battle.State = entity.StatePartnerTurn
 
 	err = gameStorage.SaveGame(context.Background(), *game)
 	if err != nil {
@@ -340,7 +340,7 @@ func TestServiceSurrender(t *testing.T) {
 		t.Fatalf("unable to surrender, due: %v", err)
 	}
 	expectedBattle := battle
-	expectedBattle.State = entity.LOSE
+	expectedBattle.State = entity.StateLose
 	assert.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
 }
 

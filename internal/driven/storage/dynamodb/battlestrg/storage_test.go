@@ -18,7 +18,7 @@ func TestSaveGetBattle(t *testing.T) {
 	// save battle
 	battle := entity.Battle{
 		GameID: uuid.NewString(),
-		State:  entity.DECIDE_TURN,
+		State:  entity.StateDecideTurn,
 		Partner: &entity.Monster{
 			ID:   "partner-id",
 			Name: "my-partner",

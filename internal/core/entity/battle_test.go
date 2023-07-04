@@ -62,7 +62,7 @@ func TestPartnerAttack(t *testing.T) {
 	}{
 		{
 			Name:  "Validate State PARTNER_TURN",
-			State: PARTNER_TURN,
+			State: StatePartnerTurn,
 			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
@@ -92,14 +92,14 @@ func TestPartnerAttack(t *testing.T) {
 		},
 		{
 			Name:    "Validate State DECIDE_TURN",
-			State:   DECIDE_TURN,
+			State:   StateDecideTurn,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:    "Validate State WIN",
-			State:   WIN,
+			State:   StateWin,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
@@ -134,17 +134,17 @@ func TestPartnerSurrender(t *testing.T) {
 	}{
 		{
 			Name:    "Validate State PARTNER_TURN",
-			State:   PARTNER_TURN,
+			State:   StatePartnerTurn,
 			IsError: false,
 		},
 		{
 			Name:    "Validate State DECIDE_TURN",
-			State:   DECIDE_TURN,
+			State:   StateDecideTurn,
 			IsError: true,
 		},
 		{
 			Name:    "Validate State WIN",
-			State:   WIN,
+			State:   StateWin,
 			IsError: true,
 		},
 	}
@@ -155,7 +155,7 @@ func TestPartnerSurrender(t *testing.T) {
 			err := battle.PartnerSurrender()
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if !testCase.IsError {
-				assert.Equal(t, LOSE, battle.State)
+				assert.Equal(t, StateLose, battle.State)
 			}
 		})
 	}
@@ -173,7 +173,7 @@ func TestEnemyAttack(t *testing.T) {
 	}{
 		{
 			Name:  "Validate State ENEMY_TURN",
-			State: ENEMY_TURN,
+			State: StateEnemyTurn,
 			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
@@ -203,21 +203,21 @@ func TestEnemyAttack(t *testing.T) {
 		},
 		{
 			Name:    "Validate State PARTNER_TURN",
-			State:   PARTNER_TURN,
+			State:   StatePartnerTurn,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:    "Validate State DECIDE_TURN",
-			State:   DECIDE_TURN,
+			State:   StateDecideTurn,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:    "Validate State WIN",
-			State:   WIN,
+			State:   StateWin,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
@@ -251,27 +251,27 @@ func TestIsEnded(t *testing.T) {
 	}{
 		{
 			Name:     "Validate State PARTNER_TURN",
-			State:    PARTNER_TURN,
+			State:    StatePartnerTurn,
 			Expected: false,
 		},
 		{
 			Name:     "Validate State DECIDE_TURN",
-			State:    DECIDE_TURN,
+			State:    StateDecideTurn,
 			Expected: false,
 		},
 		{
 			Name:     "Validate State ENEMY_TURN",
-			State:    ENEMY_TURN,
+			State:    StateEnemyTurn,
 			Expected: false,
 		},
 		{
 			Name:     "Validate State WIN",
-			State:    WIN,
+			State:    StateWin,
 			Expected: true,
 		},
 		{
 			Name:     "Validate State LOSE",
-			State:    LOSE,
+			State:    StateLose,
 			Expected: true,
 		},
 	}
@@ -298,21 +298,21 @@ func TestDecideTurn(t *testing.T) {
 	}{
 		{
 			Name:    "Validate State PARTNER_TURN",
-			State:   PARTNER_TURN,
+			State:   StatePartnerTurn,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:    "Validate State WIN",
-			State:   WIN,
+			State:   StateWin,
 			Partner: *newSamplePokemon(),
 			Enemy:   *newSamplePokemon(),
 			IsError: true,
 		},
 		{
 			Name:  "Validate PARTNER_TURN",
-			State: DECIDE_TURN,
+			State: StateDecideTurn,
 			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
@@ -338,11 +338,11 @@ func TestDecideTurn(t *testing.T) {
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
 			IsError:       false,
-			ExpectedState: PARTNER_TURN,
+			ExpectedState: StatePartnerTurn,
 		},
 		{
 			Name:  "Validate ENEMY_TURN",
-			State: DECIDE_TURN,
+			State: StateDecideTurn,
 			Partner: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
@@ -368,7 +368,7 @@ func TestDecideTurn(t *testing.T) {
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
 			IsError:       false,
-			ExpectedState: ENEMY_TURN,
+			ExpectedState: StateEnemyTurn,
 		},
 	}
 	// execute test cases
