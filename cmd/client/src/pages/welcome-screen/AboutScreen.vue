@@ -30,7 +30,6 @@ export default {
                         rel="noopener noreferrer"
                     >here.</a>
                 </p>
-                <p>This web based UI is used to demonstrate how the Hex Pokebattle game would work.</p>
             </div>
 
             <!-- Initial actions -->
