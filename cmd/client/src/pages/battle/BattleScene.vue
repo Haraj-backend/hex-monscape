@@ -182,7 +182,7 @@ export default {
                         :maxHealth="battleState.partner.battle_stats.max_health"
                         :currentHealth="battleState.partner.battle_stats.health"
                     />
-                    <p class="partner-name">{{ battleState.partner.name }}</p>
+                    <p class="partner-name">{{ battleState.partner.name }} <small>(Partner)</small></p>
                 </div>
                 <div class="pokemon-avatar">
                     <img
