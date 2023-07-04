@@ -184,7 +184,7 @@ export default {
                     />
                     <p class="partner-name">{{ battleState.partner.name }} <small>(Partner)</small></p>
                 </div>
-                <div class="pokemon-avatar">
+                <div class="monster-avatar">
                     <img
                         :class="shaking.partner || battleState.state === turnStates.LOSE ? 'animate-shake' : ''"
                         width="256"
@@ -207,7 +207,7 @@ export default {
                     />
                     <p class="enemy-name">{{ battleState.enemy.name }}</p>
                 </div>
-                <div class="pokemon-avatar">
+                <div class="monster-avatar">
                     <img
                         :class="shaking.enemy || battleState.state === turnStates.WIN ? 'animate-shake' : ''"
                         width="256"
@@ -271,10 +271,10 @@ export default {
     @apply text-right;
 }
 
-.pokemon-avatar {
+.monster-avatar {
     @apply flex justify-center mt-44;
 }
-.pokemon-avatar {
+.monster-avatar {
     @apply flex justify-center mt-44;
 }
 </style>

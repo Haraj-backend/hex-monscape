@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/testutil"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )

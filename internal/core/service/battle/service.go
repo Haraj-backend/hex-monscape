@@ -46,7 +46,7 @@ type Service interface {
 type service struct {
 	gameStorage    GameStorage
 	battleStorage  BattleStorage
-	pokemonStorage MonsterStorage
+	monsterStorage MonsterStorage
 }
 
 func (s *service) StartBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
@@ -64,7 +64,7 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*entity.Battl
 	// reset partner battle stats
 	game.Partner.ResetBattleStats()
 	// get possible enemies, choose it randomly
-	enemies, err := s.pokemonStorage.GetPossibleEnemies(ctx)
+	enemies, err := s.monsterStorage.GetPossibleEnemies(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get possible enemies due: %w", err)
 	}
@@ -197,7 +197,7 @@ func (s *service) Surrender(ctx context.Context, gameID string) (*entity.Battle,
 type ServiceConfig struct {
 	GameStorage    GameStorage    `validate:"nonnil"`
 	BattleStorage  BattleStorage  `validate:"nonnil"`
-	PokemonStorage MonsterStorage `validate:"nonnil"`
+	MonsterStorage MonsterStorage `validate:"nonnil"`
 }
 
 func (c ServiceConfig) Validate() error {
@@ -213,7 +213,7 @@ func NewService(cfg ServiceConfig) (Service, error) {
 	svc := &service{
 		gameStorage:    cfg.GameStorage,
 		battleStorage:  cfg.BattleStorage,
-		pokemonStorage: cfg.PokemonStorage,
+		monsterStorage: cfg.MonsterStorage,
 	}
 	return svc, nil
 }

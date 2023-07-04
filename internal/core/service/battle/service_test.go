@@ -2,12 +2,11 @@ package battle
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/google/uuid"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,13 +14,13 @@ func TestNewService(t *testing.T) {
 	// define mock dependencies
 	gameStorage := newMockGameStorage()
 	battleStorage := newMockBattleStorage()
-	pokemonStorage := newMockPokemonStorage()
+	monsterStorage := newMockMonsterStorage()
 
 	// define function for validating new game instance
 	validateFunc := func(t *testing.T, svc Service, cfg ServiceConfig) {
 		assert.Equal(t, cfg.GameStorage, svc.(*service).gameStorage)
 		assert.Equal(t, cfg.BattleStorage, svc.(*service).battleStorage)
-		assert.Equal(t, cfg.PokemonStorage, svc.(*service).pokemonStorage)
+		assert.Equal(t, cfg.MonsterStorage, svc.(*service).monsterStorage)
 	}
 	// define test cases
 	testCases := []struct {
@@ -34,7 +33,7 @@ func TestNewService(t *testing.T) {
 			Config: ServiceConfig{
 				GameStorage:    nil,
 				BattleStorage:  battleStorage,
-				PokemonStorage: pokemonStorage,
+				MonsterStorage: monsterStorage,
 			},
 			IsError: true,
 		},
@@ -43,7 +42,7 @@ func TestNewService(t *testing.T) {
 			Config: ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
-				PokemonStorage: nil,
+				MonsterStorage: nil,
 			},
 			IsError: true,
 		},
@@ -52,7 +51,7 @@ func TestNewService(t *testing.T) {
 			Config: ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
-				PokemonStorage: pokemonStorage,
+				MonsterStorage: monsterStorage,
 			},
 			IsError: false,
 		},
@@ -71,8 +70,8 @@ func TestNewService(t *testing.T) {
 }
 
 func TestServiceStartBattle(t *testing.T) {
-	partner := newSamplePokemon()
-	enemy := newSamplePokemon()
+	partner := testutil.NewTestMonster()
+	enemy := testutil.NewTestMonster()
 	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
@@ -103,9 +102,9 @@ func TestServiceStartBattle(t *testing.T) {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battleStorage := newMockBattleStorage()
 			gameStorage := newMockGameStorage()
-			pokemonStorage := newMockPokemonStorage()
+			monsterStorage := newMockMonsterStorage()
 			if testCase.Enemy != nil {
-				pokemonStorage.enemyMap[testCase.Enemy.ID] = *testCase.Enemy
+				monsterStorage.enemyMap[testCase.Enemy.ID] = *testCase.Enemy
 			}
 			gameID := ""
 
@@ -117,7 +116,7 @@ func TestServiceStartBattle(t *testing.T) {
 			svc, _ := NewService(ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
-				PokemonStorage: pokemonStorage,
+				MonsterStorage: monsterStorage,
 			})
 			battle, err := svc.StartBattle(context.Background(), gameID)
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
@@ -134,7 +133,7 @@ func TestServiceStartBattle(t *testing.T) {
 }
 
 func TestServiceGetBattle(t *testing.T) {
-	partner := newSamplePokemon()
+	partner := testutil.NewTestMonster()
 	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
@@ -144,7 +143,7 @@ func TestServiceGetBattle(t *testing.T) {
 	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
-		Enemy:   newSamplePokemon(),
+		Enemy:   testutil.NewTestMonster(),
 	})
 
 	testCases := []struct {
@@ -177,7 +176,7 @@ func TestServiceGetBattle(t *testing.T) {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battleStorage := newMockBattleStorage()
 			gameStorage := newMockGameStorage()
-			pokemonStorage := newMockPokemonStorage()
+			monsterStorage := newMockMonsterStorage()
 			gameID := ""
 
 			if testCase.Game != nil {
@@ -192,7 +191,7 @@ func TestServiceGetBattle(t *testing.T) {
 			svc, _ := NewService(ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
-				PokemonStorage: pokemonStorage,
+				MonsterStorage: monsterStorage,
 			})
 			newBattle, err := svc.GetBattle(context.Background(), gameID)
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
@@ -206,9 +205,9 @@ func TestServiceGetBattle(t *testing.T) {
 func TestServiceDecideTurn(t *testing.T) {
 	battleStorage := newMockBattleStorage()
 	gameStorage := newMockGameStorage()
-	pokemonStorage := newMockPokemonStorage()
+	monsterStorage := newMockMonsterStorage()
 
-	partner := newSamplePokemon()
+	partner := testutil.NewTestMonster()
 	game, err := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
@@ -221,7 +220,7 @@ func TestServiceDecideTurn(t *testing.T) {
 	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
-		Enemy:   newSamplePokemon(),
+		Enemy:   testutil.NewTestMonster(),
 	})
 
 	err = gameStorage.SaveGame(context.Background(), *game)
@@ -236,7 +235,7 @@ func TestServiceDecideTurn(t *testing.T) {
 	svc, err := NewService(ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
-		PokemonStorage: pokemonStorage,
+		MonsterStorage: monsterStorage,
 	})
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
@@ -254,9 +253,9 @@ func TestServiceDecideTurn(t *testing.T) {
 func TestServiceAttack(t *testing.T) {
 	battleStorage := newMockBattleStorage()
 	gameStorage := newMockGameStorage()
-	pokemonStorage := newMockPokemonStorage()
+	monsterStorage := newMockMonsterStorage()
 
-	partner := newSamplePokemon()
+	partner := testutil.NewTestMonster()
 	game, err := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
@@ -269,7 +268,7 @@ func TestServiceAttack(t *testing.T) {
 	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
-		Enemy:   newSamplePokemon(),
+		Enemy:   testutil.NewTestMonster(),
 	})
 	battle.State = entity.StatePartnerTurn
 
@@ -285,7 +284,7 @@ func TestServiceAttack(t *testing.T) {
 	svc, err := NewService(ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
-		PokemonStorage: pokemonStorage,
+		MonsterStorage: monsterStorage,
 	})
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
@@ -299,9 +298,9 @@ func TestServiceAttack(t *testing.T) {
 func TestServiceSurrender(t *testing.T) {
 	battleStorage := newMockBattleStorage()
 	gameStorage := newMockGameStorage()
-	pokemonStorage := newMockPokemonStorage()
+	monsterStorage := newMockMonsterStorage()
 
-	partner := newSamplePokemon()
+	partner := testutil.NewTestMonster()
 	game, err := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
@@ -314,7 +313,7 @@ func TestServiceSurrender(t *testing.T) {
 	battle, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
-		Enemy:   newSamplePokemon(),
+		Enemy:   testutil.NewTestMonster(),
 	})
 	battle.State = entity.StatePartnerTurn
 
@@ -330,7 +329,7 @@ func TestServiceSurrender(t *testing.T) {
 	svc, err := NewService(ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
-		PokemonStorage: pokemonStorage,
+		MonsterStorage: monsterStorage,
 	})
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
@@ -390,11 +389,11 @@ func newMockBattleStorage() *mockBattleStorage {
 	}
 }
 
-type mockPokemonStorage struct {
+type mockMockStorage struct {
 	enemyMap map[string]entity.Monster
 }
 
-func (gs *mockPokemonStorage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
+func (gs *mockMockStorage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
 	var enemies []entity.Monster
 	for _, enemy := range gs.enemyMap {
 		enemies = append(enemies, enemy)
@@ -402,24 +401,8 @@ func (gs *mockPokemonStorage) GetPossibleEnemies(ctx context.Context) ([]entity.
 	return enemies, nil
 }
 
-func newMockPokemonStorage() *mockPokemonStorage {
-	return &mockPokemonStorage{
+func newMockMonsterStorage() *mockMockStorage {
+	return &mockMockStorage{
 		enemyMap: map[string]entity.Monster{},
-	}
-}
-
-func newSamplePokemon() *entity.Monster {
-	currentTs := time.Now().Unix()
-	return &entity.Monster{
-		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("pokemon_%v", currentTs),
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    100,
-			Defense:   100,
-			Speed:     100,
-		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
 	}
 }

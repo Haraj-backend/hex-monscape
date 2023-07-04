@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/testutil"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"

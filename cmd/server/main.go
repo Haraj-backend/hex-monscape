@@ -25,14 +25,14 @@ func main() {
 		log.Fatalf("unable to parse configs due: %v", err)
 	}
 
-	// initialize pokemon storage
+	// initialize monster storage
 	monsterData, err := ioutil.ReadFile(cfg.Storage.Memory.MonsterDataPath)
 	if err != nil {
 		log.Fatalf("unable to read monster data due: %v", err)
 	}
-	pokemonStorage, err := monstrg.New(monstrg.Config{MonsterData: monsterData})
+	monsterStorage, err := monstrg.New(monstrg.Config{MonsterData: monsterData})
 	if err != nil {
-		log.Fatalf("unable to initialize pokemon storage due: %v", err)
+		log.Fatalf("unable to initialize monster storage due: %v", err)
 	}
 
 	// initialize game storage
@@ -44,7 +44,7 @@ func main() {
 	// initialize play service
 	playService, err := play.NewService(play.ServiceConfig{
 		GameStorage:    gameStorage,
-		PartnerStorage: pokemonStorage,
+		PartnerStorage: monsterStorage,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize play service due: %v", err)
@@ -54,7 +54,7 @@ func main() {
 	battleService, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
-		PokemonStorage: pokemonStorage,
+		MonsterStorage: monsterStorage,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize battle service due: %v", err)

@@ -1,10 +1,11 @@
-package entity
+package entity_test
 
 import (
 	"fmt"
 	"testing"
 	"time"
 
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,15 +14,15 @@ func TestIsDead(t *testing.T) {
 	// define test cases
 	testCases := []struct {
 		Name     string
-		Monster  Monster
+		Monster  entity.Monster
 		Expected bool
 	}{
 		{
 			Name: "Monster is Not Dead",
-			Monster: Monster{
+			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -34,10 +35,10 @@ func TestIsDead(t *testing.T) {
 		},
 		{
 			Name: "Monster Has 0 Health",
-			Monster: Monster{
+			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
 					Health:    0,
 					MaxHealth: 100,
 					Attack:    100,
@@ -50,10 +51,10 @@ func TestIsDead(t *testing.T) {
 		},
 		{
 			Name: "Monster Has Negative Health",
-			Monster: Monster{
+			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
 					Health:    -100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -79,16 +80,16 @@ func TestInflictDamage(t *testing.T) {
 	// define test cases
 	testCases := []struct {
 		Name                 string
-		Monster              Monster
-		Enemy                Monster
+		Monster              entity.Monster
+		Enemy                entity.Monster
 		ExpectedHealthAmount int
 	}{
 		{
 			Name: "Monster Get Zero Damage",
-			Monster: Monster{
+			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -97,10 +98,10 @@ func TestInflictDamage(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: Monster{
+			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("enemy_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -113,10 +114,10 @@ func TestInflictDamage(t *testing.T) {
 		},
 		{
 			Name: "Monster Get 50 Damage",
-			Monster: Monster{
+			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
@@ -125,10 +126,10 @@ func TestInflictDamage(t *testing.T) {
 				},
 				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
 			},
-			Enemy: Monster{
+			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("enemy_%v", time.Now().Unix()),
-				BattleStats: BattleStats{
+				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
 					Attack:    100,
