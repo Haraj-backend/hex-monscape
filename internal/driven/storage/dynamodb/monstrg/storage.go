@@ -12,64 +12,68 @@ import (
 	"gopkg.in/validator.v2"
 )
 
+// New returns new instance of pokestrg dynamoDB Storage
+func New(cfg Config) (*Storage, error) {
+	err := cfg.Validate()
+	if err != nil {
+		return nil, fmt.Errorf("invalid config: %w", err)
+	}
+	strg := &Storage{
+		dynamoClient: cfg.DynamoClient,
+		tableName:    cfg.TableName,
+	}
+	return strg, nil
+}
+
 type Storage struct {
 	dynamoClient *dynamodb.DynamoDB
 	tableName    string
 }
 
-func (s *Storage) getPokemonsByRole(ctx context.Context, extraRole extraRole) ([]entity.Monster, error) {
-	query := monsterExtraRoleQuery{
-		ExtraRole: extraRole,
-	}
-
-	input := dynamodb.QueryInput{
+func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
+	// query partnerable monsters
+	eav, _ := dynamodbattribute.MarshalMap(map[string]interface{}{
+		":is_partnerable": 1,
+	})
+	output, err := s.dynamoClient.QueryWithContext(ctx, &dynamodb.QueryInput{
+		KeyConditionExpression:    aws.String("is_partnerable = :is_partnerable"),
+		ExpressionAttributeValues: eav,
+		IndexName:                 aws.String("is_partnerable"),
 		TableName:                 aws.String(s.tableName),
-		KeyConditionExpression:    query.toQueryExpression(),
-		ExpressionAttributeValues: query.toQueryExpressionValue(),
-		IndexName:                 aws.String(indexExtraRole),
-	}
-
-	output, err := s.dynamoClient.QueryWithContext(ctx, &input)
+	})
 	if err != nil {
-		return nil, fmt.Errorf("unable to query from %s due to: %w", s.tableName, err)
+		return nil, fmt.Errorf("unable to query table %s due to: %w", s.tableName, err)
 	}
-
+	// just return if empty
 	if len(output.Items) == 0 {
 		return nil, nil
 	}
-
-	rows := make([]shared.MonsterRow, len(output.Items))
-	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &rows)
-	if err != nil {
-		return nil, fmt.Errorf("unable to unmarshal items from %s due to: %w", s.tableName, err)
-	}
-	monsters := make([]entity.Monster, len(rows))
-	for i, row := range rows {
-		m := row.ToMonster()
-		monsters[i] = *m
-	}
-	return monsters, nil
-}
-
-func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
-	return s.getPokemonsByRole(ctx, partnerRole)
+	// parse monster rows
+	return toMonsters(output.Items)
 }
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
-	return s.getPokemonsByRole(ctx, enemyRole)
+	// scan whole monster table
+	output, err := s.dynamoClient.ScanWithContext(ctx, &dynamodb.ScanInput{
+		TableName: aws.String(s.tableName),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("unable to scan table %s due to: %w", s.tableName, err)
+	}
+	// just return if empty
+	if len(output.Items) == 0 {
+		return nil, nil
+	}
+	// parse monster rows
+	return toMonsters(output.Items)
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
-	key := monsterKey{
-		ID: partnerID,
-	}
-
-	input := dynamodb.GetItemInput{
+	key := monsterKey{ID: partnerID}.toDDBKey()
+	output, err := s.dynamoClient.GetItemWithContext(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(s.tableName),
-		Key:       key.toDDBKey(),
-	}
-
-	output, err := s.dynamoClient.GetItemWithContext(ctx, &input)
+		Key:       key,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
@@ -87,20 +91,6 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Mon
 	return monsterRow.ToMonster(), nil
 }
 
-func (s *Storage) SeedData(ctx context.Context, seeder *PokemonSeeder) error {
-	if seeder.isEmpty() {
-		return nil
-	}
-
-	input := seeder.toBatchWriteInput(s.tableName)
-	_, err := s.dynamoClient.BatchWriteItemWithContext(ctx, input)
-	if err != nil {
-		return fmt.Errorf("unable to batch write item to %s due to: %w", s.tableName, err)
-	}
-
-	return nil
-}
-
 type Config struct {
 	DynamoClient *dynamodb.DynamoDB `validate:"nonnil"`
 	TableName    string             `validate:"nonzero"`
@@ -108,22 +98,4 @@ type Config struct {
 
 func (c Config) Validate() error {
 	return validator.Validate(c)
-}
-
-// New returns new instance of pokestrg dynamoDB Storage
-func New(cfg Config) (*Storage, error) {
-	err := cfg.Validate()
-	if err != nil {
-		return nil, err
-	}
-
-	strg := &Storage{
-		dynamoClient: cfg.DynamoClient,
-		tableName:    cfg.TableName,
-	}
-
-	// here I'm not mimicking the memory storage for seeding the data when constructing the instance
-	// instead, I would like to call the SeedData method that I provide on line 94 in the main function, WDYT?
-
-	return strg, nil
 }

@@ -3,10 +3,11 @@ package shared
 import "github.com/Haraj-backend/hex-monscape/internal/core/entity"
 
 type MonsterRow struct {
-	ID          string         `dynamodbav:"id"`
-	Name        string         `dynamodbav:"name"`
-	BattleStats BattleStatsRow `dynamodbav:"battle_stats"`
-	AvatarURL   string         `dynamodbav:"avatar_url"`
+	ID            string         `dynamodbav:"id"`
+	Name          string         `dynamodbav:"name"`
+	BattleStats   BattleStatsRow `dynamodbav:"battle_stats"`
+	AvatarURL     string         `dynamodbav:"avatar_url"`
+	IsPartnerable int            `dynamodbav:"is_partnerable"`
 }
 
 func ToMonsterRow(m entity.Monster) MonsterRow {

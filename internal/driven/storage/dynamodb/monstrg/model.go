@@ -1,17 +1,12 @@
 package monstrg
 
 import (
+	"fmt"
+
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-)
-
-type extraRole string
-
-const (
-	indexExtraRole = "extra_role"
-
-	partnerRole extraRole = "PARTNER"
-	enemyRole   extraRole = "ENEMY"
 )
 
 type monsterKey struct {
@@ -23,16 +18,15 @@ func (k monsterKey) toDDBKey() map[string]*dynamodb.AttributeValue {
 	return item
 }
 
-type monsterExtraRoleQuery struct {
-	ExtraRole extraRole `json:":extra_role"`
-}
-
-func (q monsterExtraRoleQuery) toQueryExpression() *string {
-	s := "extra_role = :extra_role"
-	return &s
-}
-
-func (q monsterExtraRoleQuery) toQueryExpressionValue() map[string]*dynamodb.AttributeValue {
-	attributeValue, _ := dynamodbattribute.MarshalMap(q)
-	return attributeValue
+func toMonsters(items []map[string]*dynamodb.AttributeValue) ([]entity.Monster, error) {
+	var monsterRows []shared.MonsterRow
+	err := dynamodbattribute.UnmarshalListOfMaps(items, &monsterRows)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal items due to: %w", err)
+	}
+	monsters := make([]entity.Monster, len(monsterRows))
+	for i := 0; i < len(monsterRows); i++ {
+		monsters[i] = *monsterRows[i].ToMonster()
+	}
+	return monsters, nil
 }
