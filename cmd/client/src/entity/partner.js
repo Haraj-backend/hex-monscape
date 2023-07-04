@@ -1,15 +1,15 @@
 import PokebattleHTTP from "../composables/http_client";
 
 const additionalData = {
-  Pikachu: {
+  Yellowleg: {
     icon: "bytesize:lightning",
     color: "#F3D77B",
   },
-  Charmander: {
+  Grumpy: {
     icon: "ant-design:fire-twotone",
     color: "#FF7A00",
   },
-  Bulbasaur: {
+  Bluebub: {
     icon: "tabler:plant-2",
     color: "#7CB69D",
   },

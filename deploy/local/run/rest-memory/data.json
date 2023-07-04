@@ -1,7 +1,7 @@
 [
   {
     "id": "5e1ab413-415a-4326-8e39-0f56f8a66054",
-    "name": "Ivysaur",
+    "name": "Vegiewee",
     "battle_stats": {
       "health": 150,
       "max_health": 150,
@@ -9,12 +9,12 @@
       "defense": 20,
       "speed": 12
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/002.png",
+    "avatar_url": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/vegiewee.png",
     "is_partnerable": false
   },
   {
     "id": "c2ca1953-2376-489e-8e34-8bb48957f140",
-    "name": "Charmeleon",
+    "name": "Snekworm",
     "battle_stats": {
       "health": 150,
       "max_health": 150,
@@ -22,12 +22,12 @@
       "defense": 5,
       "speed": 21
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/005.png",
+    "avatar_url": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/snekworm.png",
     "is_partnerable": false
   },
   {
     "id": "88a98dee-ce84-4afb-b5a8-7cc07535f73f",
-    "name": "Squirtle",
+    "name": "Waneye",
     "battle_stats": {
       "health": 100,
       "max_health": 100,
@@ -35,12 +35,12 @@
       "defense": 10,
       "speed": 15
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png",
+    "avatar_url": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/waneye.png",
     "is_partnerable": false
   },
   {
     "id": "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-    "name": "Pikachu",
+    "name": "Yellowleg",
     "battle_stats": {
         "health": 100,
         "max_health": 100,
@@ -48,12 +48,12 @@
         "defense": 5,
         "speed": 15
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
+    "avatar_url": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/yellowleg.png",
     "is_partnerable": true
   },
   {
     "id": "0f9b84b6-a768-4ba9-8800-207740fc993d",
-    "name": "Bulbasaur",
+    "name": "Bluebub",
     "battle_stats": {
         "health": 100,
         "max_health": 100,
@@ -61,12 +61,12 @@
         "defense": 15,
         "speed": 10
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png",
+    "avatar_url": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/bluebub.png",
     "is_partnerable": true
   },
   {
     "id": "85db0102-212d-4ac8-932c-a0e876a29a85",
-    "name": "Charmander",
+    "name": "Grumpy",
     "battle_stats": {
         "health": 100,
         "max_health": 100,
@@ -74,7 +74,7 @@
         "defense": 5,
         "speed": 20
     },
-    "avatar_url": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png",
+    "avatar_url": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/grumpy.png",
     "is_partnerable": true
   }
 ]
