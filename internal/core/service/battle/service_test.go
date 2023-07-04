@@ -39,7 +39,7 @@ func TestNewService(t *testing.T) {
 			IsError: true,
 		},
 		{
-			Name: "Test Missing Pokemon Storage",
+			Name: "Test Missing Monster Storage",
 			Config: ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,

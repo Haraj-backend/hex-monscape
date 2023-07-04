@@ -13,7 +13,7 @@
 --
 +GameID: string
 +State: battle.State
-+Partner: *entity.Pokemon
++Partner: *entity.Monster
 +Enemy: *entity.pokemon
 +LastDamage: battle.LastDamage
 --
@@ -161,7 +161,7 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
 --
 +ID: string
 +PlayerName: string
-+Partner: *entity.Pokemon
++Partner: *entity.Monster
 +CreatedAt: int64
 +BattleWon: int
 +Scenario: play.Scenario
@@ -221,7 +221,7 @@ _+END_GAME: play.Scenario_</panel_attributes>
     </coordinates>
     <panel_attributes>&lt;&lt;play.Service&gt;&gt;
 --
-+GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
 +NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +AdvanceScenario(ctx: context.Context, gameID: string): (*entity.Game, error)
@@ -439,8 +439,8 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <panel_attributes>battle.BattleConfig
 --
 +GameID: string
-+Partner: entity.Pokemon
-+Enemy: entity.Pokemon
++Partner: entity.Monster
++Enemy: entity.Monster
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -467,7 +467,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <panel_attributes>play.GameConfig
 --
 +PlayerName: string
-+Partner: entity.Pokemon
++Partner: entity.Monster
 +CreatedAt: int64
 --
 +Validate(): error</panel_attributes>
@@ -494,8 +494,8 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>&lt;&lt;play.PartnerStorage&gt;&gt;
 --
-+GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
-+GetPartner(ctx: context.Context, partnerID: string): (*entity.Pokemon, error)</panel_attributes>
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -544,7 +544,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>&lt;&lt;battle.PokemonStorage&gt;&gt;
 --
-+GetPossibleEnemies(ctx: context.Context): ([]entity.Pokemon, error)</panel_attributes>
++GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -568,12 +568,12 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>pokestrg.Storage
 --
--partnerMap: map[string]entity.Pokemon
--enemyMap: map[string]entity.Pokemon
+-partnerMap: map[string]entity.Monster
+-enemyMap: map[string]entity.Monster
 --
-+GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
-+GetPartner(ctx: context.Context, partnerID: string): (*entity.Pokemon, error)
-+GetPossibleEnemies(ctx: context.Context): ([]entity.Pokemon, error)
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
++GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
 _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -598,8 +598,8 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>pokestrg.Config
 --
-+Partners: []entity.Pokemon
-+Enemies: []entity.Pokemon
++Partners: []entity.Monster
++Enemies: []entity.Monster
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -625,12 +625,12 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>pokestrg.Storage
 --
--partnerMap: map[string]entity.Pokemon
--enemyMap: map[string]entity.Pokemon
+-partnerMap: map[string]entity.Monster
+-enemyMap: map[string]entity.Monster
 --
-+GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
-+GetPartner(ctx: context.Context, partnerID: string): (*entity.Pokemon, error)
-+GetPossibleEnemies(ctx: context.Context): ([]entity.Pokemon, error)
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
++GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
 _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -644,8 +644,8 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
     </coordinates>
     <panel_attributes>pokestrg.Config
 --
-+Partners: []entity.Pokemon
-+Enemies: []entity.Pokemon
++Partners: []entity.Monster
++Enemies: []entity.Monster
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -724,7 +724,7 @@ _+New(): *gamestrg.Storage_</panel_attributes>
 -gameStorage: play.GameStorage
 -partnerStorage: play.PartnerStorage
 --
-+GetAvailablePartners(ctx: context.Context): ([]entity.Pokemon, error)
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
 +NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +AdvanceScenario(ctx: context.Context, gameID: string): (*entity.Game, error)</panel_attributes>
@@ -792,7 +792,7 @@ _+New(): *gamestrg.Storage_</panel_attributes>
       <w>148</w>
       <h>52</h>
     </coordinates>
-    <panel_attributes>entity.Pokemon
+    <panel_attributes>entity.Monster
 --
 +ID: string
 +Name: string
@@ -800,7 +800,7 @@ _+New(): *gamestrg.Storage_</panel_attributes>
 +AvatarURL: string
 --
 +IsDead(): bool
-+InflictDamage(enemy: entity.Pokemon): (int, error)</panel_attributes>
++InflictDamage(enemy: entity.Monster): (int, error)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

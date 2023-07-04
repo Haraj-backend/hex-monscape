@@ -13,12 +13,12 @@ func TestIsDead(t *testing.T) {
 	// define test cases
 	testCases := []struct {
 		Name     string
-		Pokemon  Monster
+		Monster  Monster
 		Expected bool
 	}{
 		{
-			Name: "Pokemon is Not Dead",
-			Pokemon: Monster{
+			Name: "Monster is Not Dead",
+			Monster: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -33,8 +33,8 @@ func TestIsDead(t *testing.T) {
 			Expected: false,
 		},
 		{
-			Name: "Pokemon Has 0 Health",
-			Pokemon: Monster{
+			Name: "Monster Has 0 Health",
+			Monster: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -49,8 +49,8 @@ func TestIsDead(t *testing.T) {
 			Expected: true,
 		},
 		{
-			Name: "Pokemon Has Negative Health",
-			Pokemon: Monster{
+			Name: "Monster Has Negative Health",
+			Monster: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -69,7 +69,7 @@ func TestIsDead(t *testing.T) {
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			actual := testCase.Pokemon.IsDead()
+			actual := testCase.Monster.IsDead()
 			assert.Equal(t, testCase.Expected, actual, "unexpected dead")
 		})
 	}
@@ -79,13 +79,13 @@ func TestInflictDamage(t *testing.T) {
 	// define test cases
 	testCases := []struct {
 		Name                 string
-		Pokemon              Monster
+		Monster              Monster
 		Enemy                Monster
 		ExpectedHealthAmount int
 	}{
 		{
-			Name: "Pokemon Get Zero Damage",
-			Pokemon: Monster{
+			Name: "Monster Get Zero Damage",
+			Monster: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -112,8 +112,8 @@ func TestInflictDamage(t *testing.T) {
 			ExpectedHealthAmount: 0,
 		},
 		{
-			Name: "Pokemon Get 50 Damage",
-			Pokemon: Monster{
+			Name: "Monster Get 50 Damage",
+			Monster: Monster{
 				ID:   uuid.NewString(),
 				Name: fmt.Sprintf("pokemon_%v", time.Now().Unix()),
 				BattleStats: BattleStats{
@@ -144,11 +144,11 @@ func TestInflictDamage(t *testing.T) {
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			_, err := testCase.Pokemon.InflictDamage(testCase.Enemy)
+			_, err := testCase.Monster.InflictDamage(testCase.Enemy)
 			if err != nil {
 				t.Errorf("unable to inflict damage, due: %v", err)
 			}
-			assert.Equal(t, testCase.ExpectedHealthAmount, testCase.Pokemon.BattleStats.Health, "unexpected health amount")
+			assert.Equal(t, testCase.ExpectedHealthAmount, testCase.Monster.BattleStats.Health, "unexpected health amount")
 		})
 	}
 }
