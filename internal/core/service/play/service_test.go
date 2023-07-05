@@ -1,10 +1,12 @@
-package play
+package play_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -13,20 +15,16 @@ func TestNewService(t *testing.T) {
 	// define mock dependencies
 	gameStorage := newMockGameStorage()
 	partnerStorage := newMockPartnerStorage(nil)
-	// define function for validating new game instance
-	validateGame := func(t *testing.T, svc Service, cfg ServiceConfig) {
-		assert.Equal(t, cfg.GameStorage, svc.(*service).gameStorage)
-		assert.Equal(t, cfg.PartnerStorage, svc.(*service).partnerStorage)
-	}
+
 	// define test cases
 	testCases := []struct {
 		Name    string
-		Config  ServiceConfig
+		Config  play.ServiceConfig
 		IsError bool
 	}{
 		{
 			Name: "Test Missing Game Storage",
-			Config: ServiceConfig{
+			Config: play.ServiceConfig{
 				GameStorage:    nil,
 				PartnerStorage: partnerStorage,
 			},
@@ -34,7 +32,7 @@ func TestNewService(t *testing.T) {
 		},
 		{
 			Name: "Test Missing Partner Storage",
-			Config: ServiceConfig{
+			Config: play.ServiceConfig{
 				GameStorage:    gameStorage,
 				PartnerStorage: nil,
 			},
@@ -42,7 +40,7 @@ func TestNewService(t *testing.T) {
 		},
 		{
 			Name: "Test Valid Config",
-			Config: ServiceConfig{
+			Config: play.ServiceConfig{
 				GameStorage:    gameStorage,
 				PartnerStorage: partnerStorage,
 			},
@@ -52,46 +50,42 @@ func TestNewService(t *testing.T) {
 	// execute test cases
 	for _, testcase := range testCases {
 		t.Run(testcase.Name, func(t *testing.T) {
-			svc, err := NewService(testcase.Config)
-			assert.Equal(t, testcase.IsError, (err != nil), "unexpected error")
-			if svc == nil {
-				return
-			}
-			validateGame(t, svc, testcase.Config)
+			_, err := play.NewService(testcase.Config)
+			require.Equal(t, testcase.IsError, (err != nil), "unexpected error")
 		})
 	}
 }
 
 func TestServiceGetAvailablePartners(t *testing.T) {
 	// initialize new service
-	svc, partners := newNewService()
+	output := newService()
 	// get available partners
-	retPartners, err := svc.GetAvailablePartners(context.Background())
+	retPartners, err := output.Service.GetAvailablePartners(context.Background())
 	require.NoError(t, err, "unexpected error")
 	// check returned partners
-	require.Equal(t, partners, retPartners, "mismatch partners")
+	require.Equal(t, output.Partners, retPartners, "mismatch partners")
 }
 
 func TestServiceNewGame(t *testing.T) {
 	// initialize new service
-	svc, partners := newNewService()
+	output := newService()
 	// create new game
-	partner := partners[0]
-	game, err := svc.NewGame(context.Background(), "Riandy R.N", partner.ID)
+	partner := output.Partners[0]
+	game, err := output.Service.NewGame(context.Background(), "Riandy R.N", partner.ID)
 	require.NoError(t, err, "unexpected error")
 	// validate returned game with stored game, this is to make sure the game
 	// is also stored on storage
-	storedGame, err := svc.(*service).gameStorage.GetGame(context.Background(), game.ID)
+	storedGame, err := output.GameStorage.GetGame(context.Background(), game.ID)
 	require.NoError(t, err, "unexpected error")
 	require.Equal(t, *game, *storedGame, "mismatch game")
 }
 
 func TestServiceGetGame(t *testing.T) {
 	// initialize new service
-	svc, partners := newNewService()
+	output := newService()
 	// create new game
-	partner := partners[0]
-	game, err := svc.NewGame(context.Background(), "Riandy R.N", partner.ID)
+	partner := output.Partners[0]
+	game, err := output.Service.NewGame(context.Background(), "Riandy R.N", partner.ID)
 	require.NoError(t, err, "unexpected error")
 	// define test cases
 	testCases := []struct {
@@ -102,7 +96,7 @@ func TestServiceGetGame(t *testing.T) {
 		{
 			Name:   "Test Game Not Found",
 			GameID: game.ID + "abc",
-			ExpErr: ErrGameNotFound,
+			ExpErr: play.ErrGameNotFound,
 		},
 		{
 			Name:   "Test Game Found",
@@ -113,7 +107,7 @@ func TestServiceGetGame(t *testing.T) {
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			retGame, err := svc.GetGame(context.Background(), testCase.GameID)
+			retGame, err := output.Service.GetGame(context.Background(), testCase.GameID)
 			assert.Equal(t, testCase.ExpErr, err, "mismatch error")
 			if retGame == nil {
 				return
@@ -121,6 +115,36 @@ func TestServiceGetGame(t *testing.T) {
 			assert.Equal(t, game, retGame, "mismatch game")
 		})
 	}
+}
+
+func newService() *newServiceOutput {
+	// generate partners
+	partners := []entity.Monster{
+		*(testutil.NewTestMonster()),
+		*(testutil.NewTestMonster()),
+		*(testutil.NewTestMonster()),
+		*(testutil.NewTestMonster()),
+	}
+	// initialize service
+	cfg := play.ServiceConfig{
+		GameStorage:    newMockGameStorage(),
+		PartnerStorage: newMockPartnerStorage(partners),
+	}
+	svc, _ := play.NewService(cfg)
+
+	return &newServiceOutput{
+		Service:        svc,
+		GameStorage:    cfg.GameStorage,
+		PartnerStorage: cfg.PartnerStorage,
+		Partners:       partners,
+	}
+}
+
+type newServiceOutput struct {
+	Service        play.Service
+	GameStorage    play.GameStorage
+	PartnerStorage play.PartnerStorage
+	Partners       []entity.Monster
 }
 
 type mockGameStorage struct {
@@ -172,30 +196,4 @@ func newMockPartnerStorage(partners []entity.Monster) *mockPartnerStorage {
 		data[partner.ID] = partner
 	}
 	return &mockPartnerStorage{partnerMap: data}
-}
-
-func newNewService() (Service, []entity.Monster) {
-	// generate partners
-	partners := []entity.Monster{
-		{
-			ID:   "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-			Name: "Pikachu",
-			BattleStats: entity.BattleStats{
-				Health:    100,
-				MaxHealth: 100,
-				Attack:    25,
-				Defense:   5,
-				Speed:     10,
-			},
-			AvatarURL: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png",
-		},
-	}
-	// initialize service
-	cfg := ServiceConfig{
-		GameStorage:    newMockGameStorage(),
-		PartnerStorage: newMockPartnerStorage(partners),
-	}
-	svc, _ := NewService(cfg)
-
-	return svc, partners
 }
