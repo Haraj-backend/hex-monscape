@@ -7,7 +7,7 @@ import (
 type battleRow struct {
 	GameID            string `db:"game_id"`
 	State             string `db:"state"`
-	PartnerPokemonID  string `db:"partner_monster_id"`
+	PartnerMonsterID  string `db:"partner_monster_id"`
 	PartnerName       string `db:"partner_name"`
 	PartnerMaxHealth  int    `db:"partner_max_health"`
 	PartnerHealth     int    `db:"partner_health"`
@@ -16,7 +16,7 @@ type battleRow struct {
 	PartnerSpeed      int    `db:"partner_speed"`
 	PartnerAvatarURL  string `db:"partner_avatar_url"`
 	PartnerLastDamage int    `db:"partner_last_damage"`
-	EnemyPokemonID    string `db:"enemy_monster_id"`
+	EnemyMonsterID    string `db:"enemy_monster_id"`
 	EnemyName         string `db:"enemy_name"`
 	EnemyMaxHealth    int    `db:"enemy_max_health"`
 	EnemyHealth       int    `db:"enemy_health"`
@@ -32,7 +32,7 @@ func (r battleRow) ToBattle() *entity.Battle {
 		GameID: r.GameID,
 		State:  entity.State(r.State),
 		Partner: &entity.Monster{
-			ID:   r.PartnerPokemonID,
+			ID:   r.PartnerMonsterID,
 			Name: r.PartnerName,
 			BattleStats: entity.BattleStats{
 				Health:    r.PartnerHealth,
@@ -44,7 +44,7 @@ func (r battleRow) ToBattle() *entity.Battle {
 			AvatarURL: r.PartnerAvatarURL,
 		},
 		Enemy: &entity.Monster{
-			ID:   r.EnemyPokemonID,
+			ID:   r.EnemyMonsterID,
 			Name: r.EnemyName,
 			BattleStats: entity.BattleStats{
 				Health:    r.EnemyHealth,
@@ -66,7 +66,7 @@ func newBattleRow(b entity.Battle) battleRow {
 	return battleRow{
 		GameID:            b.GameID,
 		State:             string(b.State),
-		PartnerPokemonID:  b.Partner.ID,
+		PartnerMonsterID:  b.Partner.ID,
 		PartnerName:       b.Partner.Name,
 		PartnerMaxHealth:  b.Partner.BattleStats.MaxHealth,
 		PartnerHealth:     b.Partner.BattleStats.Health,
@@ -75,7 +75,7 @@ func newBattleRow(b entity.Battle) battleRow {
 		PartnerSpeed:      b.Partner.BattleStats.Speed,
 		PartnerAvatarURL:  b.Partner.AvatarURL,
 		PartnerLastDamage: b.LastDamage.Partner,
-		EnemyPokemonID:    b.Enemy.ID,
+		EnemyMonsterID:    b.Enemy.ID,
 		EnemyName:         b.Enemy.Name,
 		EnemyMaxHealth:    b.Enemy.BattleStats.MaxHealth,
 		EnemyHealth:       b.Enemy.BattleStats.Health,

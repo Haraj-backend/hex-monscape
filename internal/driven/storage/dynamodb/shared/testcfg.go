@@ -12,12 +12,12 @@ var TestConfig = struct {
 	EnvKeyLocalstackEndpoint string
 	EnvKeyBattleTableName    string
 	EnvKeyGameTableName      string
-	EnvKeyPokemonTableName   string
+	EnvKeyMonsterTableName   string
 }{
 	EnvKeyLocalstackEndpoint: "LOCALSTACK_ENDPOINT",
 	EnvKeyBattleTableName:    "DDB_TABLE_BATTLE_NAME",
 	EnvKeyGameTableName:      "DDB_TABLE_GAME_NAME",
-	EnvKeyPokemonTableName:   "DDB_TABLE_POKEMON_NAME",
+	EnvKeyMonsterTableName:   "DDB_TABLE_MONSTER_NAME",
 }
 
 func NewLocalTestDDBClient() *dynamodb.DynamoDB {

@@ -39,7 +39,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=awslocal
       - DDB_TABLE_BATTLE_NAME=battle
       - DDB_TABLE_GAME_NAME=game
-      - DDB_TABLE_POKEMON_NAME=monster
+      - DDB_TABLE_MONSTER_NAME=monster
       - LOCALSTACK_ENDPOINT=http://localstack:4566
       - TEST_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
       - CGO_ENABLED=0

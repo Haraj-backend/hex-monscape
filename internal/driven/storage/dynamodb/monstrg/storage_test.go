@@ -30,7 +30,7 @@ func init() {
 		// put monster row to dynamodb
 		item, _ := dynamodbattribute.MarshalMap(monsterRow)
 		_, err := ddbClient.PutItem(&dynamodb.PutItemInput{
-			TableName: aws.String(os.Getenv(shared.TestConfig.EnvKeyPokemonTableName)),
+			TableName: aws.String(os.Getenv(shared.TestConfig.EnvKeyMonsterTableName)),
 			Item:      item,
 		})
 		if err != nil {
@@ -96,7 +96,7 @@ func TestGetPartner(t *testing.T) {
 func newStorage(t *testing.T) *Storage {
 	storage, err := New(Config{
 		DynamoClient: shared.NewLocalTestDDBClient(),
-		TableName:    os.Getenv(shared.TestConfig.EnvKeyPokemonTableName),
+		TableName:    os.Getenv(shared.TestConfig.EnvKeyMonsterTableName),
 	})
 	require.NoError(t, err)
 

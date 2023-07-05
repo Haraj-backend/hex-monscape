@@ -7,7 +7,6 @@ services:
     environment:
       - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
-      - DONT_SEED_POKEMON=false
     healthcheck:
       test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
     entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
@@ -39,6 +38,6 @@ services:
       - LOCAL_DEPLOYMENT_ENABLED=true
       - LOCAL_DEPLOYMENT_ENDPOINT=http://localstack:4566
       - LOCAL_DEPLOYMENT_PORT=9186
-      - DDB_BATTLE_TABLE=Battles
-      - DDB_GAME_TABLE=Games
-      - DDB_POKEMON_TABLE=Pokemons
+      - DDB_BATTLE_TABLE=battle
+      - DDB_GAME_TABLE=game
+      - DDB_MONSTER_TABLE=monster
