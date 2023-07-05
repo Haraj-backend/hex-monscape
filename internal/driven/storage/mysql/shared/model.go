@@ -5,14 +5,15 @@ import (
 )
 
 type MonsterRow struct {
-	ID        string `db:"id"`
-	Name      string `db:"name"`
-	Health    int    `db:"health"`
-	MaxHealth int    `db:"max_health"`
-	Attack    int    `db:"attack"`
-	Defense   int    `db:"defense"`
-	Speed     int    `db:"speed"`
-	AvatarURL string `db:"avatar_url"`
+	ID            string `db:"id"`
+	Name          string `db:"name"`
+	Health        int    `db:"health"`
+	MaxHealth     int    `db:"max_health"`
+	Attack        int    `db:"attack"`
+	Defense       int    `db:"defense"`
+	Speed         int    `db:"speed"`
+	AvatarURL     string `db:"avatar_url"`
+	IsPartnerable int    `db:"is_partnerable"`
 }
 
 func (r *MonsterRow) ToMonster() *entity.Monster {

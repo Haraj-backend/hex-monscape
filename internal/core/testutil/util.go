@@ -10,12 +10,11 @@ import (
 )
 
 func NewTestMonster() *entity.Monster {
-	now := time.Now()
-	r := rand.New(rand.NewSource(now.UnixNano()))
-
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	uid := uuid.NewString()
 	return &entity.Monster{
 		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("monster_%v", now.Unix()),
+		Name: fmt.Sprintf("monster_%v", uid),
 		BattleStats: entity.BattleStats{
 			Health:    r.Intn(100) + 1,
 			MaxHealth: r.Intn(100) + 1,
@@ -23,6 +22,6 @@ func NewTestMonster() *entity.Monster {
 			Defense:   r.Intn(100) + 1,
 			Speed:     r.Intn(100) + 1,
 		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", now.Unix()),
+		AvatarURL: fmt.Sprintf("https://example.com/%v.png", uid),
 	}
 }

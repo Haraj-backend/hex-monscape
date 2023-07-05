@@ -1,173 +1,100 @@
-package monstrg
+package monstrg_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetPartner(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
-	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
-	// insert pokemon
-	p := newPokemon()
-	id := insertPokemon(sqlClient, p, 1)
-	// check whether pokemon exists on database
-	savedPokemon, err := strg.GetPartner(context.Background(), id)
-	require.NoError(t, err)
-	// check whether pokemon data is match
-	require.Equal(t, p, *savedPokemon)
-}
+var partners, enemies []entity.Monster
 
-func TestGetPartnerNotFound(t *testing.T) {
-	// initialize sql client
+func init() {
+	// init mysql client
 	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
-	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
-	// insert pokemon
-	p := newPokemon()
-	// check whether pokemon exists on database
-	savedPokemon, err := strg.GetPartner(context.Background(), p.ID)
-	require.NoError(t, err)
-	require.Nil(t, savedPokemon)
+	if err != nil {
+		panic(err)
+	}
+	// seed data to mysql
+	rows := []shared.MonsterRow{
+		shared.NewTestMonsterRow(true),
+		shared.NewTestMonsterRow(true),
+		shared.NewTestMonsterRow(false),
+		shared.NewTestMonsterRow(false),
+	}
+	for _, row := range rows {
+		// insert monster row to mysql
+		err := shared.InsertMonster(sqlClient, row)
+		if err != nil {
+			panic(err)
+		}
+		// assign partners & enemies for later tests
+		if row.IsPartnerable == 1 {
+			partners = append(partners, *row.ToMonster())
+		}
+		// we also include partnerable monsters to enemies so the enemies can be more vary
+		enemies = append(enemies, *row.ToMonster())
+	}
+
 }
 
 func TestGetAvailablePartners(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
-	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
+	storage := newStorage(t)
 
-	partner := newPokemon()
+	availablePartners, err := storage.GetAvailablePartners(context.Background())
+	require.NoError(t, err)
+	require.Subset(t, availablePartners, partners, "availablePartners should contains partners") // we use subset here because in other tests we might need to insert monsters as well
+}
+
+func TestGetPossibleEnemies(t *testing.T) {
+	storage := newStorage(t)
+
+	availableEnemies, err := storage.GetPossibleEnemies(context.Background())
+	require.NoError(t, err)
+	require.Subset(t, availableEnemies, enemies, "availableEnemies should contains enemies") // we use subset here because in other tests we might need to insert monsters as well
+}
+
+func TestGetPartner(t *testing.T) {
+	storage := newStorage(t)
 
 	testCases := []struct {
-		Name     string
-		Partners []entity.Monster
+		Name       string
+		PartnerID  string
+		ExpPartner *entity.Monster
 	}{
 		{
-			Name:     "Test Empty Available Partners",
-			Partners: []entity.Monster{},
+			Name:       "Partner Exists",
+			PartnerID:  partners[0].ID,
+			ExpPartner: &partners[0],
 		},
 		{
-			Name:     "Test Exists Available Partners",
-			Partners: []entity.Monster{partner},
+			Name:       "Partner Not Exists",
+			PartnerID:  uuid.NewString(),
+			ExpPartner: nil,
 		},
 	}
-
 	for _, testCase := range testCases {
-		truncateTable(sqlClient)
 		t.Run(testCase.Name, func(t *testing.T) {
-			for _, p := range testCase.Partners {
-				insertPokemon(sqlClient, p, 1)
-			}
-
-			fetchedPartners, err := strg.GetAvailablePartners(context.Background())
+			partner, err := storage.GetPartner(context.Background(), testCase.PartnerID)
 			require.NoError(t, err)
-
-			switch len(testCase.Partners) {
-			case 0:
-				require.Nil(t, fetchedPartners)
-			case 1:
-				require.Equal(t, testCase.Partners[0], fetchedPartners[0])
-				truncateTable(sqlClient)
-			}
+			require.Equal(t, testCase.ExpPartner, partner)
 		})
 	}
 }
 
-func TestGetAvailableEnemies(t *testing.T) {
-	// initialize sql client
+func newStorage(t *testing.T) *monstrg.Storage {
+	// init mysql client
 	sqlClient, err := shared.NewTestSQLClient()
 	require.NoError(t, err)
-	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
+
+	// init storage
+	storage, err := monstrg.New(monstrg.Config{SQLClient: sqlClient})
 	require.NoError(t, err)
 
-	enemy := newPokemon()
-
-	testCases := []struct {
-		Name    string
-		Enemies []entity.Monster
-	}{
-		{
-			Name:    "Test Empty Available Enemies",
-			Enemies: []entity.Monster{},
-		},
-		{
-			Name:    "Test Exists Available Enemies",
-			Enemies: []entity.Monster{enemy},
-		},
-	}
-
-	for _, testCase := range testCases {
-		truncateTable(sqlClient)
-		t.Run(testCase.Name, func(t *testing.T) {
-			for _, p := range testCase.Enemies {
-				insertPokemon(sqlClient, p, 0)
-			}
-
-			fetchedEnemies, err := strg.GetPossibleEnemies(context.Background())
-			require.NoError(t, err)
-
-			switch len(testCase.Enemies) {
-			case 0:
-				require.Nil(t, fetchedEnemies)
-			case 1:
-				require.Equal(t, testCase.Enemies[0], fetchedEnemies[0])
-				truncateTable(sqlClient)
-			}
-		})
-	}
-}
-
-func truncateTable(db *sqlx.DB) {
-	_, err := db.Exec("SET FOREIGN_KEY_CHECKS = 0")
-	if err != nil {
-		panic(err)
-	}
-	_, err = db.Exec("TRUNCATE TABLE monster")
-	if err != nil {
-		panic(err)
-	}
-}
-
-func insertPokemon(db *sqlx.DB, p entity.Monster, is_partnerable int) string {
-	_, err := db.Exec(
-		"INSERT INTO monster (id, name, health, max_health, attack, defense, speed, avatar_url, is_partnerable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		p.ID, p.Name, p.BattleStats.Health, p.BattleStats.MaxHealth, p.BattleStats.Attack, p.BattleStats.Defense, p.BattleStats.Speed, p.AvatarURL, is_partnerable,
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	return p.ID
-}
-
-func newPokemon() entity.Monster {
-	return entity.Monster{
-		ID:        uuid.NewString(),
-		Name:      "Lala",
-		AvatarURL: "https://example.com/025.png",
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    49,
-			Defense:   49,
-			Speed:     45,
-		},
-	}
+	return storage
 }
