@@ -4,7 +4,7 @@ import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
-type PokeRow struct {
+type MonsterRow struct {
 	ID        string `db:"id"`
 	Name      string `db:"name"`
 	Health    int    `db:"health"`
@@ -15,9 +15,7 @@ type PokeRow struct {
 	AvatarURL string `db:"avatar_url"`
 }
 
-type PokeRows []PokeRow
-
-func (r *PokeRow) ToPokemon() *entity.Monster {
+func (r *MonsterRow) ToMonster() *entity.Monster {
 	return &entity.Monster{
 		ID:   r.ID,
 		Name: r.Name,
@@ -32,23 +30,25 @@ func (r *PokeRow) ToPokemon() *entity.Monster {
 	}
 }
 
-func (r PokeRows) ToPokemons() []entity.Monster {
-	var pokemons []entity.Monster
+type MonsterRows []MonsterRow
+
+func (r MonsterRows) ToMonsters() []entity.Monster {
+	var monsters []entity.Monster
 	for _, row := range r {
-		pokemons = append(pokemons, *row.ToPokemon())
+		monsters = append(monsters, *row.ToMonster())
 	}
-	return pokemons
+	return monsters
 }
 
-func NewPokeRow(pokemon *entity.Monster) *PokeRow {
-	return &PokeRow{
-		ID:        pokemon.ID,
-		Name:      pokemon.Name,
-		Health:    pokemon.BattleStats.Health,
-		MaxHealth: pokemon.BattleStats.MaxHealth,
-		Attack:    pokemon.BattleStats.Attack,
-		Defense:   pokemon.BattleStats.Defense,
-		Speed:     pokemon.BattleStats.Speed,
-		AvatarURL: pokemon.AvatarURL,
+func ToMonsterRow(monster *entity.Monster) *MonsterRow {
+	return &MonsterRow{
+		ID:        monster.ID,
+		Name:      monster.Name,
+		Health:    monster.BattleStats.Health,
+		MaxHealth: monster.BattleStats.MaxHealth,
+		Attack:    monster.BattleStats.Attack,
+		Defense:   monster.BattleStats.Defense,
+		Speed:     monster.BattleStats.Speed,
+		AvatarURL: monster.AvatarURL,
 	}
 }

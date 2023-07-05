@@ -24,29 +24,29 @@ func (c Config) Validate() error {
 }
 
 const (
-	partner int = 1
 	enemy   int = 0
+	partner int = 1
 )
 
 func New(cfg Config) (*Storage, error) {
 	err := cfg.Validate()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid config: %w", err)
 	}
 	s := &Storage{sqlClient: cfg.SQLClient}
 	return s, nil
 }
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
-	return s.getPokemonsByRole(ctx, partner)
+	return s.getMonsterByRole(ctx, partner)
 }
 
 func (s *Storage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
-	return s.getPokemonsByRole(ctx, enemy)
+	return s.getMonsterByRole(ctx, enemy)
 }
 
 func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
-	var pokemon shared.PokeRow
+	var row shared.MonsterRow
 	query := `
 		SELECT
 			id,
@@ -61,7 +61,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Mon
 		WHERE id = ?
 	`
 
-	if err := s.sqlClient.GetContext(ctx, &pokemon, query, partnerID); err != nil {
+	if err := s.sqlClient.GetContext(ctx, &row, query, partnerID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
@@ -69,12 +69,12 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Mon
 		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
 	}
 
-	return pokemon.ToPokemon(), nil
+	return row.ToMonster(), nil
 }
 
-func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]entity.Monster, error) {
-	var pokemons shared.PokeRows
-
+func (s *Storage) getMonsterByRole(ctx context.Context, role int) ([]entity.Monster, error) {
+	var rows shared.MonsterRows
+	args := []interface{}{}
 	query := `
 		SELECT
 			id,
@@ -86,14 +86,18 @@ func (s *Storage) getPokemonsByRole(ctx context.Context, isPartnerable int) ([]e
 			speed,
 			avatar_url
 		FROM monster
-		WHERE is_partnerable = ?
 	`
-	if err := s.sqlClient.SelectContext(ctx, &pokemons, query, isPartnerable); err != nil {
+	if role == partner {
+		query += "WHERE is_partnerable = ?"
+		args = append(args, role)
+	}
+
+	if err := s.sqlClient.SelectContext(ctx, &rows, query, args...); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("unable to find pokemon's role %d: %v", isPartnerable, err)
+		return nil, fmt.Errorf("unable to execute query due: %w", err)
 	}
 
-	return pokemons.ToPokemons(), nil
+	return rows.ToMonsters(), nil
 }
