@@ -3,7 +3,6 @@ package battlestrg
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/aws/aws-sdk-go/aws"
@@ -40,7 +39,6 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle,
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
 	battle := battleRow.toBattle()
-	log.Printf("[RDebug] battleRow: %+v, battle: %+v", battleRow, battle)
 
 	return battle, nil
 }

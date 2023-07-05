@@ -1,43 +1,56 @@
 version: '2.4'
 services:
   localstack:
-    image: localstack/localstack:0.14
+    image: localstack/localstack:2.1.0
     ports:
       - 4566:4566
     environment:
-      - SERVICES=dynamodb
       - AWS_DEFAULT_REGION=eu-west-1
     healthcheck:
-      test: "/wait-localstack.sh -s dynamodb -h localhost:4566 -w 0 -r 1"
-    entrypoint: bash -c "apt-get install jq -y; docker-entrypoint.sh"
+      test: "curl -f -s http://localhost:4566/_localstack/health"
     volumes:
-      - ../shared/wait-localstack.sh:/wait-localstack.sh
-      - ../shared/ddb-create-tables.sh:/docker-entrypoint-initaws.d/1.sh
-      - ./ddb-write-data.sh:/docker-entrypoint-initaws.d/2.sh
-      - ./ddb-data.json:/ddb-data.json
+      - ../../shared/dynamodb/create-tables.sh:/etc/localstack/init/ready.d/1.sh
+      - ./write-data.sh:/etc/localstack/init/ready.d/2.sh
+      - ./data.json:/data.json
     logging:
       driver: none
 
-  rest-ddb:
+  client:
     build:
-      context: ../../../
-      dockerfile: ./build/package/rest-ddb/Dockerfile.local
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
+    volumes:
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_POKEBATTLE_URL=http://localhost:9186
+    logging:
+      driver: none
+
+  server:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/server/Dockerfile
     depends_on:
       localstack:
         condition: service_healthy
     ports:
       - 9186:9186
     volumes:
-      - ../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
-      - ../../../cmd/rest-ddb:/go/src/github.com/Haraj-backend/hex-monscape/cmd/rest-ddb
-      - ../../../build/package/rest-ddb/.air.toml:/go/src/github.com/Haraj-backend/hex-monscape/build/package/rest-ddb/.air.toml
+      - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
+      - ../../../../tmp/go/pkg:/go/pkg
     environment:
+      - STORAGE_TYPE=dynamodb
+      - STORAGE_DYNAMODB_LOCALSTACK_ENDPOINT=http://localstack:4566
+      - STORAGE_DYNAMODB_BATTLE_TABLE_NAME=battle
+      - STORAGE_DYNAMODB_GAME_TABLE_NAME=game
+      - STORAGE_DYNAMODB_MONSTER_TABLE_NAME=monster
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
-      - LOCAL_DEPLOYMENT_ENABLED=true
-      - LOCAL_DEPLOYMENT_ENDPOINT=http://localstack:4566
-      - LOCAL_DEPLOYMENT_PORT=9186
-      - DDB_BATTLE_TABLE=battle
-      - DDB_GAME_TABLE=game
-      - DDB_MONSTER_TABLE=monster
+
+volumes:
+  exclude:

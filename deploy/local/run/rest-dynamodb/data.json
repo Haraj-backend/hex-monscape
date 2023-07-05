@@ -1,5 +1,5 @@
 {
-  "Pokemons": [
+  "monster": [
     {
       "PutRequest": {
         "Item": {
@@ -7,7 +7,7 @@
             "S": "b1c87c5c-2ac3-471d-9880-4812552ee15d"
           },
           "name": {
-            "S": "Pikachu"
+            "S": "Yellowleg"
           },
           "battle_stats": {
             "M": {
@@ -29,10 +29,10 @@
             }
           },
           "avatar_url": {
-            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/yellowleg.png"
           },
-          "extra_role": {
-            "S": "PARTNER"
+          "is_partnerable": {
+            "N": "1"
           }
         }
       }
@@ -44,7 +44,7 @@
             "S": "0f9b84b6-a768-4ba9-8800-207740fc993d"
           },
           "name": {
-            "S": "Bulbasaur"
+            "S": "Bluebub"
           },
           "battle_stats": {
             "M": {
@@ -66,10 +66,10 @@
             }
           },
           "avatar_url": {
-            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png"
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/bluebub.png"
           },
-          "extra_role": {
-            "S": "PARTNER"
+          "is_partnerable": {
+            "N": "1"
           }
         }
       }
@@ -81,7 +81,7 @@
             "S": "85db0102-212d-4ac8-932c-a0e876a29a85"
           },
           "name": {
-            "S": "Charmander"
+            "S": "Grumpy"
           },
           "battle_stats": {
             "M": {
@@ -103,10 +103,10 @@
             }
           },
           "avatar_url": {
-            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/grumpy.png"
           },
-          "extra_role": {
-            "S": "PARTNER"
+          "is_partnerable": {
+            "N": "1"
           }
         }
       }
@@ -118,7 +118,7 @@
             "S": "5e1ab413-415a-4326-8e39-0f56f8a66054"
           },
           "name": {
-            "S": "Ivysaur"
+            "S": "Vegiewee"
           },
           "battle_stats": {
             "M": {
@@ -140,10 +140,10 @@
             }
           },
           "avatar_url": {
-            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/002.png"
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/vegiewee.png"
           },
-          "extra_role": {
-            "S": "ENEMY"
+          "is_partnerable": {
+            "N": "0"
           }
         }
       }
@@ -155,7 +155,7 @@
             "S": "c2ca1953-2376-489e-8e34-8bb48957f140"
           },
           "name": {
-            "S": "Charmeleon"
+            "S": "Snekworm"
           },
           "battle_stats": {
             "M": {
@@ -177,10 +177,10 @@
             }
           },
           "avatar_url": {
-            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/005.png"
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/snekworm.png"
           },
-          "extra_role": {
-            "S": "ENEMY"
+          "is_partnerable": {
+            "N": "0"
           }
         }
       }
@@ -192,7 +192,7 @@
             "S": "88a98dee-ce84-4afb-b5a8-7cc07535f73f"
           },
           "name": {
-            "S": "Squirtle"
+            "S": "Waneye"
           },
           "battle_stats": {
             "M": {
@@ -214,10 +214,10 @@
             }
           },
           "avatar_url": {
-            "S": "https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png"
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/waneye.png"
           },
-          "extra_role": {
-            "S": "ENEMY"
+          "is_partnerable": {
+            "N": "0"
           }
         }
       }

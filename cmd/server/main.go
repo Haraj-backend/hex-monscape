@@ -7,9 +7,22 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
+	membattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
+	memgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
+	memmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/jmoiron/sqlx"
+
+	ddbbattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/battlestrg"
+	ddbgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/gamestrg"
+	ddbmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/monstrg"
+
+	sqlbattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/battlestrg"
+	sqlgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/gamestrg"
+	sqlmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg"
+
 	"github.com/Haraj-backend/hex-monscape/internal/driver/rest"
 	"github.com/gosidekick/goconfig"
 
@@ -25,26 +38,117 @@ func main() {
 		log.Fatalf("unable to parse configs due: %v", err)
 	}
 
-	// initialize monster storage
-	monsterData, err := ioutil.ReadFile(cfg.Storage.Memory.MonsterDataPath)
-	if err != nil {
-		log.Fatalf("unable to read monster data due: %v", err)
-	}
-	monsterStorage, err := monstrg.New(monstrg.Config{MonsterData: monsterData})
-	if err != nil {
-		log.Fatalf("unable to initialize monster storage due: %v", err)
-	}
+	// initialize storages depending on storage type: memory, dynamodb, mysql
+	var (
+		bGameStorage    battle.GameStorage
+		bBattleStorage  battle.BattleStorage
+		bMonsterStorage battle.MonsterStorage
+		pGameStorage    play.GameStorage
+		pPartnerStorage play.PartnerStorage
+	)
+	switch cfg.Storage.Type {
+	case storageTypeMemory:
+		// initialize monster storage
+		monsterData, err := ioutil.ReadFile(cfg.Storage.Memory.MonsterDataPath)
+		if err != nil {
+			log.Fatalf("unable to read monster data due: %v", err)
+		}
+		monsterStorage, err := memmonstrg.New(memmonstrg.Config{MonsterData: monsterData})
+		if err != nil {
+			log.Fatalf("unable to initialize monster storage due: %v", err)
+		}
 
-	// initialize game storage
-	gameStorage := gamestrg.New()
+		// initialize game storage
+		gameStorage := memgamestrg.New()
 
-	// initialize battle storage
-	battleStorage := battlestrg.New()
+		// initialize battle storage
+		battleStorage := membattlestrg.New()
+
+		// set storages
+		bGameStorage = gameStorage
+		bBattleStorage = battleStorage
+		bMonsterStorage = monsterStorage
+		pGameStorage = gameStorage
+		pPartnerStorage = monsterStorage
+
+	case storageTypeDynamoDB:
+		// initialize aws session
+		awsSess := session.Must(session.NewSessionWithOptions(
+			session.Options{
+				Config: aws.Config{Endpoint: aws.String(cfg.Storage.DynamoDB.LocalstackEndpoint)},
+			},
+		))
+		// initialize dynamodb client
+		dynamoClient := dynamodb.New(awsSess)
+		// initialize monster storage
+		monsterStorage, err := ddbmonstrg.New(ddbmonstrg.Config{
+			DynamoClient: dynamoClient,
+			TableName:    cfg.Storage.DynamoDB.MonsterTableName,
+		})
+		if err != nil {
+			log.Fatalf("unable to initialize monster storage due: %v", err)
+		}
+		// initialize game storage
+		gameStorage, err := ddbgamestrg.New(ddbgamestrg.Config{
+			DynamoClient: dynamoClient,
+			TableName:    cfg.Storage.DynamoDB.GameTableName,
+		})
+		if err != nil {
+			log.Fatalf("unable to initialize game storage due: %v", err)
+		}
+		// initialize battle storage
+		battleStorage, err := ddbbattlestrg.New(ddbbattlestrg.Config{
+			DynamoClient: dynamoClient,
+			TableName:    cfg.Storage.DynamoDB.BattleTableName,
+		})
+		if err != nil {
+			log.Fatalf("unable to initialize battle storage due: %v", err)
+		}
+
+		// set storages
+		bGameStorage = gameStorage
+		bBattleStorage = battleStorage
+		bMonsterStorage = monsterStorage
+		pGameStorage = gameStorage
+		pPartnerStorage = monsterStorage
+
+	case storageTypeMySQL:
+		// initialize sql client
+		sqlClient, err := sqlx.Open("mysql", cfg.Storage.MySQL.SQLDSN)
+		if err != nil {
+			log.Fatalf("unable to initialize sql client due: %v", err)
+		}
+		// initialize monster storage
+		monsterStorage, err := sqlmonstrg.New(sqlmonstrg.Config{SQLClient: sqlClient})
+		if err != nil {
+			log.Fatalf("unable to initialize monster storage due: %v", err)
+		}
+		// initialize game storage
+		gameStorage, err := sqlgamestrg.New(sqlgamestrg.Config{SQLClient: sqlClient})
+		if err != nil {
+			log.Fatalf("unable to initialize game storage due: %v", err)
+		}
+		// initialize battle storage
+		battleStorage, err := sqlbattlestrg.New(sqlbattlestrg.Config{SQLClient: sqlClient})
+		if err != nil {
+			log.Fatalf("unable to initialize battle storage due: %v", err)
+		}
+
+		// set storages
+		bGameStorage = gameStorage
+		bBattleStorage = battleStorage
+		bMonsterStorage = monsterStorage
+		pGameStorage = gameStorage
+		pPartnerStorage = monsterStorage
+
+	default:
+		log.Fatalf("unknown storage type: %v", cfg.Storage.Type)
+	}
 
 	// initialize play service
 	playService, err := play.NewService(play.ServiceConfig{
-		GameStorage:    gameStorage,
-		PartnerStorage: monsterStorage,
+		GameStorage:    pGameStorage,
+		PartnerStorage: pPartnerStorage,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize play service due: %v", err)
@@ -52,9 +156,9 @@ func main() {
 
 	// initialize battle service
 	battleService, err := battle.NewService(battle.ServiceConfig{
-		GameStorage:    gameStorage,
-		BattleStorage:  battleStorage,
-		MonsterStorage: monsterStorage,
+		GameStorage:    bGameStorage,
+		BattleStorage:  bBattleStorage,
+		MonsterStorage: bMonsterStorage,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize battle service due: %v", err)

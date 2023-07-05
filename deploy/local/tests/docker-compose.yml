@@ -11,6 +11,8 @@ services:
       test: "curl -f -s http://localhost:4566/_localstack/health > /dev/null"
     volumes:
       - ../shared/dynamodb/create-tables.sh:/etc/localstack/init/ready.d/create-tables.sh
+    logging:
+      driver: none
 
   mysql:
     image: bitnami/mysql:5.7
@@ -23,6 +25,8 @@ services:
       - ../shared/mysql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     # ports:
     #   - "3316:3306"
+    logging:
+      driver: none
 
   tests:
     build:

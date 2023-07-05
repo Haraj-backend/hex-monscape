@@ -13,6 +13,8 @@ services:
       - 8161:8161
     environment:
       - VITE_POKEBATTLE_URL=http://localhost:9186
+    logging:
+      driver: none
 
   server:
     build:
