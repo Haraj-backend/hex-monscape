@@ -1,4 +1,4 @@
-package battle
+package battle_test
 
 import (
 	"context"
@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewService(t *testing.T) {
@@ -16,21 +18,15 @@ func TestNewService(t *testing.T) {
 	battleStorage := newMockBattleStorage()
 	monsterStorage := newMockMonsterStorage()
 
-	// define function for validating new game instance
-	validateFunc := func(t *testing.T, svc Service, cfg ServiceConfig) {
-		assert.Equal(t, cfg.GameStorage, svc.(*service).gameStorage)
-		assert.Equal(t, cfg.BattleStorage, svc.(*service).battleStorage)
-		assert.Equal(t, cfg.MonsterStorage, svc.(*service).monsterStorage)
-	}
 	// define test cases
 	testCases := []struct {
 		Name    string
-		Config  ServiceConfig
+		Config  battle.ServiceConfig
 		IsError bool
 	}{
 		{
 			Name: "Test Missing Game Storage",
-			Config: ServiceConfig{
+			Config: battle.ServiceConfig{
 				GameStorage:    nil,
 				BattleStorage:  battleStorage,
 				MonsterStorage: monsterStorage,
@@ -39,7 +35,7 @@ func TestNewService(t *testing.T) {
 		},
 		{
 			Name: "Test Missing Monster Storage",
-			Config: ServiceConfig{
+			Config: battle.ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
 				MonsterStorage: nil,
@@ -48,7 +44,7 @@ func TestNewService(t *testing.T) {
 		},
 		{
 			Name: "Test Valid Config",
-			Config: ServiceConfig{
+			Config: battle.ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
 				MonsterStorage: monsterStorage,
@@ -59,12 +55,8 @@ func TestNewService(t *testing.T) {
 	// execute test cases
 	for _, testcase := range testCases {
 		t.Run(testcase.Name, func(t *testing.T) {
-			svc, err := NewService(testcase.Config)
-			assert.Equal(t, testcase.IsError, (err != nil), "unexpected error")
-			if svc == nil {
-				return
-			}
-			validateFunc(t, svc, testcase.Config)
+			_, err := battle.NewService(testcase.Config)
+			require.Equal(t, testcase.IsError, (err != nil), "unexpected error")
 		})
 	}
 }
@@ -113,7 +105,7 @@ func TestServiceStartBattle(t *testing.T) {
 				gameID = testCase.Game.ID
 			}
 
-			svc, _ := NewService(ServiceConfig{
+			svc, _ := battle.NewService(battle.ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
 				MonsterStorage: monsterStorage,
@@ -140,7 +132,7 @@ func TestServiceGetBattle(t *testing.T) {
 		CreatedAt:  time.Now().Unix(),
 	})
 
-	battle, _ := entity.NewBattle(entity.BattleConfig{
+	bt, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   testutil.NewTestMonster(),
@@ -154,13 +146,13 @@ func TestServiceGetBattle(t *testing.T) {
 	}{
 		{
 			Name:    "Test Get entity.Battle Valid",
-			Battle:  battle,
+			Battle:  bt,
 			Game:    game,
 			IsError: false,
 		},
 		{
 			Name:    "Test Game Not Found",
-			Battle:  battle,
+			Battle:  bt,
 			Game:    nil,
 			IsError: true,
 		},
@@ -188,7 +180,7 @@ func TestServiceGetBattle(t *testing.T) {
 				gameID = testCase.Battle.GameID
 			}
 
-			svc, _ := NewService(ServiceConfig{
+			svc, _ := battle.NewService(battle.ServiceConfig{
 				GameStorage:    gameStorage,
 				BattleStorage:  battleStorage,
 				MonsterStorage: monsterStorage,
@@ -196,7 +188,7 @@ func TestServiceGetBattle(t *testing.T) {
 			newBattle, err := svc.GetBattle(context.Background(), gameID)
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if err == nil {
-				assert.Equal(t, battle, newBattle, "battle is not valid")
+				assert.Equal(t, bt, newBattle, "battle is not valid")
 			}
 		})
 	}
@@ -217,7 +209,7 @@ func TestServiceDecideTurn(t *testing.T) {
 		t.Fatalf("unable to init new game, due: %v", err)
 	}
 
-	battle, _ := entity.NewBattle(entity.BattleConfig{
+	bt, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   testutil.NewTestMonster(),
@@ -227,12 +219,12 @@ func TestServiceDecideTurn(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to save game, due: %v", err)
 	}
-	err = battleStorage.SaveBattle(context.Background(), *battle)
+	err = battleStorage.SaveBattle(context.Background(), *bt)
 	if err != nil {
 		t.Fatalf("unable to save battle, due: %v", err)
 	}
 
-	svc, err := NewService(ServiceConfig{
+	svc, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
 		MonsterStorage: monsterStorage,
@@ -240,14 +232,14 @@ func TestServiceDecideTurn(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
 	}
-	battle, err = svc.DecideTurn(context.Background(), battle.GameID)
+	bt, err = svc.DecideTurn(context.Background(), bt.GameID)
 	if err != nil {
 		t.Fatalf("unable to decide turn, due: %v", err)
 	}
 
-	storedBattle, err := battleStorage.GetBattle(context.Background(), battle.GameID)
+	storedBattle, err := battleStorage.GetBattle(context.Background(), bt.GameID)
 	assert.NoError(t, err, "unable to get stored battle")
-	assert.Equal(t, battle, storedBattle, "invalid battle stored")
+	assert.Equal(t, bt, storedBattle, "invalid battle stored")
 }
 
 func TestServiceAttack(t *testing.T) {
@@ -265,23 +257,23 @@ func TestServiceAttack(t *testing.T) {
 		t.Fatalf("unable to init new game, due: %v", err)
 	}
 
-	battle, _ := entity.NewBattle(entity.BattleConfig{
+	bt, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   testutil.NewTestMonster(),
 	})
-	battle.State = entity.StatePartnerTurn
+	bt.State = entity.StatePartnerTurn
 
 	err = gameStorage.SaveGame(context.Background(), *game)
 	if err != nil {
 		t.Fatalf("unable to save game, due: %v", err)
 	}
-	err = battleStorage.SaveBattle(context.Background(), *battle)
+	err = battleStorage.SaveBattle(context.Background(), *bt)
 	if err != nil {
 		t.Fatalf("unable to save battle, due: %v", err)
 	}
 
-	svc, err := NewService(ServiceConfig{
+	svc, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
 		MonsterStorage: monsterStorage,
@@ -289,7 +281,7 @@ func TestServiceAttack(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
 	}
-	_, err = svc.Attack(context.Background(), battle.GameID)
+	_, err = svc.Attack(context.Background(), bt.GameID)
 	if err != nil {
 		t.Fatalf("unable to attack, due: %v", err)
 	}
@@ -310,23 +302,23 @@ func TestServiceSurrender(t *testing.T) {
 		t.Fatalf("unable to init new game, due: %v", err)
 	}
 
-	battle, _ := entity.NewBattle(entity.BattleConfig{
+	bt, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
 		Enemy:   testutil.NewTestMonster(),
 	})
-	battle.State = entity.StatePartnerTurn
+	bt.State = entity.StatePartnerTurn
 
 	err = gameStorage.SaveGame(context.Background(), *game)
 	if err != nil {
 		t.Fatalf("unable to save game, due: %v", err)
 	}
-	err = battleStorage.SaveBattle(context.Background(), *battle)
+	err = battleStorage.SaveBattle(context.Background(), *bt)
 	if err != nil {
 		t.Fatalf("unable to save battle, due: %v", err)
 	}
 
-	svc, err := NewService(ServiceConfig{
+	svc, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
 		MonsterStorage: monsterStorage,
@@ -334,11 +326,11 @@ func TestServiceSurrender(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to init new service, due: %v", err)
 	}
-	surrenderBattle, err := svc.Surrender(context.Background(), battle.GameID)
+	surrenderBattle, err := svc.Surrender(context.Background(), bt.GameID)
 	if err != nil {
 		t.Fatalf("unable to surrender, due: %v", err)
 	}
-	expectedBattle := battle
+	expectedBattle := bt
 	expectedBattle.State = entity.StateLose
 	assert.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
 }
