@@ -4,34 +4,47 @@ services:
     image: bitnami/mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: "test1234"
-      MYSQL_DATABASE: "db_pokebattle"
+      MYSQL_DATABASE: "db_monscape"
     healthcheck:
       test: mysqladmin ping -h localhost
-      timeout: 20s
-      retries: 10
     volumes:
-      - ../shared/mysql-schema.sql:/docker-entrypoint-initdb.d/1.sql
-      - ./mysql-data.sql:/docker-entrypoint-initdb.d/2.sql
+      - ../../shared/mysql/schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/2.sql
     ports:
       - "3307:3306"
     logging:
       driver: none
 
-  rest-mysql:
+  client:
     build:
-      context: ../../../
-      dockerfile: ./build/package/rest-mysql/Dockerfile.local
-    environment:
-      PORT: 9186
-      SERVER_DEPLOYMENT: "true"
-      SERVICE_NAME: rest-mysql
-      SQL_DSN: "root:test1234@tcp(mysql:3306)/db_pokebattle"
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
     volumes:
-      - ../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
-      - ../../../cmd/rest-mysql:/go/src/github.com/Haraj-backend/hex-monscape/cmd/rest-mysql
-      - ../../../build/package/rest-mysql/.air.toml:/go/src/github.com/Haraj-backend/hex-monscape/build/package/rest-mysql/.air.toml
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_POKEBATTLE_URL=http://localhost:9186
+    logging:
+      driver: none
+
+  server:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/server/Dockerfile
     depends_on:
       mysql:
         condition: service_healthy
+    volumes:
+      - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
+      - ../../../../tmp/go/pkg:/go/pkg
     ports:
-      - 9187:9186
+      - 9186:9186
+    environment:
+      - STORAGE_TYPE=mysql
+      - STORAGE_MYSQL_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
+
+volumes:
+  exclude:

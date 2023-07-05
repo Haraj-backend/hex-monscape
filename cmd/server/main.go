@@ -28,6 +28,8 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
