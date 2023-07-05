@@ -3,10 +3,8 @@ package rest
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -16,11 +14,6 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
-)
-
-const (
-	publicDir = "/dist"
-	indexFile = "index.html"
 )
 
 type APIConfig struct {
@@ -35,7 +28,7 @@ func (c APIConfig) Validate() error {
 func NewAPI(cfg APIConfig) (*API, error) {
 	err := cfg.Validate()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid config: %w", err)
 	}
 	a := &API{
 		playService:   cfg.PlayingService,
@@ -71,27 +64,8 @@ func (a *API) GetHandler() http.Handler {
 			})
 		})
 	})
-	// serve the frontend in SPA mode
-	r.NotFound(a.serveWebFrontend)
+
 	return r
-}
-
-func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
-	fileName := filepath.Clean(r.URL.Path)
-	if fileName != "index.html" && !strings.Contains(fileName, "assets") {
-		fileName = "assets" + fileName
-	}
-	p := filepath.Join(publicDir, fileName)
-
-	if info, err := os.Stat(p); err != nil {
-		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
-		return
-	} else if info.IsDir() {
-		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
-		return
-	}
-
-	http.ServeFile(w, r, p)
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
@@ -122,10 +96,7 @@ func (a *API) serveNewGame(w http.ResponseWriter, r *http.Request) {
 	}
 	game, err := a.playService.NewGame(ctx, rb.PlayerName, rb.PartnerID)
 	if err != nil {
-		if errors.Is(err, play.ErrPartnerNotFound) {
-			err = NewPartnerNotFoundError()
-		}
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(game))
@@ -137,10 +108,7 @@ func (a *API) serveGetGameDetails(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
-		if errors.Is(err, play.ErrGameNotFound) {
-			err = NewGameNotFoundError()
-		}
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(game))
@@ -169,16 +137,7 @@ func (a *API) serveStartBattle(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.StartBattle(ctx, gameID)
 	if err != nil {
-		switch err {
-		case battle.ErrGameNotFound:
-			err = NewGameNotFoundError()
-		case battle.ErrInvalidBattleState:
-			err = NewInvalidBattleStateError()
-		case battle.ErrInvalidBattleState:
-			err = NewInvalidBattleStateError()
-		}
-
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(bt))
@@ -190,16 +149,7 @@ func (a *API) serveGetBattleInfo(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.GetBattle(ctx, gameID)
 	if err != nil {
-		switch err {
-		case battle.ErrGameNotFound:
-			err = NewGameNotFoundError()
-		case battle.ErrBattleNotFound:
-			err = NewBattleNotFoundError()
-		case battle.ErrInvalidBattleState:
-			err = NewInvalidBattleStateError()
-		}
-
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(bt))
@@ -211,16 +161,7 @@ func (a *API) serveDecideTurn(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.DecideTurn(ctx, gameID)
 	if err != nil {
-		switch err {
-		case battle.ErrGameNotFound:
-			err = NewGameNotFoundError()
-		case battle.ErrBattleNotFound:
-			err = NewBattleNotFoundError()
-		case battle.ErrInvalidBattleState:
-			err = NewInvalidBattleStateError()
-		}
-
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(bt))
@@ -232,16 +173,7 @@ func (a *API) serveAttack(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.Attack(ctx, gameID)
 	if err != nil {
-		switch err {
-		case battle.ErrGameNotFound:
-			err = NewGameNotFoundError()
-		case battle.ErrBattleNotFound:
-			err = NewBattleNotFoundError()
-		case battle.ErrInvalidBattleState:
-			err = NewInvalidBattleStateError()
-		}
-
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(bt))
@@ -253,17 +185,26 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	bt, err := a.battleService.Surrender(ctx, gameID)
 	if err != nil {
-		switch err {
-		case battle.ErrGameNotFound:
-			err = NewGameNotFoundError()
-		case battle.ErrBattleNotFound:
-			err = NewBattleNotFoundError()
-		case battle.ErrInvalidBattleState:
-			err = NewInvalidBattleStateError()
-		}
-
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(bt))
+}
+
+func handleServiceError(w http.ResponseWriter, r *http.Request, err error) {
+	switch err {
+	case battle.ErrGameNotFound:
+		err = NewGameNotFoundError()
+	case battle.ErrBattleNotFound:
+		err = NewBattleNotFoundError()
+	case battle.ErrInvalidBattleState:
+		err = NewInvalidBattleStateError()
+	case play.ErrGameNotFound:
+		err = NewGameNotFoundError()
+	case play.ErrPartnerNotFound:
+		err = NewPartnerNotFoundError()
+	default:
+		err = NewInternalServerError(err.Error())
+	}
+	render.Render(w, r, NewErrorResp(err))
 }
