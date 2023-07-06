@@ -2,11 +2,11 @@
 
 ## Background Story
 
-In Solutions Team, we always try to work with small services. Even in the relatively complex system such as `Haraj Bill` or `Chat Next`, we always break them down to much smaller services depending on the focus of their business usecases.
+In Solutions Team, we always try to work with small services. Even in the relatively complex system such as `Haraj Bill` or `Chat Next`, we always try to break them down to much smaller services depending on the focus of their business usecases.
 
 The reason why we are doing it like this is because small service will have much less code rather than the big one. Less code means less complexity in maintaining it. So when the service requires bug fix or in need of new feature, it will be much easier to write the necessary changes for it.
 
-However since we will have a lot of small services, we need some kind of standard architecture on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those services before.
+However since we will have a lot of small services, we need some kind of standard architecture on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those services before (a.k.a maintainable code).
 
 <p align="center">
     <img width=512 src="./assets/memes/one-does-not-simply-write-maintainable-code.jpg" alt="One Does Not Simply Write Maintainable Code">
@@ -14,15 +14,15 @@ However since we will have a lot of small services, we need some kind of standar
 
 On top of that, we also need to automate the testing for our code. This is to ensure our changes (especially bug fix) is working as expected and it doesn't introduce break in the existing service functionalities.
 
-After studying several architectural patterns, we found out that `Hexagonal Architecture` is the most suitable for our workflow.
+After studying several architectural patterns, we found out that `Hexagonal Architecture` is the most suitable architecture for our workflow.
 
 ## Why Hexagonal Architecture?
 
-Unlike its sibling architectures `Clean Architecture` & `Onion Architecture` which focus on layers, `Hexagonal Architecture` focus on application business logic. This what make it very easy to understand & implement because it's focus on what's matter.
+Unlike its sibling architectures `Clean Architecture` & `Onion Architecture` which focus on layers, `Hexagonal Architecture` focus on application business logic. This is what makes the service created using it very easy to understand even by someone who just get started.
 
 When everyone in the team can easily understand our code, this means they will be able to handle it. This means when we are getting sick or going on vacation, someone from our team can easily cover our back. This is what it means to have maintainable code.
 
-On top of that, `Hexagonal Architecture` also provide a very good way to write automated tests for our code. This is because it clearly separate the business logic from its dependencies. So we can easily mock the dependencies when writing the tests.
+On top of that, `Hexagonal Architecture` provides a very good way to write automated tests for our code. This is because it clearly separate the business logic from its dependencies. So we can easily mock the dependencies when writing the tests.
 
 <p align="center">
     <img width=512 src="./assets/memes/we-want-maintainable-code.jpg" alt="We Want Maintainable Code">
@@ -34,7 +34,7 @@ This is because `Hexagonal Architecture` is more like a set of basic principles 
 
 This is also the reason why we suggest you to use this document as your primary reference when learning about `Hexagonal Architecture`. Yeah, this is because when you search for it online, everyone have their own ways to implement it including the Solutions Team.
 
-In the upcoming sections, we will be discussing about the details of `Hexagonal Architecture` implementation that suitable for Solutions Team projects. To make it easy to understand, we will be using this project as our implementation example.
+In the upcoming sections, we will be discussing about the details of `Hexagonal Architecture` implementation that suitable for Solutions Team projects. To make it easy to understand, we will be using `Hex Monscape` as our implementation example.
 
 ## What is Hexagonal Architecture?
 
@@ -50,12 +50,12 @@ There are `3` main principles we need to follow when we want to implement this a
 
 From these principles we can infer `4` constructing pillars of `Hexagonal Architecture`:
 
-- [Core](#core) => Our business logic & its necessary data model to support it.
-- [Actors](#actors) => Any external entities interacting with our application core.
-- [Ports](#ports) => Interface that define how actors should interact with application core.
-- [Adapters](#adapters) => `Ports` implementation which translate interaction from actors to the core & vice versa.
+- [Core](#core) => A group of components that constructing our application business logic. This is the `inside` of our application.
+- [Actors](#actors) => Any external entities interacting with our application.
+- [Ports](#ports) => Interfaces that specify how [Actors](#actors) can interact with [Core](#core). This is the boundary for the `inside` of our application.
+- [Adapters](#adapters) => Implement specification provided by [Ports](#ports) so [Actors](#actors) can interact with [Core](#core) and vice versa.
 
-Each of these pillars will be explained thoroughly in the upcoming sections. To make its explanation more relatable, we will be using this project as example.
+Each of these pillars will be explained thoroughly in the upcoming sections.
 
 ## Core
 
