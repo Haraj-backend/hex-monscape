@@ -1,5 +1,21 @@
 package battle_test
 
+/*
+	The purpose of testing the Service component is to ensure it has correct
+	implementation of business logic.
+
+	The common pitfall when creating test for Service component is we tend to use
+	concrete implementation for the dependency components (e.g actual GameStorage
+	for MySQL). Not only this will increase the test complexity but also it will
+	increase the possibility of getting false test result. The reason is simply
+	because service such as MySQL has its own constraints & has much higher chance
+	of failing rather than its mock counterpart (e.g network failure).
+
+	So to avoid this pitfall, our first go to choice is to use mock implementation
+	for the dependency when testing the Service component. This way we can control
+	more the behavior of the dependency components to fit our test scenarios.
+*/
+
 import (
 	"context"
 	"testing"
@@ -8,7 +24,6 @@ import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -111,14 +126,14 @@ func TestServiceStartBattle(t *testing.T) {
 				MonsterStorage: monsterStorage,
 			})
 			battle, err := svc.StartBattle(context.Background(), gameID)
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if err == nil {
-				assert.Equal(t, game.ID, battle.GameID, "gameID is not valid")
-				assert.Equal(t, enemy.ID, battle.Enemy.ID, "enemyID is not valid")
+				require.Equal(t, game.ID, battle.GameID, "gameID is not valid")
+				require.Equal(t, enemy.ID, battle.Enemy.ID, "enemyID is not valid")
 
 				storedBattle, err := battleStorage.GetBattle(context.Background(), gameID)
-				assert.NoError(t, err, "unable to get stored battle")
-				assert.Equal(t, battle, storedBattle, "battle stored is not valid")
+				require.NoError(t, err, "unable to get stored battle")
+				require.Equal(t, battle, storedBattle, "battle stored is not valid")
 			}
 		})
 	}
@@ -186,9 +201,9 @@ func TestServiceGetBattle(t *testing.T) {
 				MonsterStorage: monsterStorage,
 			})
 			newBattle, err := svc.GetBattle(context.Background(), gameID)
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if err == nil {
-				assert.Equal(t, bt, newBattle, "battle is not valid")
+				require.Equal(t, bt, newBattle, "battle is not valid")
 			}
 		})
 	}
@@ -238,8 +253,8 @@ func TestServiceDecideTurn(t *testing.T) {
 	}
 
 	storedBattle, err := battleStorage.GetBattle(context.Background(), bt.GameID)
-	assert.NoError(t, err, "unable to get stored battle")
-	assert.Equal(t, bt, storedBattle, "invalid battle stored")
+	require.NoError(t, err, "unable to get stored battle")
+	require.Equal(t, bt, storedBattle, "invalid battle stored")
 }
 
 func TestServiceAttack(t *testing.T) {
@@ -332,7 +347,7 @@ func TestServiceSurrender(t *testing.T) {
 	}
 	expectedBattle := bt
 	expectedBattle.State = entity.StateLose
-	assert.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
+	require.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
 }
 
 type mockGameStorage struct {

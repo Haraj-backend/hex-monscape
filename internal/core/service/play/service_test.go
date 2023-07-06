@@ -1,5 +1,21 @@
 package play_test
 
+/*
+	The purpose of testing the Service component is to ensure it has correct
+	implementation of business logic.
+
+	The common pitfall when creating test for Service component is we tend to use
+	concrete implementation for the dependency components (e.g actual GameStorage
+	for MySQL). Not only this will increase the test complexity but also it will
+	increase the possibility of getting false test result. The reason is simply
+	because service such as MySQL has its own constraints & has much higher chance
+	of failing rather than its mock counterpart (e.g network failure).
+
+	So to avoid this pitfall, our first go to choice is to use mock implementation
+	for the dependency when testing the Service component. This way we can control
+	more the behavior of the dependency components to fit our test scenarios.
+*/
+
 import (
 	"context"
 	"testing"
@@ -7,7 +23,6 @@ import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -63,7 +78,7 @@ func TestServiceGetAvailablePartners(t *testing.T) {
 	retPartners, err := output.Service.GetAvailablePartners(context.Background())
 	require.NoError(t, err, "unexpected error")
 	// check returned partners
-	require.Equal(t, output.Partners, retPartners, "mismatch partners")
+	require.ElementsMatch(t, output.Partners, retPartners, "mismatch partners")
 }
 
 func TestServiceNewGame(t *testing.T) {
@@ -108,11 +123,11 @@ func TestServiceGetGame(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
 			retGame, err := output.Service.GetGame(context.Background(), testCase.GameID)
-			assert.Equal(t, testCase.ExpErr, err, "mismatch error")
+			require.Equal(t, testCase.ExpErr, err, "mismatch error")
 			if retGame == nil {
 				return
 			}
-			assert.Equal(t, game, retGame, "mismatch game")
+			require.Equal(t, game, retGame, "mismatch game")
 		})
 	}
 }
