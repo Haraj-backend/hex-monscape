@@ -50,7 +50,7 @@ There are `3` main principles we need to follow when we want to implement this a
 
 From these principles we can infer `4` constructing pillars of `Hexagonal Architecture`:
 
-- [Core](#core) => A group of components that constructing our application business logic. This is the `inside` of our application.
+- [Core](#core) => A group of components constructing our application business logic. This is the `inside` of our application.
 - [Actors](#actors) => Any external entities interacting with our application.
 - [Ports](#ports) => Interfaces that specify how [Actors](#actors) can interact with [Core](#core). This is the boundary for the `inside` of our application.
 - [Adapters](#adapters) => Implement specification provided by [Ports](#ports) so [Actors](#actors) can interact with [Core](#core) and vice versa.
@@ -59,24 +59,38 @@ Each of these pillars will be explained thoroughly in the upcoming sections.
 
 ## Core
 
-Core is the place where we put application business logic & its data model (including [Ports](#ports)).
+`Core` is a group of components constructing our application business logic. Essentially it governs how our application should behave on expected usecases (hence named `Core`).
 
-Sometimes it is not easy to determine what code should goes into the core. In such situation try to analyze the business requirements for our application first. Try to understand the context of what our application should do in order to fulfil the requirements. The `"what our application should do"` is basically our application business logic.
+<p align="center">
+    <img src="./assets/hex-diagram-core.drawio.png" alt="Hex Architecture Core Diagram">
+</p>
 
-In the case of `Hex Monscape`, everything under [`internal/core`](../../internal/core/) is the core components of our application. In there we divide the business logic for the application into `2` packages: [`play`](../../internal/core/play/) & [`battle`](../../internal/core/battle/).
+In Solutions Team, we use following method spot out `Core` components:
 
-The reason why we divide it like that is because there are `2` usage context in our app:
+1. Take a look at our service API specification. Try to spot out the business logic context from there.
+2. In `Hex Monscape`, when we take a look at its [API specification](../api/rest-api.md), we can see there are `2` context of business logic:
+    - `Play context` => This is where the player starting new game and progressing the game itself.
+    - `Battle context` => This is where the player battle enemy with his/her monster partner.
+3. For each of these context, define `Service` interface for it. Just like what we did in [here](../../internal/core/service/battle/service.go#L20-L44) & [here](../../internal/core/service/play/service.go#L18-L29).
+4. Notice that the `Service` interface that we define in step `3` is only the `Driver Port` for our application, not our `Core` component. However it is good starting point for us to define our `Core` component.
+5. Implement the `Service` interface just like what we did in [here](../../internal/core/service/battle/service.go#L46-L195) & [here](../../internal/core/service/play/service.go#L31-L81). Notice that this is the place where we put our application business logic. This is also our very first `Core` component.
+6. During the implementation of `Service` interface, we will notice that we need to interact with external entities such as `MySQL` database. This is where we need to define `Driven Port` interfaces for our application just like what we did in [here](../../internal/core/service/battle/storage.go) & [here](../../internal/core/service/play/storage.go).
+7. Beside defining `Driven Port` interfaces, during the implementation of `Service` interface we will also need to define data model for supporting our business logic. This is why we have `Entity` package in [here](../../internal/core/entity/).
+8. There you have it, we have all `Core` components for our service!
 
-- `Play context` => This is where the player starting new game and progressing the game itself
-- `Battle context` => This is where the player battle enemy with his/her pokemon partner
-
-As for the [`entity`](../../internal/core/entity/) package, it contains the entities that being shared across the logic context such as [`Pokemon`](../../internal/core/entity/pokemon.go) & [`Game`](../../internal/core/entity/game.go).
+> **Note:**
+>
+> Sometimes we face confusion when we are in step `5`, `6`, & `7`. Usually this is because we find it difficult to find relationship between each `Core` components. In such case, try to utilize class diagram just like what we did in [here](../diagrams/class-diagram.png). This will greatly help us in mapping out the relationship between each `Core` components.
 
 [Back to Top](#hexagonal-architecture)
 
 ## Actors
 
-Actors are external entities that interact with our application.
+Actors are external entities interact with our application.
+
+<p align="center">
+    <img src="./assets/hex-diagram-actors.drawio.png" alt="Hex Architecture Actors Diagram">
+</p>
 
 There are `2` types of actors:
 
@@ -89,29 +103,22 @@ In the case of `Hex Monscape`, the incoming HTTP requests are the examples of `D
 
 ## Ports
 
-Ports are interfaces defined inside the core that define how actors can interact with [Core](#core) & vice versa.
+Ports are interfaces defined inside [Core](#core) that define how [Actors](#actors) can interact with [Core](#core) components & vice versa.
 
 There are `2` types of ports:
 
 - `Driver Port` => Ports for defining interaction between driver actor & core.
 - `Driven Port` => Ports for defining interaction between core & driven actors.
 
-In the case of `Hex Monscape`, the examples for `Driver Ports` are:
+In the case of `Hex Monscape`, the examples for `Driver Ports` are [`battle.Service`](../../internal/core/service/battle/service.go#L20-L44) & [`play.Service`](../../internal/core/service/play/service.go#L18-L29).
 
-- [`battle.Service`](../../internal/core/battle/service.go)
-- [`play.Service`](../../internal/core/play/service.go)
-
-As for the examples for `Driven Ports` are:
-
-- [`battle.BattleStorage`](../../internal/core/battle/storage.go)
-- [`battle.GameStorage`](../../internal/core/battle/storage.go)
-- [`battle.PokemonStorage`](../../internal/core/battle/storage.go)
+As for the examples for `Driven Ports` are all interfaces defined in [here](../../internal/core/service/battle/storage.go) & [here](../../internal/core/service/play/storage.go).
 
 [Back to Top](#hexagonal-architecture)
 
 ## Adapters
 
-Adapters are components used to translate interaction from actors to application core & vice versa. They implements ports defined in the core.
+Adapters are the components used to translate interaction from [Actors](#actors) to [Core](#core) components & vice versa. They implements [Ports](#ports) defined in the [Core](#core).
 
 There are `2` types of adapters:
 
@@ -120,17 +127,13 @@ There are `2` types of adapters:
 
 In the case of `Hex Monscape`, the example for `Driver Adapters` is [`rest.API`](../../internal/driver/rest/api.go).
 
-As for the examples for `Driven Adapters` are:
-
-- [`battlestrg.Storage`](../../internal/driven/storage/memory/battlestrg/storage.go)
-- [`gamestrg.Storage`](../../internal/driven/storage/memory/gamestrg/storage.go)
-- [`pokestrg.Storage`](../../internal/driven/storage/memory/pokestrg/storage.go)
+As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../internal/driven/storage/memory/battlestrg/storage.go), [`gamestrg.Storage`](../../internal/driven/storage/memory/gamestrg/storage.go), & [`monstrg.Storage`](../../internal/driven/storage/memory/monstrg/storage.go).
 
 [Back to Top](#hexagonal-architecture)
 
 ## Relation with DDD
 
-`Domain-Driven Design` (DDD) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
+`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
 
 In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is an approach to spot out application logic components from business model perspective, while `Hexagonal Architecture` gives our application a structure. 
 
