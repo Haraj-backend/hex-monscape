@@ -4,11 +4,11 @@ Welcome to this repo!
 
 In this repo you will learn about Haraj Solutions Team's secret technique in writing maintainable code for Haraj projects. 🤫
 
-The secret actually lies in the special software architecture we use to work on these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md). In this repo we will share to you our knowledge about this special architecture through simple server-client game named `Hex Monscape`.
+The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md). In this repo we will share to you our knowledge about it through simple server-client game named `Hex Monscape`.
 
 We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build `Hex Monscape` game server while coding it using [Go](https://go.dev/). As for the web client, we code it using [Vue 3](https://vuejs.org/).
 
-To understand the details on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
+To understand how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
 To start playing the game, please refer to [How to Run The Game](#how-to-run-the-game) section.
 
@@ -24,7 +24,7 @@ One of the biggest engineering issue in Haraj is code maintainability.
 
 What is code maintainability? Essentially it is the ability of a codebase to be easily maintained by other developers. So when a developer no longer able to maintain the codebase, other developers could easily take over the code he/she left behind.
 
-In the early days of Haraj, we used to assign project ownership to a single developer. So every developer in the team will own at least one project. However we made a mistake by not setting up common standards on how to write code in Haraj. So every developer in the team will write code based on their own style.
+In the early days of Haraj, we used to assign project ownership to a single developer. So every developer in the team will own at least one project. However we made a mistake by not setting up common standards on how to write code in Haraj. So every developers in the team wrote code based on their own style & preference.
 
 Usually our developers will stay for quite a long time (~5 years) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
 
