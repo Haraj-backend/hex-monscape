@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.3.0">
-  <zoom_level>4</zoom_level>
+<diagram program="umlet" version="15.1">
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1180</x>
-      <y>284</y>
-      <w>172</w>
-      <h>84</h>
+      <x>2655</x>
+      <y>342</y>
+      <w>387</w>
+      <h>189</h>
     </coordinates>
-    <panel_attributes>battle.Battle
+    <panel_attributes>entity.Battle
 --
 +GameID: string
-+State: battle.State
++State: entity.State
 +Partner: *entity.Monster
 +Enemy: *entity.pokemon
-+LastDamage: battle.LastDamage
++LastDamage: entity.LastDamage
 --
 +PartnerAttack(): error
 +PartnerSurrender(): error
 +EnemyAttack(): error
 +IsEnded(): bool
-+DecideTurn(): battle.State
-_+NewBattle(cfg: battle.BattleConfig): (*battle.Battle, error)_</panel_attributes>
++DecideTurn(): entity.State
+_+NewBattle(cfg: entity.BattleConfig): (*entity.Battle, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1408</x>
-      <y>292</y>
-      <w>60</w>
-      <h>24</h>
+      <x>3168</x>
+      <y>360</y>
+      <w>135</w>
+      <h>54</h>
     </coordinates>
-    <panel_attributes>battle.LastDamage
+    <panel_attributes>entity.LastDamage
 --
 +Partner: int
 +Enemy: int</panel_attributes>
@@ -42,10 +42,10 @@ _+NewBattle(cfg: battle.BattleConfig): (*battle.Battle, error)_</panel_attribute
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1348</x>
-      <y>300</y>
-      <w>68</w>
-      <h>12</h>
+      <x>3033</x>
+      <y>378</y>
+      <w>153</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
@@ -53,29 +53,29 @@ _+NewBattle(cfg: battle.BattleConfig): (*battle.Battle, error)_</panel_attribute
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1408</x>
-      <y>328</y>
-      <w>88</w>
-      <h>52</h>
+      <x>3168</x>
+      <y>441</y>
+      <w>198</w>
+      <h>117</h>
     </coordinates>
-    <panel_attributes>battle.State
+    <panel_attributes>entity.State
 --
 string
 --
-_+DECIDE_TURN: battle.State_
-_+ENEMY_TURN: battle.State_
-_+PLAYER_TURN: battle.State_
-_+WIN: battle.State_
-_+LOSE: battle.State_</panel_attributes>
+_+StateDecideTurn: entity.State_
+_+StateEnemyTurn: entity.State_
+_+StatePlayerTurn: entity.State_
+_+StateWin: entity.State_
+_+StateLose: entity.State_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1348</x>
-      <y>352</y>
-      <w>68</w>
-      <h>12</h>
+      <x>3033</x>
+      <y>495</y>
+      <w>153</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
@@ -83,10 +83,10 @@ _+LOSE: battle.State_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1160</x>
-      <y>444</y>
-      <w>208</w>
-      <h>72</h>
+      <x>2610</x>
+      <y>702</y>
+      <w>468</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>&lt;&lt;battle.Service&gt;&gt;
 --
@@ -105,10 +105,10 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1260</x>
-      <y>364</y>
-      <w>12</w>
-      <h>88</h>
+      <x>2835</x>
+      <y>522</y>
+      <w>27</w>
+      <h>198</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;200.0</additional_attributes>
@@ -116,10 +116,10 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1420</x>
-      <y>600</y>
-      <w>204</w>
-      <h>24</h>
+      <x>3195</x>
+      <y>1053</y>
+      <w>459</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;battle.BattleStorage&gt;&gt;
 --
@@ -130,10 +130,10 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1364</x>
-      <y>512</y>
-      <w>160</w>
-      <h>96</h>
+      <x>3069</x>
+      <y>855</y>
+      <w>360</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>380.0;220.0;10.0;10.0</additional_attributes>
@@ -141,10 +141,10 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1020</x>
-      <y>316</y>
-      <w>168</w>
-      <h>12</h>
+      <x>2295</x>
+      <y>414</y>
+      <w>378</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;400.0;10.0</additional_attributes>
@@ -152,10 +152,10 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>584</x>
-      <y>296</y>
-      <w>172</w>
-      <h>72</h>
+      <x>1314</x>
+      <y>369</y>
+      <w>387</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>entity.Game
 --
@@ -164,38 +164,38 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
 +Partner: *entity.Monster
 +CreatedAt: int64
 +BattleWon: int
-+Scenario: play.Scenario
++Scenario: entity.Scenario
 --
-+AdvanceScenario(): play.Scenario
++AdvanceScenario(): entity.Scenario
 +IncBattleWon()
-_+NewGame(cfg: play.GameConfig): (*entity.Game, error)_</panel_attributes>
+_+NewGame(cfg: entity.GameConfig): (*entity.Game, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>424</x>
-      <y>304</y>
-      <w>92</w>
-      <h>48</h>
+      <x>927</x>
+      <y>387</y>
+      <w>234</w>
+      <h>108</h>
     </coordinates>
-    <panel_attributes>play.Scenario
+    <panel_attributes>entity.Scenario
 --
 string
 --
-_+BATTLE_1: play.Scenario_
-_+BATTLE_2: play.Scenario_
-_+BATTLE_3: play.Scenario_
-_+END_GAME: play.Scenario_</panel_attributes>
+_+ScenarioBattle1: entity.Scenario_
+_+ScenarioBattle2: entity.Scenario_
+_+ScenarioBattle3: entity.Scenario_
+_+ScenarioEndGame: entity.Scenario_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>512</x>
-      <y>328</y>
-      <w>80</w>
-      <h>12</h>
+      <x>1152</x>
+      <y>441</y>
+      <w>180</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
@@ -203,10 +203,10 @@ _+END_GAME: play.Scenario_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>752</x>
-      <y>316</y>
-      <w>132</w>
-      <h>12</h>
+      <x>1692</x>
+      <y>414</y>
+      <w>297</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>310.0;10.0;10.0;10.0</additional_attributes>
@@ -214,10 +214,10 @@ _+END_GAME: play.Scenario_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>536</x>
-      <y>460</y>
-      <w>260</w>
-      <h>44</h>
+      <x>1206</x>
+      <y>738</y>
+      <w>585</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>&lt;&lt;play.Service&gt;&gt;
 --
@@ -231,10 +231,10 @@ _+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>660</x>
-      <y>364</y>
-      <w>12</w>
-      <h>104</h>
+      <x>1485</x>
+      <y>522</y>
+      <w>27</w>
+      <h>234</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;240.0</additional_attributes>
@@ -242,10 +242,10 @@ _+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>276</x>
-      <y>548</y>
-      <w>200</w>
-      <h>24</h>
+      <x>621</x>
+      <y>936</y>
+      <w>450</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;play.GameStorage&gt;&gt;
 --
@@ -256,10 +256,10 @@ _+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>368</x>
-      <y>492</y>
-      <w>176</w>
-      <h>64</h>
+      <x>828</x>
+      <y>810</y>
+      <w>396</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;140.0;420.0;10.0</additional_attributes>
@@ -267,10 +267,10 @@ _+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>276</x>
-      <y>612</y>
-      <w>200</w>
-      <h>40</h>
+      <x>621</x>
+      <y>1080</y>
+      <w>450</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>gamestrg.Storage
 --
@@ -284,10 +284,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>368</x>
-      <y>568</y>
-      <w>12</w>
-      <h>52</h>
+      <x>828</x>
+      <y>981</y>
+      <w>27</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
@@ -295,10 +295,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1420</x>
-      <y>668</y>
-      <w>204</w>
-      <h>40</h>
+      <x>3195</x>
+      <y>1206</y>
+      <w>459</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>battlestrg.Storage
 --
@@ -312,10 +312,10 @@ _+New(): *battlestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1516</x>
-      <y>620</y>
-      <w>12</w>
-      <h>56</h>
+      <x>3411</x>
+      <y>1098</y>
+      <w>27</w>
+      <h>126</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
@@ -323,10 +323,10 @@ _+New(): *battlestrg.Storage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>864</x>
-      <y>440</y>
-      <w>192</w>
-      <h>96</h>
+      <x>1944</x>
+      <y>693</y>
+      <w>432</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes>rest.API
 --
@@ -349,10 +349,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>908</x>
-      <y>580</y>
-      <w>96</w>
-      <h>32</h>
+      <x>2043</x>
+      <y>1008</y>
+      <w>216</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>rest.APIConfig
 --
@@ -365,10 +365,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>952</x>
-      <y>532</y>
-      <w>12</w>
-      <h>56</h>
+      <x>2142</x>
+      <y>900</y>
+      <w>27</w>
+      <h>126</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
@@ -376,10 +376,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>792</x>
-      <y>480</y>
-      <w>80</w>
-      <h>12</h>
+      <x>1782</x>
+      <y>783</y>
+      <w>180</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
@@ -387,10 +387,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>260</x>
-      <y>416</y>
-      <w>116</w>
-      <h>32</h>
+      <x>585</x>
+      <y>639</y>
+      <w>261</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>play.ServiceConfig
 --
@@ -403,10 +403,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1636</x>
-      <y>420</y>
-      <w>128</w>
-      <h>40</h>
+      <x>3681</x>
+      <y>648</y>
+      <w>288</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>battle.ServiceConfig
 --
@@ -420,10 +420,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1364</x>
-      <y>432</y>
-      <w>280</w>
-      <h>44</h>
+      <x>3069</x>
+      <y>675</y>
+      <w>630</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>680.0;10.0;10.0;90.0</additional_attributes>
@@ -431,10 +431,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1300</x>
-      <y>212</y>
-      <w>76</w>
-      <h>40</h>
+      <x>2925</x>
+      <y>180</y>
+      <w>171</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>battle.BattleConfig
 --
@@ -448,10 +448,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1332</x>
-      <y>248</y>
-      <w>12</w>
-      <h>44</h>
+      <x>2997</x>
+      <y>261</y>
+      <w>27</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
@@ -459,12 +459,12 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>580</x>
-      <y>220</y>
-      <w>76</w>
-      <h>40</h>
+      <x>1305</x>
+      <y>198</y>
+      <w>171</w>
+      <h>90</h>
     </coordinates>
-    <panel_attributes>play.GameConfig
+    <panel_attributes>entity.GameConfig
 --
 +PlayerName: string
 +Partner: entity.Monster
@@ -476,10 +476,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>612</x>
-      <y>256</y>
-      <w>12</w>
-      <h>48</h>
+      <x>1377</x>
+      <y>279</y>
+      <w>27</w>
+      <h>108</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
@@ -488,9 +488,9 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>0</x>
-      <y>472</y>
-      <w>216</w>
-      <h>24</h>
+      <y>765</y>
+      <w>486</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;play.PartnerStorage&gt;&gt;
 --
@@ -501,10 +501,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>212</x>
-      <y>480</y>
-      <w>332</w>
-      <h>16</h>
+      <x>477</x>
+      <y>783</y>
+      <w>747</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;810.0;20.0</additional_attributes>
@@ -512,10 +512,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1636</x>
-      <y>472</y>
-      <w>200</w>
-      <h>24</h>
+      <x>3681</x>
+      <y>765</y>
+      <w>450</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>&lt;&lt;battle.GameStorage&gt;&gt;
 --
@@ -526,10 +526,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1364</x>
-      <y>480</y>
-      <w>280</w>
-      <h>12</h>
+      <x>3069</x>
+      <y>783</y>
+      <w>630</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>680.0;10.0;10.0;10.0</additional_attributes>
@@ -537,10 +537,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1660</x>
-      <y>536</y>
-      <w>192</w>
-      <h>20</h>
+      <x>3735</x>
+      <y>909</y>
+      <w>432</w>
+      <h>45</h>
     </coordinates>
     <panel_attributes>&lt;&lt;battle.PokemonStorage&gt;&gt;
 --
@@ -550,10 +550,10 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1364</x>
-      <y>492</y>
-      <w>304</w>
-      <h>64</h>
+      <x>3069</x>
+      <y>810</y>
+      <w>684</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>740.0;140.0;10.0;10.0</additional_attributes>
@@ -562,9 +562,9 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>0</x>
-      <y>548</y>
-      <w>216</w>
-      <h>52</h>
+      <y>936</y>
+      <w>486</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>pokestrg.Storage
 --
@@ -580,10 +580,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>100</x>
-      <y>492</y>
-      <w>12</w>
-      <h>64</h>
+      <x>225</x>
+      <y>810</y>
+      <w>27</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
@@ -591,10 +591,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>64</x>
-      <y>636</y>
-      <w>80</w>
-      <h>32</h>
+      <x>144</x>
+      <y>1134</y>
+      <w>180</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>pokestrg.Config
 --
@@ -607,10 +607,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>100</x>
-      <y>596</y>
-      <w>12</w>
-      <h>48</h>
+      <x>225</x>
+      <y>1044</y>
+      <w>27</w>
+      <h>108</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
@@ -618,10 +618,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1652</x>
-      <y>600</y>
-      <w>216</w>
-      <h>52</h>
+      <x>3717</x>
+      <y>1053</y>
+      <w>486</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>pokestrg.Storage
 --
@@ -637,10 +637,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1716</x>
-      <y>692</y>
-      <w>80</w>
-      <h>32</h>
+      <x>3861</x>
+      <y>1260</y>
+      <w>180</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>pokestrg.Config
 --
@@ -653,10 +653,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1752</x>
-      <y>648</y>
-      <w>12</w>
-      <h>52</h>
+      <x>3942</x>
+      <y>1161</y>
+      <w>27</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
@@ -664,10 +664,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1752</x>
-      <y>552</y>
-      <w>12</w>
-      <h>56</h>
+      <x>3942</x>
+      <y>945</y>
+      <w>27</w>
+      <h>126</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
@@ -675,10 +675,10 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1892</x>
-      <y>464</y>
-      <w>200</w>
-      <h>40</h>
+      <x>4257</x>
+      <y>747</y>
+      <w>450</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>gamestrg.Storage
 --
@@ -692,10 +692,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1832</x>
-      <y>480</y>
-      <w>68</w>
-      <h>12</h>
+      <x>4122</x>
+      <y>783</y>
+      <w>153</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;150.0;10.0</additional_attributes>
@@ -703,10 +703,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>372</x>
-      <y>428</y>
-      <w>172</w>
-      <h>56</h>
+      <x>837</x>
+      <y>666</y>
+      <w>387</w>
+      <h>126</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;410.0;120.0</additional_attributes>
@@ -714,10 +714,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>536</x>
-      <y>544</y>
-      <w>260</w>
-      <h>52</h>
+      <x>1206</x>
+      <y>927</y>
+      <w>585</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>play.service
 --
@@ -733,10 +733,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>660</x>
-      <y>500</y>
-      <w>12</w>
-      <h>52</h>
+      <x>1485</x>
+      <y>828</y>
+      <w>27</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
@@ -744,10 +744,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1160</x>
-      <y>576</y>
-      <w>208</w>
-      <h>64</h>
+      <x>2610</x>
+      <y>999</y>
+      <w>468</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>battle.service
 --
@@ -765,10 +765,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1256</x>
-      <y>512</y>
-      <w>12</w>
-      <h>72</h>
+      <x>2826</x>
+      <y>855</y>
+      <w>27</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
@@ -776,10 +776,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1052</x>
-      <y>484</y>
-      <w>116</w>
-      <h>12</h>
+      <x>2367</x>
+      <y>792</y>
+      <w>261</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>270.0;10.0;10.0;10.0</additional_attributes>
@@ -787,10 +787,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>876</x>
-      <y>296</y>
-      <w>148</w>
-      <h>52</h>
+      <x>1971</x>
+      <y>369</y>
+      <w>333</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>entity.Monster
 --
@@ -806,10 +806,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>924</x>
-      <y>216</y>
-      <w>52</w>
-      <h>44</h>
+      <x>2079</x>
+      <y>189</y>
+      <w>117</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>entity.BattleStats
 --
@@ -823,10 +823,10 @@ _+New(): *gamestrg.Storage_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>944</x>
-      <y>256</y>
-      <w>12</w>
-      <h>48</h>
+      <x>2124</x>
+      <y>279</y>
+      <w>27</w>
+      <h>108</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
