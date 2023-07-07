@@ -2,25 +2,31 @@
 
 Welcome to this repo!
 
-In this repo you will learn the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) and its implementation through simple server-client game called `Hex Monscape`.
+In this repo you will learn about Haraj Solutions Team's secret technique in writing maintainable code for Haraj projects. 🤫
 
-In the game you will play as a `10 years` old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek `3` strong wild monsters and kick them in the butt. 💥💪🏻
+The secret actually lies in the special software architecture we use to work on these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md). In this repo we will share to you our knowledge about this special architecture through simple server-client game named `Hex Monscape`.
 
-We are applying the concept of [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build the game server while coding it using [Golang](https://go.dev/). For the web client, we code it using [Vue 3](https://vuejs.org/).
+We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build `Hex Monscape` game server while coding it using [Go](https://go.dev/). As for the web client, we code it using [Vue 3](https://vuejs.org/).
 
-To see the REST API specification for this game, please see [this doc](./docs/api-design/rest-api.md).
+To understand the details on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
 > **Note:**
 >
-> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the main architecture we used for building Haraj production systems.
+> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the main architecture we used for building Haraj production services.
 >
 > So if you understand this architecture well, you will be in no time contributing to Haraj production.
->
-> Please refer to [Primary References](#primary-references) section to start learning about these concepts.
+
+## Background Story
+
+One of the biggest engineering issue in Haraj is code maintainability.
+
+// TODO
 
 ## Game Design
 
-The game design is pretty simple, player just need to choose monster partner then won battle for `3` times to beat the game. After that player may choose to end the game or continue playing.
+In the game you will play as a `10 years` old monster hunter that dreams to become the very best. In order to reach that, you need to make journey together with your monster partner to seek `3` strong wild monsters and kick them in the butt. 💥💪🏻
+
+The game scenario is pretty simple, player just need to choose monster partner then won battle for `3` times to beat the game. After that player may choose to end the game or continue playing.
 
 Here is the flowchart for the game scenario:
 
@@ -33,6 +39,8 @@ Here is the flowchart for each battle in the game:
 <p align="center">
     <img src="./docs/reference/assets/battle-flow.drawio.svg" alt="Battle Flow" height="400" />
 </p>
+
+To see the REST API specification for this game, please see [this doc](./docs/api-design/rest-api.md).
 
 ## How to Run The Game
 
