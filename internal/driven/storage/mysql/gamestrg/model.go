@@ -1,17 +1,17 @@
 package gamestrg
 
 import (
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 )
 
 type GameRow struct {
-	ID         string          `db:"id"`
-	PlayerName string          `db:"player_name"`
-	CreatedAt  int64           `db:"created_at"`
-	BattleWon  int             `db:"battle_won"`
-	Scenario   entity.Scenario `db:"scenario"`
-	Partner    *shared.PokeRow `db:"partner"`
+	ID         string             `db:"id"`
+	PlayerName string             `db:"player_name"`
+	CreatedAt  int64              `db:"created_at"`
+	BattleWon  int                `db:"battle_won"`
+	Scenario   entity.Scenario    `db:"scenario"`
+	Partner    *shared.MonsterRow `db:"partner"`
 }
 
 func (r *GameRow) ToGame() *entity.Game {
@@ -21,7 +21,7 @@ func (r *GameRow) ToGame() *entity.Game {
 		CreatedAt:  r.CreatedAt,
 		BattleWon:  r.BattleWon,
 		Scenario:   r.Scenario,
-		Partner:    r.Partner.ToPokemon(),
+		Partner:    r.Partner.ToMonster(),
 	}
 }
 
@@ -32,6 +32,6 @@ func NewGameRow(game *entity.Game) *GameRow {
 		CreatedAt:  game.CreatedAt,
 		BattleWon:  game.BattleWon,
 		Scenario:   game.Scenario,
-		Partner:    shared.NewPokeRow(game.Partner),
+		Partner:    shared.ToMonsterRow(game.Partner),
 	}
 }

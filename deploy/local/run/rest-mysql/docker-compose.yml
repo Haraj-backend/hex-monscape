@@ -1,0 +1,48 @@
+version: '2.4'
+services:
+  mysql:
+    image: bitnami/mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "test1234"
+      MYSQL_DATABASE: "db_monscape"
+    healthcheck:
+      test: mysqladmin ping -h localhost
+    volumes:
+      - ../../shared/mysql/schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/2.sql
+    ports:
+      - "3307:3306"
+    logging:
+      driver: none
+
+  client:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
+    volumes:
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_POKEBATTLE_URL=http://localhost:9186
+
+  server:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/server/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
+      - ../../../../tmp/go/pkg:/go/pkg
+    ports:
+      - 9186:9186
+    environment:
+      - STORAGE_TYPE=mysql
+      - STORAGE_MYSQL_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
+
+volumes:
+  exclude:

@@ -1,140 +1,113 @@
-package battlestrg
+package battlestrg_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
-	"github.com/Haraj-backend/hex-pokebattle/internal/driven/storage/mysql/shared"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/battlestrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestSaveBattle(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
-	// create partner pokemon
-	partner := shared.NewTestPokemon()
-	err = shared.InsertTestPokemon(sqlClient, partner, 1)
-	require.NoError(t, err)
-	// create enemy pokemon
-	enemy := shared.NewTestPokemon()
-	err = shared.InsertTestPokemon(sqlClient, enemy, 0)
-	require.NoError(t, err)
+	strg := newStorage(t)
+
 	// save battle
-	b := newBattle(partner, enemy)
-	err = strg.SaveBattle(context.Background(), b)
+	b := newBattle()
+	err := strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
+
 	// check whether battle exists on database
-	savedBattle, err := getBattle(sqlClient, b.GameID)
+	savedBattle, err := strg.GetBattle(context.Background(), b.GameID)
 	require.NoError(t, err)
+
 	// check whether battle data is match
 	require.Equal(t, b, *savedBattle)
 }
 
-func TestSaveBattleExistingBattle(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
+func TestUpdateBattle(t *testing.T) {
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
-	// create partner pokemon
-	partner := shared.NewTestPokemon()
-	err = shared.InsertTestPokemon(sqlClient, partner, 1)
-	require.NoError(t, err)
-	// create enemy pokemon
-	enemy := shared.NewTestPokemon()
-	err = shared.InsertTestPokemon(sqlClient, enemy, 0)
-	require.NoError(t, err)
+	strg := newStorage(t)
+
 	// save battle
-	b := newBattle(partner, enemy)
+	b := newBattle()
+	err := strg.SaveBattle(context.Background(), b)
+	require.NoError(t, err)
+
+	// update battle state
+	b.State = entity.StateEnemyTurn
 	err = strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
-	// override battle state
-	b.State = battle.ENEMY_TURN
-	// save again
-	err = strg.SaveBattle(context.Background(), b)
-	require.NoError(t, err)
+
 	// check whether battle exists on database
-	savedBattle, err := getBattle(sqlClient, b.GameID)
+	savedBattle, err := strg.GetBattle(context.Background(), b.GameID)
 	require.NoError(t, err)
+
 	// check whether battle data is match
 	require.Equal(t, b, *savedBattle)
 }
 
 func TestGetBattle(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
 	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
-	// create partner pokemon
-	partner := shared.NewTestPokemon()
-	err = shared.InsertTestPokemon(sqlClient, partner, 1)
-	require.NoError(t, err)
-	// create enemy pokemon
-	enemy := shared.NewTestPokemon()
-	err = shared.InsertTestPokemon(sqlClient, enemy, 0)
-	require.NoError(t, err)
+	strg := newStorage(t)
+
 	// save battle
-	b := newBattle(partner, enemy)
-	err = strg.SaveBattle(context.Background(), b)
+	b := newBattle()
+	err := strg.SaveBattle(context.Background(), b)
 	require.NoError(t, err)
-	// override battle state
-	b.State = battle.ENEMY_TURN
-	// save again
-	err = strg.SaveBattle(context.Background(), b)
-	require.NoError(t, err)
-	// check whether battle exists on database
-	savedBattle, err := strg.GetBattle(context.Background(), b.GameID)
-	require.NoError(t, err)
-	// check whether battle data is match
-	require.Equal(t, b, *savedBattle)
-}
 
-func TestGetBattleNotFound(t *testing.T) {
-	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
-	require.NoError(t, err)
-	// initialize storage
-	strg, err := New(Config{SQLClient: sqlClient})
-	require.NoError(t, err)
-	// check whether battle exists on database
-	savedBattle, err := strg.GetBattle(context.Background(), uuid.NewString())
-	require.NoError(t, err)
-	require.Nil(t, savedBattle)
-}
-
-func getBattle(sqlClient *sqlx.DB, gameID string) (*battle.Battle, error) {
-	var row battleRow
-	query := `SELECT * FROM battles WHERE game_id = ?`
-	err := sqlClient.Get(&row, query, gameID)
-	if err != nil {
-		return nil, fmt.Errorf("unable to execute query due: %w", err)
+	testCases := []struct {
+		Name      string
+		GameID    string
+		ExpBattle *entity.Battle
+	}{
+		{
+			Name:      "Battle Exists",
+			GameID:    b.GameID,
+			ExpBattle: &b,
+		},
+		{
+			Name:      "Battle Not Exists",
+			GameID:    uuid.NewString(),
+			ExpBattle: nil,
+		},
 	}
-	return row.ToBattle(), nil
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			battle, err := strg.GetBattle(context.Background(), testCase.GameID)
+			require.NoError(t, err)
+			require.Equal(t, testCase.ExpBattle, battle)
+		})
+	}
 }
 
-func newBattle(partner entity.Pokemon, enemy entity.Pokemon) battle.Battle {
-	return battle.Battle{
+func newBattle() entity.Battle {
+	return entity.Battle{
 		GameID:  uuid.NewString(),
-		State:   battle.DECIDE_TURN,
-		Partner: &partner,
-		Enemy:   &enemy,
-		LastDamage: battle.LastDamage{
+		State:   entity.StateDecideTurn,
+		Partner: testutil.NewTestMonster(),
+		Enemy:   testutil.NewTestMonster(),
+		LastDamage: entity.LastDamage{
 			Partner: 0,
 			Enemy:   10,
 		},
 	}
+}
+
+func newStorage(t *testing.T) *battlestrg.Storage {
+	// initialize sql client
+	sqlClient, err := shared.NewTestSQLClient()
+	require.NoError(t, err)
+
+	// initialize storage
+	strg, err := battlestrg.New(battlestrg.Config{SQLClient: sqlClient})
+	require.NoError(t, err)
+
+	return strg
 }

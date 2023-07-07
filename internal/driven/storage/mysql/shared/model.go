@@ -1,24 +1,23 @@
 package shared
 
 import (
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
-type PokeRow struct {
-	ID        string `db:"id"`
-	Name      string `db:"name"`
-	Health    int    `db:"health"`
-	MaxHealth int    `db:"max_health"`
-	Attack    int    `db:"attack"`
-	Defense   int    `db:"defense"`
-	Speed     int    `db:"speed"`
-	AvatarURL string `db:"avatar_url"`
+type MonsterRow struct {
+	ID            string `db:"id"`
+	Name          string `db:"name"`
+	Health        int    `db:"health"`
+	MaxHealth     int    `db:"max_health"`
+	Attack        int    `db:"attack"`
+	Defense       int    `db:"defense"`
+	Speed         int    `db:"speed"`
+	AvatarURL     string `db:"avatar_url"`
+	IsPartnerable int    `db:"is_partnerable"`
 }
 
-type PokeRows []PokeRow
-
-func (r *PokeRow) ToPokemon() *entity.Pokemon {
-	return &entity.Pokemon{
+func (r *MonsterRow) ToMonster() *entity.Monster {
+	return &entity.Monster{
 		ID:   r.ID,
 		Name: r.Name,
 		BattleStats: entity.BattleStats{
@@ -32,23 +31,25 @@ func (r *PokeRow) ToPokemon() *entity.Pokemon {
 	}
 }
 
-func (r PokeRows) ToPokemons() []entity.Pokemon {
-	var pokemons []entity.Pokemon
+type MonsterRows []MonsterRow
+
+func (r MonsterRows) ToMonsters() []entity.Monster {
+	var monsters []entity.Monster
 	for _, row := range r {
-		pokemons = append(pokemons, *row.ToPokemon())
+		monsters = append(monsters, *row.ToMonster())
 	}
-	return pokemons
+	return monsters
 }
 
-func NewPokeRow(pokemon *entity.Pokemon) *PokeRow {
-	return &PokeRow{
-		ID:        pokemon.ID,
-		Name:      pokemon.Name,
-		Health:    pokemon.BattleStats.Health,
-		MaxHealth: pokemon.BattleStats.MaxHealth,
-		Attack:    pokemon.BattleStats.Attack,
-		Defense:   pokemon.BattleStats.Defense,
-		Speed:     pokemon.BattleStats.Speed,
-		AvatarURL: pokemon.AvatarURL,
+func ToMonsterRow(monster *entity.Monster) *MonsterRow {
+	return &MonsterRow{
+		ID:        monster.ID,
+		Name:      monster.Name,
+		Health:    monster.BattleStats.Health,
+		MaxHealth: monster.BattleStats.MaxHealth,
+		Attack:    monster.BattleStats.Attack,
+		Defense:   monster.BattleStats.Defense,
+		Speed:     monster.BattleStats.Speed,
+		AvatarURL: monster.AvatarURL,
 	}
 }

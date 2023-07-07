@@ -1,0 +1,226 @@
+{
+  "monster": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "b1c87c5c-2ac3-471d-9880-4812552ee15d"
+          },
+          "name": {
+            "S": "Yellowleg"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "25"
+              },
+              "defense": {
+                "N": "5"
+              },
+              "speed": {
+                "N": "15"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/yellowleg.png"
+          },
+          "is_partnerable": {
+            "N": "1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "0f9b84b6-a768-4ba9-8800-207740fc993d"
+          },
+          "name": {
+            "S": "Bluebub"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "20"
+              },
+              "defense": {
+                "N": "15"
+              },
+              "speed": {
+                "N": "10"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/bluebub.png"
+          },
+          "is_partnerable": {
+            "N": "1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "85db0102-212d-4ac8-932c-a0e876a29a85"
+          },
+          "name": {
+            "S": "Grumpy"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "25"
+              },
+              "defense": {
+                "N": "5"
+              },
+              "speed": {
+                "N": "20"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/grumpy.png"
+          },
+          "is_partnerable": {
+            "N": "1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "5e1ab413-415a-4326-8e39-0f56f8a66054"
+          },
+          "name": {
+            "S": "Vegiewee"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "150"
+              },
+              "max_health": {
+                "N": "150"
+              },
+              "attack": {
+                "N": "25"
+              },
+              "defense": {
+                "N": "20"
+              },
+              "speed": {
+                "N": "12"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/vegiewee.png"
+          },
+          "is_partnerable": {
+            "N": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "c2ca1953-2376-489e-8e34-8bb48957f140"
+          },
+          "name": {
+            "S": "Snekworm"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "150"
+              },
+              "max_health": {
+                "N": "150"
+              },
+              "attack": {
+                "N": "30"
+              },
+              "defense": {
+                "N": "5"
+              },
+              "speed": {
+                "N": "21"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/snekworm.png"
+          },
+          "is_partnerable": {
+            "N": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "88a98dee-ce84-4afb-b5a8-7cc07535f73f"
+          },
+          "name": {
+            "S": "Waneye"
+          },
+          "battle_stats": {
+            "M": {
+              "health": {
+                "N": "100"
+              },
+              "max_health": {
+                "N": "100"
+              },
+              "attack": {
+                "N": "20"
+              },
+              "defense": {
+                "N": "10"
+              },
+              "speed": {
+                "N": "15"
+              }
+            }
+          },
+          "avatar_url": {
+            "S": "https://haraj-sol-dev.s3.eu-west-1.amazonaws.com/hex-monscape/monsters/waneye.png"
+          },
+          "is_partnerable": {
+            "N": "0"
+          }
+        }
+      }
+    }
+  ]
+}

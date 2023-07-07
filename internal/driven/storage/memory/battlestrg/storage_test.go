@@ -1,66 +1,38 @@
-package battlestrg
+package battlestrg_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
-	"time"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetBattle(t *testing.T) {
-	strg := New()
-	battle := initNewBattle()
-	err := strg.SaveBattle(context.Background(), *battle)
-	if err != nil {
-		t.Fatalf("unable to save battle, due: %v", err)
-	}
-	newBattle, err := strg.GetBattle(context.Background(), battle.GameID)
-	if err != nil {
-		t.Fatalf("unable to get battle, due: %v", err)
-	}
-	require.Equal(t, battle, newBattle, "battle is not equal")
+func TestSaveGetBattle(t *testing.T) {
+	// init storage & battle
+	strg := battlestrg.New()
+	expBattle := newBattle()
+
+	// save battle
+	err := strg.SaveBattle(context.Background(), *expBattle)
+	require.NoError(t, err)
+
+	// get battle
+	battle, err := strg.GetBattle(context.Background(), expBattle.GameID)
+	require.NoError(t, err)
+
+	// ensure battle is equal to expBattle
+	require.Equal(t, expBattle, battle, "unexpected battle")
 }
 
-func TestSaveBattle(t *testing.T) {
-	strg := New()
-	battle := initNewBattle()
-	err := strg.SaveBattle(context.Background(), *battle)
-	if err != nil {
-		t.Fatalf("unable to save battle, due: %v", err)
-	}
-	newBattle, err := strg.GetBattle(context.Background(), battle.GameID)
-	if err != nil {
-		t.Fatalf("unable to get battle, due: %v", err)
-	}
-	require.Equal(t, battle, newBattle, "battle is not equal")
-}
-
-func initNewBattle() *battle.Battle {
-	game, _ := battle.NewBattle(battle.BattleConfig{
-		GameID:  "b1c87c5c-2ac3-471d-9880-4812552ee15d",
-		Partner: newSamplePokemon(),
-		Enemy:   newSamplePokemon(),
+func newBattle() *entity.Battle {
+	game, _ := entity.NewBattle(entity.BattleConfig{
+		GameID:  uuid.NewString(),
+		Partner: testutil.NewTestMonster(),
+		Enemy:   testutil.NewTestMonster(),
 	})
 	return game
-}
-
-func newSamplePokemon() *entity.Pokemon {
-	currentTs := time.Now().Unix()
-	return &entity.Pokemon{
-		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("pokemon_%v", currentTs),
-		BattleStats: entity.BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    100,
-			Defense:   100,
-			Speed:     100,
-		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
-	}
 }

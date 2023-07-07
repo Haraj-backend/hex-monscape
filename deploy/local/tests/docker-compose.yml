@@ -1,0 +1,52 @@
+version: "2.4"
+
+services:
+  localstack:
+    image: localstack/localstack:2.1.0
+    # ports:
+    #   - 4576:4566
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-1
+    healthcheck:
+      test: "curl -f -s http://localhost:4566/_localstack/health > /dev/null"
+    volumes:
+      - ../shared/dynamodb/create-tables.sh:/etc/localstack/init/ready.d/create-tables.sh
+    logging:
+      driver: none
+
+  mysql:
+    image: bitnami/mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "test1234"
+      MYSQL_DATABASE: "db_monscape"
+    healthcheck:
+      test: "mysqladmin ping"
+    volumes:
+      - ../shared/mysql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    # ports:
+    #   - "3316:3306"
+    logging:
+      driver: none
+
+  tests:
+    build:
+      context: ../../../
+      dockerfile: ./build/package/tests/Dockerfile
+    depends_on:
+      localstack:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    environment:
+      - AWS_ACCESS_KEY_ID=awslocal
+      - AWS_REGION=eu-west-1
+      - AWS_SECRET_ACCESS_KEY=awslocal
+      - DDB_TABLE_BATTLE_NAME=battle
+      - DDB_TABLE_GAME_NAME=game
+      - DDB_TABLE_MONSTER_NAME=monster
+      - LOCALSTACK_ENDPOINT=http://localstack:4566
+      - TEST_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
+      - CGO_ENABLED=0
+    command: "go test ./... -p=1 -count=1"
+    volumes:
+      - ../../../tmp/go/pkg:/go/pkg # enable caching for go modules
