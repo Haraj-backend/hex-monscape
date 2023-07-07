@@ -147,7 +147,7 @@ This is why in Solutions Team we choose `Hexagonal Architecture` as our default 
     <img width=512 src="./assets/memes/hexagonal-architecture-its-magic.jpg" alt="Hexagonal Architecture? It's magic!">
 </p>
 
-To learn how to apply `Hexagonal Architecture` in the new project for Solutions Team, please refer to [Project Methodology](../project-methodology.md) document.
+To learn how to apply `Hexagonal Architecture` in the new project for Solutions Team, please refer to [Project Methodology](./project-methodology.md) document.
 
 [Back to Top](#hexagonal-architecture)
 
