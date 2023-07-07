@@ -26,9 +26,9 @@ What is code maintainability? Essentially it is the ability of a codebase to be 
 
 In the early days of Haraj, we used to assign project ownership to a single developer. So every developer in the team will own at least one project. However we made a mistake by not setting up common standards on how to write code in Haraj. So every developer in the team will write code based on their own style.
 
-Usually our developers will stay for quite a long time (> 5 years) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
+Usually our developers will stay for quite a long time (~5 years) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
 
-This is why one of the biggest engineering issue in Haraj is code maintainability and the solution for this issue is non other than to set up common standards on how to write code in Haraj. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
+This is why one of the biggest engineering issue in Haraj is code maintainability and the solution for this issue is none other than to set up common standards on how to write code in Haraj. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
 
 ## Game Design
 
@@ -52,35 +52,27 @@ To see the REST API specification for this game, please see [this doc](./docs/ap
 
 ## How to Run The Game
 
-There are `3` variants of game server in this project:
+Make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine.
 
-- Server using Memory storage
-- Server using DynamoDB storage
-- Server using MySQL storage
-
-All of them will serve the same game, the only difference is the place where they store the game data.
-
-All of these servers could be run by using this command:
+After that use this command to run the game:
 
 ```bash
 > make run
 ```
 
-This command will create & run the stack defined in this [docker-compose.yml](./deploy/local/run/docker-compose.yml). 
+Wait for a moment until the setup is finished. After that you could access the game by visiting this URL: http://localhost:8161.
 
-Wait a moment until the entire stack is running. You will see something like this in the console after it is done:
+## Multiple Server Variants
 
-```bash
-hex_mem_1     | 2022/05/11 16:29:50 server is listening on :9185...
-hex_mysql_1   | 2022/05/11 16:30:21 server is listening on :9186...
-hex_ddb_1     | 2022/05/11 16:30:21 server is listening on :9187...
-```
+Actually there are `3` variants of game server in this project:
 
-After that you could access each of these servers by visiting endpoints below:
+- Server using In-Memory storage => run command: `make run-rest-mem`
+- Server using DynamoDB storage => run command: `make run-rest-dynamodb`
+- Server using MySQL storage => run command: `make run-rest-mysql`
 
-- Memory storage => http://localhost:9185
-- DynamoDB storage => http://localhost:9186
-- MySQL storage => http://localhost:9187
+All of them serve the same game, the only difference is the place where they store the game data.
+
+For details on these commands, please refer to [this Makefile](./Makefile).
 
 > **Note:**
 >
@@ -91,6 +83,16 @@ After that you could access each of these servers by visiting endpoints below:
 ## Attribution
 
 The monster characters used in this project is designed by [Freepik](http://www.freepik.com). To be exact we are using [this asset](https://www.freepik.com/free-vector/set-funny-monsters-hand-drawn-style_1933029.htm).
+
+The memes used in this project is generated using [this meme generator](https://imgflip.com/memegenerator).
+
+The project layout used in this project is inspired by [this repo](https://github.com/golang-standards/project-layout).
+
+## Contributing
+
+Got more idea on how to make this learning project more fun? Or maybe you found something that can be improved from this project?
+
+Feel free to contribute to this repo by opening issue or creating a pull request! 😃
 
 ## License
 
