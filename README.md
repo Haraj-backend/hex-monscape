@@ -28,7 +28,7 @@ In the early days of Haraj, we used to assign project ownership to a single deve
 
 Usually our developers will stay for quite a long time (~5 years) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
 
-This is why one of the biggest engineering issue in Haraj is code maintainability and the solution for this issue is none other than to set up common standards on how to write code in Haraj. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
+This is why code maintainability grows into such a big issue in Haraj and the solution to prevent more of this is to set up common standards on how to write code in Haraj. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
 
 ## Game Design
 
