@@ -18,7 +18,7 @@ export default {
             <!-- Game title -->
             <h1 class="game-title">
                 HEX
-                <br />POKEBATTLE
+                <br />MONSCAPE
             </h1>
             <div class="flex flex-col gap-y-2 mt-2 pr-96 text-lg">
                 <p>

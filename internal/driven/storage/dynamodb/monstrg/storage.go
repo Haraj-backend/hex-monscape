@@ -12,7 +12,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// New returns new instance of pokestrg dynamoDB Storage
+// New returns new instance of monstrg dynamoDB Storage
 func New(cfg Config) (*Storage, error) {
 	err := cfg.Validate()
 	if err != nil {

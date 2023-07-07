@@ -4,7 +4,7 @@ import { computed, onMounted } from "vue"
 import { useStore } from "../../store"
 import { getGameScenario, turnStates } from "../../entity/game"
 import PartnerCard from "../../components/PartnerCard.vue"
-import PokebattleHTTP from "../../composables/http_client"
+import MonscapeHTTP from "../../composables/http_client"
 
 export default {
     components: {
@@ -14,7 +14,7 @@ export default {
         // dependencies initialization
         const router = useRouter()
         const store = useStore()
-        const client = new PokebattleHTTP()
+        const client = new MonscapeHTTP()
 
         // reactive variables
         const currentGameData = computed(() => store.getGameData)

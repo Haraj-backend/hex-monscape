@@ -14,7 +14,7 @@
 +GameID: string
 +State: entity.State
 +Partner: *entity.Monster
-+Enemy: *entity.pokemon
++Enemy: *entity.Monster
 +LastDamage: entity.LastDamage
 --
 +PartnerAttack(): error
@@ -91,8 +91,8 @@ _+StateLose: entity.State_</panel_attributes>
     <panel_attributes>&lt;&lt;battle.Service&gt;&gt;
 --
 -gameStorage: battle.GameStorage
--battleStorage: battle.BattleStorage
--pokemonStorage: battle.PokemonStorage
+-battleStorage: battle.MonsterStorage
+-monsterStorage: battle.MonsterStorage
 --
 +StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
 +GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
@@ -121,7 +121,7 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
       <w>459</w>
       <h>54</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battle.BattleStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.MonsterStorage&gt;&gt;
 --
 +GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
 +SaveBattle(ctx: context.Context, b: battle.Battle): error</panel_attributes>
@@ -411,8 +411,8 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <panel_attributes>battle.ServiceConfig
 --
 +GameStorage: battle.GameStorage
-+BattleStorage: battle.BattleStorage
-+PokemonStorage: battle.PokemonStorage
++BattleStorage: battle.MonsterStorage
++MonsterStorage: battle.MonsterStorage
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -542,7 +542,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>432</w>
       <h>45</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battle.PokemonStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.MonsterStorage&gt;&gt;
 --
 +GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)</panel_attributes>
     <additional_attributes/>
@@ -566,7 +566,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>486</w>
       <h>117</h>
     </coordinates>
-    <panel_attributes>pokestrg.Storage
+    <panel_attributes>monstrg.Storage
 --
 -partnerMap: map[string]entity.Monster
 -enemyMap: map[string]entity.Monster
@@ -574,7 +574,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
 +GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
 +GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
 +GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
-_+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
+_+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -596,7 +596,7 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
       <w>180</w>
       <h>72</h>
     </coordinates>
-    <panel_attributes>pokestrg.Config
+    <panel_attributes>monstrg.Config
 --
 +Partners: []entity.Monster
 +Enemies: []entity.Monster
@@ -623,7 +623,7 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
       <w>486</w>
       <h>117</h>
     </coordinates>
-    <panel_attributes>pokestrg.Storage
+    <panel_attributes>monstrg.Storage
 --
 -partnerMap: map[string]entity.Monster
 -enemyMap: map[string]entity.Monster
@@ -631,7 +631,7 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
 +GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
 +GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
 +GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
-_+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
+_+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -642,7 +642,7 @@ _+New(cfg: pokestrg.Config): (*pokestrg.Storage, error)_</panel_attributes>
       <w>180</w>
       <h>72</h>
     </coordinates>
-    <panel_attributes>pokestrg.Config
+    <panel_attributes>monstrg.Config
 --
 +Partners: []entity.Monster
 +Enemies: []entity.Monster
@@ -752,8 +752,8 @@ _+New(): *gamestrg.Storage_</panel_attributes>
     <panel_attributes>battle.service
 --
 -gameStorage: battle.GameStorage
--battleStorage: battle.BattleStorage
--pokemonStorage: battle.PokemonStorage
+-battleStorage: battle.MonsterStorage
+-monsterStorage: battle.MonsterStorage
 --
 +StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
 +GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)

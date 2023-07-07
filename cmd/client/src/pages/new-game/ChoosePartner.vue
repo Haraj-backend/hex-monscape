@@ -6,7 +6,7 @@ import { useStore } from "../../store"
 import { getAvailablePartners } from "../../entity/partner"
 import PartnerList from "./components/PartnerList.vue"
 import PartnerCard from "../../components/PartnerCard.vue"
-import PokebattleHTTP from "../../composables/http_client"
+import MonscapeHTTP from "../../composables/http_client"
 
 export default {
     components: {
@@ -16,7 +16,7 @@ export default {
     setup() {
         const router = useRouter()
         const store = useStore()
-        const client = new PokebattleHTTP()
+        const client = new MonscapeHTTP()
 
         let availablePartners = ref([])
         getAvailablePartners().then(p => availablePartners.value = p)

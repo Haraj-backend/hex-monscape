@@ -12,7 +12,7 @@ services:
     ports:
       - 8161:8161
     environment:
-      - VITE_POKEBATTLE_URL=http://localhost:9186
+      - VITE_MONSCAPE_URL=http://localhost:9186
 
   server:
     build:

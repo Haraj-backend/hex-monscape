@@ -1,4 +1,4 @@
-class PokebattleHTTP {
+class MonscapeHTTP {
   _options = {
     method: "GET",
     headers: {
@@ -7,8 +7,8 @@ class PokebattleHTTP {
   };
 
   _apiStagePath = import.meta.env.VITE_API_STAGE_PATH || ""; // API Gateway required stage path
-  _pokebattleBaseURL =
-    import.meta.env.VITE_POKEBATTLE_URL || `${window.location.origin}${this._apiStagePath}`;
+  _monscapeBaseURL =
+    import.meta.env.VITE_MONSCAPE_URL || `${window.location.origin}${this._apiStagePath}`;
 
   constructor(options) {
     this._setRequestOptions(options);
@@ -69,7 +69,7 @@ class PokebattleHTTP {
     // set the method to POST
     this._setRequestOptions({ method: "POST" });
 
-    const url = this._pokebattleBaseURL + "/games";
+    const url = this._monscapeBaseURL + "/games";
 
     return await this.request(url, playerData);
   }
@@ -79,7 +79,7 @@ class PokebattleHTTP {
     // clear the options to avoid any options from previous request
     this._clearBody();
 
-    const url = this._pokebattleBaseURL + "/partners";
+    const url = this._monscapeBaseURL + "/partners";
 
     return await this.request(url);
   }
@@ -92,7 +92,7 @@ class PokebattleHTTP {
     // force set the method to GET
     this._setRequestOptions({ method: "GET" });
 
-    const url = this._pokebattleBaseURL + `/games/${gameID}`;
+    const url = this._monscapeBaseURL + `/games/${gameID}`;
 
     return await this.request(url);
   }
@@ -102,7 +102,7 @@ class PokebattleHTTP {
     // clear the options to avoid any options from previous request
     this._clearBody();
 
-    const url = this._pokebattleBaseURL + `/games/${gameID}/scenario`;
+    const url = this._monscapeBaseURL + `/games/${gameID}/scenario`;
 
     return await this.request(url);
   }
@@ -115,7 +115,7 @@ class PokebattleHTTP {
     // set the method to PUT
     this._setRequestOptions({ method: "PUT" });
 
-    const url = this._pokebattleBaseURL + `/games/${gameID}/battle`;
+    const url = this._monscapeBaseURL + `/games/${gameID}/battle`;
 
     return await this.request(url);
   }
@@ -128,7 +128,7 @@ class PokebattleHTTP {
     // set the method to PUT
     this._setRequestOptions({ method: "PUT" });
 
-    const url = this._pokebattleBaseURL + `/games/${gameID}/battle/turn`;
+    const url = this._monscapeBaseURL + `/games/${gameID}/battle/turn`;
 
     return await this.request(url);
   }
@@ -141,7 +141,7 @@ class PokebattleHTTP {
     // set the method to PUT
     this._setRequestOptions({ method: "PUT" });
 
-    const url = this._pokebattleBaseURL + `/games/${gameID}/battle/attack`;
+    const url = this._monscapeBaseURL + `/games/${gameID}/battle/attack`;
 
     return await this.request(url);
   }
@@ -154,10 +154,10 @@ class PokebattleHTTP {
     // set the method to PUT
     this._setRequestOptions({ method: "PUT" });
 
-    const url = this._pokebattleBaseURL + `/games/${gameID}/battle/surrender`;
+    const url = this._monscapeBaseURL + `/games/${gameID}/battle/surrender`;
 
     return await this.request(url);
   }
 }
 
-export default PokebattleHTTP;
+export default MonscapeHTTP;

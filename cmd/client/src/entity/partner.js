@@ -1,4 +1,4 @@
-import PokebattleHTTP from "../composables/http_client";
+import MonscapeHTTP from "../composables/http_client";
 
 const additionalData = {
   Yellowleg: {
@@ -17,7 +17,7 @@ const additionalData = {
 
 export const getAvailablePartners = async () => {
   // request to server
-  const client = new PokebattleHTTP();
+  const client = new MonscapeHTTP();
   const res = await client.getAvailablePartners();
   // mutate the payload as application required
   let { partners } = res.data;

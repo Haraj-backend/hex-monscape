@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive } from "vue"
 import router from "../../routes"
 import { useStore } from "../../store"
-import PokebattleHTTP from "../../composables/http_client"
+import MonscapeHTTP from "../../composables/http_client"
 import { getGameScenario, turnStates } from "../../entity/game"
 
 import HealthBar from './components/HealthBar.vue'
@@ -38,7 +38,7 @@ export default {
             }
         })
 
-        const client = new PokebattleHTTP()
+        const client = new MonscapeHTTP()
         const currentGameID = store.getBattleState.game_id
         const controlState = reactive({
             turn: turnStates.DECIDE_TURN,
