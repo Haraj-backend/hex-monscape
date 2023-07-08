@@ -66,7 +66,21 @@ After that use this command to run the game:
 > make run
 ```
 
-Wait for a moment until the setup is finished. After that you could access the game by visiting this URL: http://localhost:8161.
+Wait for a moment until you see this message:
+
+```bash
+yarn run v1.22.19
+rest-dynamodb-client-1  | $ vite --host --port 8161
+rest-dynamodb-client-1  | 
+rest-dynamodb-client-1  |   vite v2.8.4 dev server running at:
+rest-dynamodb-client-1  | 
+rest-dynamodb-client-1  |   > Local:    http://localhost:8161/
+rest-dynamodb-client-1  |   > Network:  http://172.30.0.4:8161/
+rest-dynamodb-client-1  | 
+rest-dynamodb-client-1  |   ready in 189ms.
+```
+
+After that you could access the game by visiting this URL: http://localhost:8161.
 
 ## Multiple Server Variants
 

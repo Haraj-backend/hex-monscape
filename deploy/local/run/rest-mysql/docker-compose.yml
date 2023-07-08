@@ -15,18 +15,6 @@ services:
     logging:
       driver: none
 
-  client:
-    build:
-      context: ../../../../
-      dockerfile: ./build/package/client/Dockerfile
-    volumes:
-      - ../../../../cmd/client:/client
-      - exclude:/client/node_modules
-    ports:
-      - 8161:8161
-    environment:
-      - VITE_MONSCAPE_URL=http://localhost:9186
-
   server:
     build:
       context: ../../../../
@@ -34,6 +22,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    healthcheck:
+      test: wget -c -q localhost:9186/health
     volumes:
       - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
       - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
@@ -43,6 +33,23 @@ services:
     environment:
       - STORAGE_TYPE=mysql
       - STORAGE_MYSQL_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
+
+  client:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+    volumes:
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_MONSCAPE_URL=http://localhost:9186
 
 volumes:
   exclude:

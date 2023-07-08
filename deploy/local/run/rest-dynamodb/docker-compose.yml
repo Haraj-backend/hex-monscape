@@ -15,18 +15,6 @@ services:
     logging:
       driver: none
 
-  client:
-    build:
-      context: ../../../../
-      dockerfile: ./build/package/client/Dockerfile
-    volumes:
-      - ../../../../cmd/client:/client
-      - exclude:/client/node_modules
-    ports:
-      - 8161:8161
-    environment:
-      - VITE_MONSCAPE_URL=http://localhost:9186
-
   server:
     build:
       context: ../../../../
@@ -34,6 +22,8 @@ services:
     depends_on:
       localstack:
         condition: service_healthy
+    healthcheck:
+      test: wget -c -q localhost:9186/health
     ports:
       - 9186:9186
     volumes:
@@ -49,6 +39,23 @@ services:
       - AWS_ACCESS_KEY_ID=awslocal
       - AWS_REGION=eu-west-1
       - AWS_SECRET_ACCESS_KEY=awslocal
+
+  client:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
+    depends_on:
+      localstack:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+    volumes:
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_MONSCAPE_URL=http://localhost:9186
 
 volumes:
   exclude:

@@ -62,6 +62,7 @@ func (a *API) GetHandler() http.Handler {
 		r.NotFound(a.serveWebClient)
 	}
 
+	r.Get("/health", a.serveHealthCheck)
 	r.Get("/partners", a.serveGetAvailablePartners)
 	r.Route("/games", func(r chi.Router) {
 		r.Post("/", a.serveNewGame)
@@ -86,6 +87,10 @@ const (
 	indexFile  = "index.html"
 	assetsPath = "assets"
 )
+
+func (a *API) serveHealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
 
 func (a *API) serveWebClient(w http.ResponseWriter, r *http.Request) {
 	fileName := filepath.Clean(r.URL.Path)
