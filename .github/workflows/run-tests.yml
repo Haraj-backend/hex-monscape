@@ -1,6 +1,10 @@
 name: Test Services
 
 on:
+  push:
+    branches-ignore:
+      - master
+      - feat/game-demo
   pull_request:
     paths-ignore:
       - 'Makefile'
