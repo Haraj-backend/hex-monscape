@@ -22,8 +22,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o server
 
 # copy both client & server artifacts to a clean image
 FROM public.ecr.aws/lambda/go:1.2023.07.05.11
-
-COPY --from=server_build /go/src/github.com/Haraj-backend/hex-monscape/cmd/lambda/server ${LAMBDA_TASK_ROOT}
-COPY --from=client_build /client/dist /client
+WORKDIR ${LAMBDA_TASK_ROOT}
+COPY --from=server_build /go/src/github.com/Haraj-backend/hex-monscape/cmd/lambda/server ./server
+COPY --from=client_build /client/dist ./client
 
 CMD [ "server" ]
