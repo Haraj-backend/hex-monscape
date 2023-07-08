@@ -106,7 +106,7 @@ jobs:
             --region ${AWS_REGION} \
             --stack-name hex-monscape \
             --image-repository ${REMOTE_REPO_DEV} \
-            --template-file ./deploy/aws/lambda/services.yml \
+            --template-file ./deploy/aws/lambda/service.yml \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
               InfraStackName=${{ env.INFRA_STACK_NAME_DEV }} \
