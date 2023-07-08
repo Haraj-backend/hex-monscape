@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Template for deploying Hex Monscape app.
+
+Parameters:
+  InfraStackName:
+    Type: String
+    Description: Stack name of the infrastructures for Hex Monscape.
+  ImageUri:
+    Type: String
+    Description: URI of the container image for Hex Monscape.
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 15
+
+Resources:
+  HexMonscapeAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Dev
+
+  LambdaFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      PackageType: Image
+      ImageUri: !Ref ImageUri
+      Architectures:
+        - x86_64
+      Events:
+        RootEndpoint:
+          Properties:
+            Method: any
+            Path: /
+            RestApiId: !Ref HexMonscapeAPI
+          Type: Api
+        EverythingElse:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            RestApiId: !Ref HexMonscapeAPI
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              Fn::ImportValue: !Sub "${InfraStackName}:BattleTableName"
+        - DynamoDBCrudPolicy:
+            TableName:
+              Fn::ImportValue: !Sub "${InfraStackName}:GameTableName"
+        - DynamoDBCrudPolicy:
+            TableName:
+              Fn::ImportValue: !Sub "${InfraStackName}:MonsterTableName"
+
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          DYNAMODB_BATTLE_TABLE:
+            Fn::ImportValue: !Sub "${InfraStackName}:BattleTableName"
+          DYNAMODB_GAME_TABLE:
+            Fn::ImportValue: !Sub "${InfraStackName}:GameTableName"
+          DYNAMODB_MONSTER_TABLE:
+            Fn::ImportValue: !Sub "${InfraStackName}:MonsterTableName"

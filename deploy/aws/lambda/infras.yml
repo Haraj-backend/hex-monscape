@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Template for deploying necessary infrastructures for Hex Monscape (https://github.com/Haraj-backend/hex-monscape).
+
+Resources:
+  # create ecr repo for container image
+  ECRRepo:
+    Type: AWS::ECR::Repository
+
+  # create dynamodb table for battle record
+  BattleTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      TableName: !Sub ${AWS::StackName}-battle
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: game_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: game_id
+          KeyType: HASH
+
+  # create dynamodb table for game record
+  GameTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      TableName: !Sub ${AWS::StackName}-game
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  # create dynamodb table for monster record
+  MonsterTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      TableName: !Sub ${AWS::StackName}-monster
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: is_partnerable
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: is_partnerable
+          KeySchema:
+            - AttributeName: is_partnerable
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+Outputs:
+  ECRRepo:
+    Value: !Ref ECRRepo
+    Export:
+      Name: !Sub "${AWS::StackName}:ECRRepo"
+
+  BattleTableName:
+    Value: !Ref BattleTable
+    Export:
+      Name: !Sub "${AWS::StackName}:BattleTableName"
+
+  GameTableName:
+    Value: !Ref GameTable
+    Export:
+      Name: !Sub "${AWS::StackName}:GameTableName"
+
+  MonsterTableName:
+    Value: !Ref MonsterTable
+    Export:
+      Name: !Sub "${AWS::StackName}:MonsterTableName"
