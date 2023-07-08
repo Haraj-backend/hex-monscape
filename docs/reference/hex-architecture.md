@@ -38,7 +38,9 @@ In the upcoming sections, we will be discussing about the details of `Hexagonal 
 
 ## What is Hexagonal Architecture?
 
-![Hexagonal Architecture Diagram](./assets/hex-diagram.drawio.png)
+<p align="center">
+    <img src="./assets/hex-diagram.drawio.png" alt="Hex Architecture Diagram">
+</p>
 
 `Hexagonal Architecture` is architectural pattern that put the business logic as center of everything in application codebase.
 
@@ -139,15 +141,15 @@ We just need to think about the expected behavior of our application, create the
 
 Understanding application created using `Hexagonal Architecture` is also very simple.
 
-We just need to learn about its `Core` components, understand its business context, and voila we understand the whole application context! 😁
+We just need to learn about its `Core` components, understand its business context, and all of sudden we understand the whole application context! 😁
 
-This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building applications. Yeah, because it enable us to create maintainable code much more easily! 😁
+This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building our applications. Yeah, this is because it enable us to create maintainable code much more easily! 😁
 
 <p align="center">
     <img width=512 src="./assets/memes/hexagonal-architecture-its-magic.jpg" alt="Hexagonal Architecture? It's magic!">
 </p>
 
-To learn how to apply `Hexagonal Architecture` in the new project for Solutions Team, please refer to [Project Methodology](./project-methodology.md) document.
+To learn how to apply `Hexagonal Architecture` in the new Solutions Team project, please refer to [Project Methodology](./project-methodology.md) document.
 
 [Back to Top](#hexagonal-architecture)
 
