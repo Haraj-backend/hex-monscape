@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -19,6 +22,7 @@ import (
 type APIConfig struct {
 	PlayingService play.Service   `validate:"nonnil"`
 	BattleService  battle.Service `validate:"nonnil"`
+	IsWebEnabled   bool
 }
 
 func (c APIConfig) Validate() error {
@@ -33,6 +37,7 @@ func NewAPI(cfg APIConfig) (*API, error) {
 	a := &API{
 		playService:   cfg.PlayingService,
 		battleService: cfg.BattleService,
+		isWebEnabled:  cfg.IsWebEnabled,
 	}
 	return a, nil
 }
@@ -40,15 +45,24 @@ func NewAPI(cfg APIConfig) (*API, error) {
 type API struct {
 	playService   play.Service
 	battleService battle.Service
+	isWebEnabled  bool
 }
 
 func (a *API) GetHandler() http.Handler {
 	r := chi.NewRouter()
+
 	r.Use(cors.AllowAll().Handler)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+
+	if a.isWebEnabled {
+		// by default route everything to the web client
+		r.NotFound(a.serveWebClient)
+	}
+
+	r.Get("/health", a.serveHealthCheck)
 	r.Get("/partners", a.serveGetAvailablePartners)
 	r.Route("/games", func(r chi.Router) {
 		r.Post("/", a.serveNewGame)
@@ -66,6 +80,31 @@ func (a *API) GetHandler() http.Handler {
 	})
 
 	return r
+}
+
+const (
+	publicDir  = "./client"
+	indexFile  = "index.html"
+	assetsPath = "assets"
+)
+
+func (a *API) serveHealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func (a *API) serveWebClient(w http.ResponseWriter, r *http.Request) {
+	fileName := filepath.Clean(r.URL.Path)
+	if fileName != indexFile && !strings.Contains(fileName, assetsPath) {
+		fileName = assetsPath + fileName
+	}
+	p := filepath.Join(publicDir, fileName)
+
+	if info, err := os.Stat(p); err != nil || info.IsDir() {
+		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
+		return
+	}
+
+	http.ServeFile(w, r, p)
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
