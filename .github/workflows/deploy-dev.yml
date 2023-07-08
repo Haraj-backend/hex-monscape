@@ -1,4 +1,4 @@
-ame: Deploy to Dev environment
+name: Deploy to Dev environment
 
 on:
   push:
