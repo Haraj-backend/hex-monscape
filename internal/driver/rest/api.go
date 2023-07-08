@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -19,6 +21,7 @@ import (
 type APIConfig struct {
 	PlayingService play.Service   `validate:"nonnil"`
 	BattleService  battle.Service `validate:"nonnil"`
+	IsWebEnabled   bool
 }
 
 func (c APIConfig) Validate() error {
@@ -33,6 +36,7 @@ func NewAPI(cfg APIConfig) (*API, error) {
 	a := &API{
 		playService:   cfg.PlayingService,
 		battleService: cfg.BattleService,
+		isWebEnabled:  cfg.IsWebEnabled,
 	}
 	return a, nil
 }
@@ -40,6 +44,7 @@ func NewAPI(cfg APIConfig) (*API, error) {
 type API struct {
 	playService   play.Service
 	battleService battle.Service
+	isWebEnabled  bool
 }
 
 func (a *API) GetHandler() http.Handler {
@@ -65,7 +70,28 @@ func (a *API) GetHandler() http.Handler {
 		})
 	})
 
+	if a.isWebEnabled {
+		// by default serve web frontend
+		r.NotFound(a.serveWebFrontend)
+	}
+
 	return r
+}
+
+const (
+	publicDir  = "/dist"
+	indexFile  = "index.html"
+	assetsPath = "assets"
+)
+
+func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
+	fileName := filepath.Clean(r.URL.Path)
+	if fileName != indexFile && !strings.Contains(fileName, assetsPath) {
+		fileName = assetsPath + fileName
+	}
+
+	p := filepath.Join(publicDir, fileName)
+	http.ServeFile(w, r, p)
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
