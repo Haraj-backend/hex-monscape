@@ -56,7 +56,11 @@ To see the REST API specification for this game, please see [this doc](./docs/ap
 
 ## How to Run The Game
 
-You can try out this game online by visiting this URL: https://hex-monscape.haraj.app.
+You can try out this game online by visiting this URL: 
+
+```
+https://hex-monscape.haraj.app
+```
 
 If you want to run the game locally, make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine.
 
@@ -66,21 +70,25 @@ After that use this command to run the game:
 > make run
 ```
 
-Wait for a moment until you see this message:
+Wait for a moment until you see message like this:
 
 ```bash
-yarn run v1.22.19
-rest-dynamodb-client-1  | $ vite --host --port 8161
-rest-dynamodb-client-1  | 
-rest-dynamodb-client-1  |   vite v2.8.4 dev server running at:
-rest-dynamodb-client-1  | 
-rest-dynamodb-client-1  |   > Local:    http://localhost:8161/
-rest-dynamodb-client-1  |   > Network:  http://172.30.0.4:8161/
-rest-dynamodb-client-1  | 
-rest-dynamodb-client-1  |   ready in 189ms.
+rest-memory-client-1  | yarn run v1.22.19
+rest-memory-client-1  | $ vite --host --port 8161
+rest-memory-client-1  | 
+rest-memory-client-1  |   vite v2.8.4 dev server running at:
+rest-memory-client-1  | 
+rest-memory-client-1  |   > Local:    http://localhost:8161/
+rest-memory-client-1  |   > Network:  http://172.31.0.3:8161/
+rest-memory-client-1  | 
+rest-memory-client-1  |   ready in 151ms.
 ```
 
-After that you could access the game by visiting this URL: http://localhost:8161.
+After that you could access the game by visiting this URL: 
+
+```
+http://localhost:8161
+```
 
 ## Multiple Server Variants
 

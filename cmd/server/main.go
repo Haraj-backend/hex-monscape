@@ -183,7 +183,8 @@ func main() {
 	}
 
 	// run server
-	log.Printf("server is listening on :%v...", cfg.Port)
+	log.Printf("[INFO] server is listening on :%v...", cfg.Port)
+	log.Printf("[INFO] please wait a moment until the game client ready in http://localhost:8161 to play the game...")
 	err = server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("unable to start server due: %v", err)
