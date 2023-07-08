@@ -58,11 +58,7 @@ To see the REST API specification for this game, please see [this doc](./docs/ap
 
 ## How to Run The Game
 
-You can try out this game online by visiting this URL: 
-
-```
-https://hex-monscape.haraj.app
-```
+You can try out this game online by visiting this URL: https://hex-monscape.haraj.app.
 
 If you want to run the game locally, make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine.
 
@@ -86,11 +82,7 @@ rest-memory-client-1  |
 rest-memory-client-1  |   ready in 151ms.
 ```
 
-After that you could access the game by visiting this URL: 
-
-```
-http://localhost:8161
-```
+After that you could access the game by visiting this URL: http://localhost:8161.
 
 ## Multiple Server Variants
 
