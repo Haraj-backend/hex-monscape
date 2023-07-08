@@ -1,0 +1,38 @@
+version: '2.4'
+services:
+  localstack:
+    image: localstack/localstack:2.1.0
+    ports:
+      - 4566:4566
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-1
+    healthcheck:
+      test: "curl -f -s http://localhost:4566/_localstack/health"
+    volumes:
+      - ../../shared/dynamodb/create-tables.sh:/etc/localstack/init/ready.d/1.sh
+      - ../rest-dynamodb/write-data.sh:/etc/localstack/init/ready.d/2.sh
+      - ../rest-dynamodb/data.json:/data.json
+    logging:
+      driver: none
+
+  lambda:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/lambda/Dockerfile.local
+    depends_on:
+      localstack:
+        condition: service_healthy
+    ports:
+      - 9186:9186
+    volumes:
+      - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../../cmd/lambda:/go/src/github.com/Haraj-backend/hex-monscape/cmd/lambda
+      - ../../../../tmp/go/pkg:/go/pkg
+    environment:
+      - LOCALSTACK_ENDPOINT=http://localstack:4566
+      - DYNAMODB_BATTLE_TABLE=battle
+      - DYNAMODB_GAME_TABLE=game
+      - DYNAMODB_MONSTER_TABLE=monster
+      - AWS_ACCESS_KEY_ID=awslocal
+      - AWS_REGION=eu-west-1
+      - AWS_SECRET_ACCESS_KEY=awslocal

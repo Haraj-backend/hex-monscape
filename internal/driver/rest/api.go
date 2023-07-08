@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"path/filepath"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -49,11 +47,18 @@ type API struct {
 
 func (a *API) GetHandler() http.Handler {
 	r := chi.NewRouter()
+
 	r.Use(cors.AllowAll().Handler)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+
+	if a.isWebEnabled {
+		r.Get("/", a.serveWebClient)
+		r.Get("/assets/*", a.serveWebClient)
+	}
+
 	r.Get("/partners", a.serveGetAvailablePartners)
 	r.Route("/games", func(r chi.Router) {
 		r.Post("/", a.serveNewGame)
@@ -70,28 +75,12 @@ func (a *API) GetHandler() http.Handler {
 		})
 	})
 
-	if a.isWebEnabled {
-		// by default serve web frontend
-		r.NotFound(a.serveWebFrontend)
-	}
-
 	return r
 }
 
-const (
-	publicDir  = "/dist"
-	indexFile  = "index.html"
-	assetsPath = "assets"
-)
-
-func (a *API) serveWebFrontend(w http.ResponseWriter, r *http.Request) {
-	fileName := filepath.Clean(r.URL.Path)
-	if fileName != indexFile && !strings.Contains(fileName, assetsPath) {
-		fileName = assetsPath + fileName
-	}
-
-	p := filepath.Join(publicDir, fileName)
-	http.ServeFile(w, r, p)
+func (a *API) serveWebClient(w http.ResponseWriter, r *http.Request) {
+	fs := http.FileServer(http.Dir("./client"))
+	fs.ServeHTTP(w, r)
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {

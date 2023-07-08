@@ -23,3 +23,8 @@ run-rest-mysql:
 test:
 	-docker compose -f ./deploy/local/tests/docker-compose.yml down --remove-orphans
 	docker compose -f ./deploy/local/tests/docker-compose.yml up --build --attach=tests --exit-code-from=tests
+
+# run the lambda server variant
+run-lambda:
+	-docker compose -f ./deploy/local/run/lambda/docker-compose.yml down --remove-orphans
+	docker compose -f ./deploy/local/run/lambda/docker-compose.yml up --build --attach=lambda

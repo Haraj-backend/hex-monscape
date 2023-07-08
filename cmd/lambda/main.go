@@ -54,7 +54,7 @@ func main() {
 	// initialize monster storage
 	monStrg, err := monstrg.New(monstrg.Config{
 		DynamoClient: dynamoClient,
-		TableName:    cfg.DynamoDB.PokemonTable,
+		TableName:    cfg.DynamoDB.MonsterTable,
 	})
 	if err != nil {
 		log.Fatalf("unable to initialize monster storage due: %v", err)
@@ -122,5 +122,5 @@ func (c config) GetLocalAddr() string {
 type dynamoConfig struct {
 	BattleTable  string `cfg:"battle_table" cfgRequired:"true"`
 	GameTable    string `cfg:"game_table" cfgRequired:"true"`
-	PokemonTable string `cfg:"pokemon_table" cfgRequired:"true"`
+	MonsterTable string `cfg:"monster_table" cfgRequired:"true"`
 }
