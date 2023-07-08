@@ -10,9 +10,6 @@ on:
       - 'Makefile'
       - '**.md'
       - 'docs/**'
-    branches-ignore:
-      - master
-      - feat/game-demo
 
   workflow_call:
     inputs:
