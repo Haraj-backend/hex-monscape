@@ -56,7 +56,9 @@ To see the REST API specification for this game, please see [this doc](./docs/ap
 
 ## How to Run The Game
 
-Make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine.
+You can try out this game online by visiting this URL: https://hex-monscape.haraj.app.
+
+If you want to run the game locally, make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine.
 
 After that use this command to run the game:
 
