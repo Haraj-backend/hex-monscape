@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -55,8 +58,8 @@ func (a *API) GetHandler() http.Handler {
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
 	if a.isWebEnabled {
-		r.Get("/", a.serveWebClient)
-		r.Get("/assets/*", a.serveWebClient)
+		// by default route everything to the web client
+		r.NotFound(a.serveWebClient)
 	}
 
 	r.Get("/partners", a.serveGetAvailablePartners)
@@ -78,9 +81,25 @@ func (a *API) GetHandler() http.Handler {
 	return r
 }
 
+const (
+	publicDir  = "./client"
+	indexFile  = "index.html"
+	assetsPath = "assets"
+)
+
 func (a *API) serveWebClient(w http.ResponseWriter, r *http.Request) {
-	fs := http.FileServer(http.Dir("./client"))
-	fs.ServeHTTP(w, r)
+	fileName := filepath.Clean(r.URL.Path)
+	if fileName != indexFile && !strings.Contains(fileName, assetsPath) {
+		fileName = assetsPath + fileName
+	}
+	p := filepath.Join(publicDir, fileName)
+
+	if info, err := os.Stat(p); err != nil || info.IsDir() {
+		http.ServeFile(w, r, filepath.Join(publicDir, indexFile))
+		return
+	}
+
+	http.ServeFile(w, r, p)
 }
 
 func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) {
