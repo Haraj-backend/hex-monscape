@@ -19,6 +19,8 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 > As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the main architecture we used for building Haraj production services.
 >
 > So if you understand this architecture well, you will be in no time contributing to Haraj production.
+>
+> Also notice that even though here we are using Go as an example to showcase [Hexagonal Architecture](./docs/reference/hex-architecture.md), but actually this architecture is language agnostic. So you could apply it to any programming language you want.
 
 ## Background Story
 
@@ -34,7 +36,7 @@ Usually our developers will stay for quite a long time (~5 years) before they le
     <img width=512 src="./docs/reference/assets/memes/code-maintainability-this-is-fine.jpg" alt="Code Maintainability? This is fine.">
 </p>
 
-This is why code maintainability grows into such a big issue in Haraj and the solution to prevent more of this is to set up common standards on how to write code in Haraj. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
+This is why code maintainability grows into such a big issue in Haraj and the solution to prevent more of this is to set up common standards on how to write code in Haraj projects. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
 
 ## Game Design
 
@@ -60,7 +62,7 @@ To see the REST API specification for this game, please see [this doc](./docs/ap
 
 You can try out this game online by visiting this URL: https://hex-monscape.haraj.app.
 
-If you want to run the game locally, make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine.
+If you want to run the game locally, make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine. Make sure also you already has [Docker Compose](https://docs.docker.com/compose/install/) `v2.0.1` or above.
 
 After that use this command to run the game:
 
@@ -88,7 +90,7 @@ After that you could access the game by visiting this URL: http://localhost:8161
 
 Actually there are `3` variants of game server in this project:
 
-- Server using In-Memory storage => run command: `make run-rest-mem`
+- Server using In-Memory storage => run command: `make run-rest-memory`
 - Server using DynamoDB storage => run command: `make run-rest-dynamodb`
 - Server using MySQL storage => run command: `make run-rest-mysql`
 
