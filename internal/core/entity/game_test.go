@@ -1,35 +1,35 @@
-package entity
+package entity_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestValidateGameConfig(t *testing.T) {
-	samplePokemon := newSamplePokemon()
+	sampleMonster := testutil.NewTestMonster()
 	currentTs := time.Now().Unix()
 	testCases := []struct {
 		Name    string
-		Config  GameConfig
+		Config  entity.GameConfig
 		IsError bool
 	}{
 		{
 			Name: "Empty Player Name",
-			Config: GameConfig{
+			Config: entity.GameConfig{
 				PlayerName: "",
-				Partner:    samplePokemon,
+				Partner:    sampleMonster,
 				CreatedAt:  currentTs,
 			},
 			IsError: true,
 		},
 		{
 			Name: "Empty Partner",
-			Config: GameConfig{
+			Config: entity.GameConfig{
 				PlayerName: "Riandy R.N",
 				Partner:    nil,
 				CreatedAt:  currentTs,
@@ -38,18 +38,18 @@ func TestValidateGameConfig(t *testing.T) {
 		},
 		{
 			Name: "Empty Created At",
-			Config: GameConfig{
+			Config: entity.GameConfig{
 				PlayerName: "Riandy R.N",
-				Partner:    samplePokemon,
+				Partner:    sampleMonster,
 				CreatedAt:  0,
 			},
 			IsError: true,
 		},
 		{
 			Name: "All Filled",
-			Config: GameConfig{
+			Config: entity.GameConfig{
 				PlayerName: "Riandy R.N",
-				Partner:    samplePokemon,
+				Partner:    sampleMonster,
 				CreatedAt:  currentTs,
 			},
 			IsError: false,
@@ -65,30 +65,30 @@ func TestValidateGameConfig(t *testing.T) {
 
 func TestNewGame(t *testing.T) {
 	// define function for validating game
-	validateGame := func(t *testing.T, game Game, cfg GameConfig) {
+	validateGame := func(t *testing.T, game entity.Game, cfg entity.GameConfig) {
 		assert.NotEmpty(t, game.ID, "game id is empty")
 		assert.Equal(t, cfg.PlayerName, game.PlayerName, "mismatch player name")
 		assert.Equal(t, cfg.Partner, game.Partner, "mismatch partner")
 		assert.Equal(t, cfg.CreatedAt, game.CreatedAt, "mismatch created_at")
 		assert.Equal(t, 0, game.BattleWon, "mismatch battle_won")
-		assert.Equal(t, BATTLE_1, game.Scenario, "mismatch scenario")
+		assert.Equal(t, entity.ScenarioBattle1, game.Scenario, "mismatch scenario")
 	}
 	// define test cases
 	testCases := []struct {
 		Name    string
-		Config  GameConfig
+		Config  entity.GameConfig
 		IsError bool
 	}{
 		{
 			Name:    "Invalid Config",
-			Config:  GameConfig{},
+			Config:  entity.GameConfig{},
 			IsError: true,
 		},
 		{
 			Name: "Valid Config",
-			Config: GameConfig{
+			Config: entity.GameConfig{
 				PlayerName: "Riandy R.N",
-				Partner:    newSamplePokemon(),
+				Partner:    testutil.NewTestMonster(),
 				CreatedAt:  time.Now().Unix(),
 			},
 			IsError: false,
@@ -97,7 +97,7 @@ func TestNewGame(t *testing.T) {
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			game, err := NewGame(testCase.Config)
+			game, err := entity.NewGame(testCase.Config)
 			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if game == nil {
 				return
@@ -111,7 +111,7 @@ func TestAdvanceScenario(t *testing.T) {
 	// initialize new game
 	game := initNewGame()
 	// test scenario
-	scenarios := []Scenario{BATTLE_1, BATTLE_2, BATTLE_3, END_GAME}
+	scenarios := []entity.Scenario{entity.ScenarioBattle1, entity.ScenarioBattle2, entity.ScenarioBattle3, entity.ScenarioEndGame}
 	for i := 0; i < len(scenarios); i++ {
 		// not won any battle, scenario should be same as previous
 		game.AdvanceScenario()
@@ -136,26 +136,10 @@ func TestIncBattleWon(t *testing.T) {
 	require.NotEqual(t, initGameScenario, game.Scenario, "scenario is not advancing")
 }
 
-func newSamplePokemon() *Pokemon {
-	currentTs := time.Now().Unix()
-	return &Pokemon{
-		ID:   uuid.NewString(),
-		Name: fmt.Sprintf("pokemon_%v", currentTs),
-		BattleStats: BattleStats{
-			Health:    100,
-			MaxHealth: 100,
-			Attack:    100,
-			Defense:   100,
-			Speed:     100,
-		},
-		AvatarURL: fmt.Sprintf("https://example.com/%v", currentTs),
-	}
-}
-
-func initNewGame() *Game {
-	game, _ := NewGame(GameConfig{
+func initNewGame() *entity.Game {
+	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
-		Partner:    newSamplePokemon(),
+		Partner:    testutil.NewTestMonster(),
 		CreatedAt:  time.Now().Unix(),
 	})
 	return game

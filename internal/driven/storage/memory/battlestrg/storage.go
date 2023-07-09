@@ -3,23 +3,14 @@ package battlestrg
 import (
 	"context"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/trace"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
 type Storage struct {
-	data map[string]battle.Battle
+	data map[string]entity.Battle
 }
 
-func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
-	span.SetAttributes(attribute.Key("game-id").String(gameID))
-
+func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	b, ok := s.data[gameID]
 	if !ok {
 		return nil, nil
@@ -27,15 +18,11 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	return &b, nil
 }
 
-func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
+func (s *Storage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	s.data[b.GameID] = b
 	return nil
 }
 
 func New() *Storage {
-	return &Storage{data: make(map[string]battle.Battle)}
+	return &Storage{data: make(map[string]entity.Battle)}
 }

@@ -1,0 +1,38 @@
+version: "2.4"
+
+services:
+
+  server:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/server/Dockerfile
+    healthcheck:
+      test: wget -c -q localhost:9186/health
+    volumes:
+      - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
+      - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
+      - ../../../../tmp/go/pkg:/go/pkg
+      - ./data.json:/data/data.json
+    ports:
+      - 9186:9186
+    environment:
+      - STORAGE_TYPE=memory
+      - STORAGE_MEMORY_MONSTER_DATA_PATH=/data/data.json
+
+  client:
+    build:
+      context: ../../../../
+      dockerfile: ./build/package/client/Dockerfile
+    depends_on:
+      server:
+        condition: service_healthy
+    volumes:
+      - ../../../../cmd/client:/client
+      - exclude:/client/node_modules
+    ports:
+      - 8161:8161
+    environment:
+      - VITE_MONSCAPE_URL=http://localhost:9186
+
+volumes:
+  exclude:

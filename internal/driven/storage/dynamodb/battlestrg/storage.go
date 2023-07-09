@@ -4,14 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/shared/telemetry"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/validator.v2"
 )
 
@@ -20,13 +16,7 @@ type Storage struct {
 	tableName    string
 }
 
-func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle, error) {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: GetBattle", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
-	span.SetAttributes(attribute.Key("game-id").String(gameID))
-
+func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	// construct params
 	key := battleKey{GameID: gameID}
 	input := &dynamodb.GetItemInput{
@@ -36,9 +26,6 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 	// execute get item
 	output, err := s.dynamoClient.GetItemWithContext(ctx, input)
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
-
 		return nil, fmt.Errorf("unable to get item from %s due to: %w", s.tableName, err)
 	}
 	// if item is not found, returns nil as expected by battle interface
@@ -46,25 +33,19 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*battle.Battle,
 		return nil, nil
 	}
 	// parse item
-	battle := battle.Battle{}
-	err = dynamodbattribute.UnmarshalMap(output.Item, &battle)
+	var battleRow battleRow
+	err = dynamodbattribute.UnmarshalMap(output.Item, &battleRow)
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
-
 		return nil, fmt.Errorf("unable to unmarshal item from %s due to: %w", s.tableName, err)
 	}
+	battle := battleRow.toBattle()
 
-	return &battle, nil
+	return battle, nil
 }
 
-func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
-	tr := telemetry.GetTracer()
-	ctx, span := tr.Trace(ctx, "BattleStorage: SaveBattle", trace.WithSpanKind(trace.SpanKindClient))
-	defer span.End()
-
+func (s *Storage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	// construct params
-	item, _ := dynamodbattribute.MarshalMap(&b)
+	item, _ := dynamodbattribute.MarshalMap(toBattleRow(b))
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(s.tableName),
 		Item:      item,
@@ -72,9 +53,6 @@ func (s *Storage) SaveBattle(ctx context.Context, b battle.Battle) error {
 	// execute put item
 	_, err := s.dynamoClient.PutItemWithContext(ctx, input)
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
-
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}
 

@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2655</x>
+      <y>342</y>
+      <w>387</w>
+      <h>189</h>
+    </coordinates>
+    <panel_attributes>entity.Battle
+--
++GameID: string
++State: entity.State
++Partner: *entity.Monster
++Enemy: *entity.Monster
++LastDamage: entity.LastDamage
+--
++PartnerAttack(): error
++PartnerSurrender(): error
++EnemyAttack(): error
++IsEnded(): bool
++DecideTurn(): entity.State
+_+NewBattle(cfg: entity.BattleConfig): (*entity.Battle, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3168</x>
+      <y>360</y>
+      <w>135</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>entity.LastDamage
+--
++Partner: int
++Enemy: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3033</x>
+      <y>378</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3168</x>
+      <y>441</y>
+      <w>198</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>entity.State
+--
+string
+--
+_+StateDecideTurn: entity.State_
+_+StateEnemyTurn: entity.State_
+_+StatePlayerTurn: entity.State_
+_+StateWin: entity.State_
+_+StateLose: entity.State_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3033</x>
+      <y>495</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2610</x>
+      <y>702</y>
+      <w>468</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;battle.Service&gt;&gt;
+--
+-gameStorage: battle.GameStorage
+-battleStorage: battle.MonsterStorage
+-monsterStorage: battle.MonsterStorage
+--
++StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++DecideTurn(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Attack(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Surrender(ctx: context.Context, gameID: string): (*battle.Battle, error)
+_+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2835</x>
+      <y>522</y>
+      <w>27</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3195</x>
+      <y>1053</y>
+      <w>459</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;battle.MonsterStorage&gt;&gt;
+--
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++SaveBattle(ctx: context.Context, b: battle.Battle): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3069</x>
+      <y>855</y>
+      <w>360</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>380.0;220.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2295</x>
+      <y>414</y>
+      <w>378</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;400.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1314</x>
+      <y>369</y>
+      <w>387</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>entity.Game
+--
++ID: string
++PlayerName: string
++Partner: *entity.Monster
++CreatedAt: int64
++BattleWon: int
++Scenario: entity.Scenario
+--
++AdvanceScenario(): entity.Scenario
++IncBattleWon()
+_+NewGame(cfg: entity.GameConfig): (*entity.Game, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>927</x>
+      <y>387</y>
+      <w>234</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>entity.Scenario
+--
+string
+--
+_+ScenarioBattle1: entity.Scenario_
+_+ScenarioBattle2: entity.Scenario_
+_+ScenarioBattle3: entity.Scenario_
+_+ScenarioEndGame: entity.Scenario_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1152</x>
+      <y>441</y>
+      <w>180</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1692</x>
+      <y>414</y>
+      <w>297</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>310.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1206</x>
+      <y>738</y>
+      <w>585</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;play.Service&gt;&gt;
+--
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++AdvanceScenario(ctx: context.Context, gameID: string): (*entity.Game, error)
+_+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1485</x>
+      <y>522</y>
+      <w>27</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>621</x>
+      <y>936</y>
+      <w>450</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;play.GameStorage&gt;&gt;
+--
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>828</x>
+      <y>810</y>
+      <w>396</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;140.0;420.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>621</x>
+      <y>1080</y>
+      <w>450</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>gamestrg.Storage
+--
+-data: map[string]entity.Game
+--
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error
+_+New(): *gamestrg.Storage_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>828</x>
+      <y>981</y>
+      <w>27</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3195</x>
+      <y>1206</y>
+      <w>459</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>battlestrg.Storage
+--
+-data: map[string]battle.Battle
+--
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++SaveBattle(ctx: context.Context, b: battle.Battle): error
+_+New(): *battlestrg.Storage_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3411</x>
+      <y>1098</y>
+      <w>27</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1944</x>
+      <y>693</y>
+      <w>432</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>rest.API
+--
+-playService: play.Service
+-battleService: battle.Service
+--
++GetHandler(): http.Handler
+-serveGetAvailablePartner(w: http.ResponseWriter, r: *http.Request)
+-serveNewGame(w: http.ResponseWriter, r: *http.Request)
+-serveGetGameDetails(w: http.ResponseWriter, r: *http.Request)
+-serveGetNextScenario(w: http.ResponseWriter, r: *http.Request)
+-serveStartBattle(w: http.ResponseWriter, r: *http.Request)
+-serveGetBattleInfo(w: http.ResponseWriter, r: *http.Request)
+-serveDecideTurn(w: http.ResponseWriter, r: *http.Request)
+-serveAttack(w: http.ResponseWriter, r: *http.Request)
+-serveSurrender(w: http.ResponseWriter, r: *http.Request)
+_+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2043</x>
+      <y>1008</y>
+      <w>216</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>rest.APIConfig
+--
++PlayingService: play.Service
++BattleService: battle.Service
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2142</x>
+      <y>900</y>
+      <w>27</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1782</x>
+      <y>783</y>
+      <w>180</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>585</x>
+      <y>639</y>
+      <w>261</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>play.ServiceConfig
+--
++GameStorage: play.GameStorage
++PartnerStorage: play.PartnerStorage
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3681</x>
+      <y>648</y>
+      <w>288</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>battle.ServiceConfig
+--
++GameStorage: battle.GameStorage
++BattleStorage: battle.MonsterStorage
++MonsterStorage: battle.MonsterStorage
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3069</x>
+      <y>675</y>
+      <w>630</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>680.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2925</x>
+      <y>180</y>
+      <w>171</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>battle.BattleConfig
+--
++GameID: string
++Partner: entity.Monster
++Enemy: entity.Monster
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2997</x>
+      <y>261</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1305</x>
+      <y>198</y>
+      <w>171</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>entity.GameConfig
+--
++PlayerName: string
++Partner: entity.Monster
++CreatedAt: int64
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1377</x>
+      <y>279</y>
+      <w>27</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>765</y>
+      <w>486</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;play.PartnerStorage&gt;&gt;
+--
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>477</x>
+      <y>783</y>
+      <w>747</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;810.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3681</x>
+      <y>765</y>
+      <w>450</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;battle.GameStorage&gt;&gt;
+--
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3069</x>
+      <y>783</y>
+      <w>630</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>680.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3735</x>
+      <y>909</y>
+      <w>432</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;battle.MonsterStorage&gt;&gt;
+--
++GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3069</x>
+      <y>810</y>
+      <w>684</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>740.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>936</y>
+      <w>486</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>monstrg.Storage
+--
+-partnerMap: map[string]entity.Monster
+-enemyMap: map[string]entity.Monster
+--
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
++GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
+_+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>225</x>
+      <y>810</y>
+      <w>27</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>144</x>
+      <y>1134</y>
+      <w>180</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>monstrg.Config
+--
++Partners: []entity.Monster
++Enemies: []entity.Monster
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>225</x>
+      <y>1044</y>
+      <w>27</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3717</x>
+      <y>1053</y>
+      <w>486</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>monstrg.Storage
+--
+-partnerMap: map[string]entity.Monster
+-enemyMap: map[string]entity.Monster
+--
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
++GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
+_+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3861</x>
+      <y>1260</y>
+      <w>180</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>monstrg.Config
+--
++Partners: []entity.Monster
++Enemies: []entity.Monster
+--
++Validate(): error</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3942</x>
+      <y>1161</y>
+      <w>27</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3942</x>
+      <y>945</y>
+      <w>27</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4257</x>
+      <y>747</y>
+      <w>450</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>gamestrg.Storage
+--
+-data: map[string]entity.Game
+--
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++SaveGame(ctx: context.Context, game: entity.Game): error
+_+New(): *gamestrg.Storage_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4122</x>
+      <y>783</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;150.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>837</x>
+      <y>666</y>
+      <w>387</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;410.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1206</x>
+      <y>927</y>
+      <w>585</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>play.service
+--
+-gameStorage: play.GameStorage
+-partnerStorage: play.PartnerStorage
+--
++GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
++NewGame(ctx: context.Context, playerName: string, partnerID: string): (*entity.Game, error)
++GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
++AdvanceScenario(ctx: context.Context, gameID: string): (*entity.Game, error)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1485</x>
+      <y>828</y>
+      <w>27</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2610</x>
+      <y>999</y>
+      <w>468</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>battle.service
+--
+-gameStorage: battle.GameStorage
+-battleStorage: battle.MonsterStorage
+-monsterStorage: battle.MonsterStorage
+--
++StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
++DecideTurn(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Attack(ctx: context.Context, gameID: string): (*battle.Battle, error)
++Surrender(ctx: context.Context, gameID: string): (*battle.Battle, error)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2826</x>
+      <y>855</y>
+      <w>27</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2367</x>
+      <y>792</y>
+      <w>261</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>270.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1971</x>
+      <y>369</y>
+      <w>333</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>entity.Monster
+--
++ID: string
++Name: string
++BattleStats: entity.BattleStats
++AvatarURL: string
+--
++IsDead(): bool
++InflictDamage(enemy: entity.Monster): (int, error)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2079</x>
+      <y>189</y>
+      <w>117</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>entity.BattleStats
+--
++Health: int
++MaxHealth: int
++Attack: int
++Defense: int
++Speed: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2124</x>
+      <y>279</y>
+      <w>27</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+</diagram>

@@ -1,14 +1,13 @@
 package battlestrg
 
 import (
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/battle"
-	"github.com/Haraj-backend/hex-pokebattle/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
 type battleRow struct {
 	GameID            string `db:"game_id"`
 	State             string `db:"state"`
-	PartnerPokemonID  string `db:"partner_pokemon_id"`
+	PartnerMonsterID  string `db:"partner_monster_id"`
 	PartnerName       string `db:"partner_name"`
 	PartnerMaxHealth  int    `db:"partner_max_health"`
 	PartnerHealth     int    `db:"partner_health"`
@@ -17,7 +16,7 @@ type battleRow struct {
 	PartnerSpeed      int    `db:"partner_speed"`
 	PartnerAvatarURL  string `db:"partner_avatar_url"`
 	PartnerLastDamage int    `db:"partner_last_damage"`
-	EnemyPokemonID    string `db:"enemy_pokemon_id"`
+	EnemyMonsterID    string `db:"enemy_monster_id"`
 	EnemyName         string `db:"enemy_name"`
 	EnemyMaxHealth    int    `db:"enemy_max_health"`
 	EnemyHealth       int    `db:"enemy_health"`
@@ -28,12 +27,12 @@ type battleRow struct {
 	EnemyLastDamage   int    `db:"enemy_last_damage"`
 }
 
-func (r battleRow) ToBattle() *battle.Battle {
-	return &battle.Battle{
+func (r battleRow) ToBattle() *entity.Battle {
+	return &entity.Battle{
 		GameID: r.GameID,
-		State:  battle.State(r.State),
-		Partner: &entity.Pokemon{
-			ID:   r.PartnerPokemonID,
+		State:  entity.State(r.State),
+		Partner: &entity.Monster{
+			ID:   r.PartnerMonsterID,
 			Name: r.PartnerName,
 			BattleStats: entity.BattleStats{
 				Health:    r.PartnerHealth,
@@ -44,8 +43,8 @@ func (r battleRow) ToBattle() *battle.Battle {
 			},
 			AvatarURL: r.PartnerAvatarURL,
 		},
-		Enemy: &entity.Pokemon{
-			ID:   r.EnemyPokemonID,
+		Enemy: &entity.Monster{
+			ID:   r.EnemyMonsterID,
 			Name: r.EnemyName,
 			BattleStats: entity.BattleStats{
 				Health:    r.EnemyHealth,
@@ -56,18 +55,18 @@ func (r battleRow) ToBattle() *battle.Battle {
 			},
 			AvatarURL: r.EnemyAvatarURL,
 		},
-		LastDamage: battle.LastDamage{
+		LastDamage: entity.LastDamage{
 			Partner: r.PartnerLastDamage,
 			Enemy:   r.EnemyLastDamage,
 		},
 	}
 }
 
-func newBattleRow(b battle.Battle) battleRow {
+func newBattleRow(b entity.Battle) battleRow {
 	return battleRow{
 		GameID:            b.GameID,
 		State:             string(b.State),
-		PartnerPokemonID:  b.Partner.ID,
+		PartnerMonsterID:  b.Partner.ID,
 		PartnerName:       b.Partner.Name,
 		PartnerMaxHealth:  b.Partner.BattleStats.MaxHealth,
 		PartnerHealth:     b.Partner.BattleStats.Health,
@@ -76,7 +75,7 @@ func newBattleRow(b battle.Battle) battleRow {
 		PartnerSpeed:      b.Partner.BattleStats.Speed,
 		PartnerAvatarURL:  b.Partner.AvatarURL,
 		PartnerLastDamage: b.LastDamage.Partner,
-		EnemyPokemonID:    b.Enemy.ID,
+		EnemyMonsterID:    b.Enemy.ID,
 		EnemyName:         b.Enemy.Name,
 		EnemyMaxHealth:    b.Enemy.BattleStats.MaxHealth,
 		EnemyHealth:       b.Enemy.BattleStats.Health,
