@@ -84,8 +84,6 @@ In Solutions Team, we use following method spot out `Core` components:
 >
 > Sometimes we face confusion when we are in step `5`, `6`, & `7`. Usually this is because we find it difficult to find relationship between each `Core` components. In such case, try to utilize class diagram just like what we did in [here](../diagrams/class-diagram.png). This will greatly help us in mapping out the relationship between each `Core` components.
 
-[Back to Top](#hexagonal-architecture)
-
 ## Actors
 
 Actors are external entities interact with our application.
@@ -101,8 +99,6 @@ There are `2` types of actors:
 
 In the case of `Hex Monscape`, the incoming HTTP requests are the examples of `Driver Actor` while the `MySQL` database is the example of `Driven Actor`.
 
-[Back to Top](#hexagonal-architecture)
-
 ## Ports
 
 Ports are interfaces defined inside [Core](#core) that define how [Actors](#actors) can interact with [Core](#core) components & vice versa.
@@ -116,8 +112,6 @@ In the case of `Hex Monscape`, the examples for `Driver Ports` are [`battle.Serv
 
 As for the examples for `Driven Ports` are all interfaces defined in [here](../../internal/core/service/battle/storage.go) & [here](../../internal/core/service/play/storage.go).
 
-[Back to Top](#hexagonal-architecture)
-
 ## Adapters
 
 Adapters are the components used to translate interaction from [Actors](#actors) to [Core](#core) components & vice versa. They implements [Ports](#ports) defined in the [Core](#core).
@@ -130,8 +124,6 @@ There are `2` types of adapters:
 In the case of `Hex Monscape`, the example for `Driver Adapters` is [`rest.API`](../../internal/driver/rest/api.go).
 
 As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../internal/driven/storage/memory/battlestrg/storage.go), [`gamestrg.Storage`](../../internal/driven/storage/memory/gamestrg/storage.go), & [`monstrg.Storage`](../../internal/driven/storage/memory/monstrg/storage.go).
-
-[Back to Top](#hexagonal-architecture)
 
 ## Conclusion
 
@@ -151,8 +143,6 @@ This is why in Solutions Team we choose `Hexagonal Architecture` as our default 
 
 To learn how to apply `Hexagonal Architecture` in the new Solutions Team project, please refer to [Project Methodology](./project-methodology.md) document.
 
-[Back to Top](#hexagonal-architecture)
-
 ## Extra: Relation with DDD
 
 `Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
@@ -163,8 +153,6 @@ In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is a
 
 `DDD` & `Hexagonal Architecture` is good combination when we want to create large application with complex business logic. But for us who want to create small application with simple business logic, `DDD` might be an overkill.
 
-[Back to Top](#hexagonal-architecture)
-
 ## References
 
 - https://alistair.cockburn.us/hexagonal-architecture/
@@ -173,5 +161,3 @@ In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is a
 - https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3
 - https://medium.com/ssense-tech/hexagonal-architecture-there-are-always-two-sides-to-every-story-bc0780ed7d9c
 - https://medium.com/ssense-tech/domain-driven-design-everything-you-always-wanted-to-know-about-it-but-were-afraid-to-ask-a85e7b74497a
-
-[Back to Top](#hexagonal-architecture)
