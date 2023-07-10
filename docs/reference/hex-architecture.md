@@ -73,7 +73,7 @@ In Solutions Team, we use following method spot out `Core` components:
 2. In `Hex Monscape`, when we take a look at its [API specification](../api/rest-api.md), we can see there are `2` context of business logic:
     - `Play context` => This is where the player starting new game and progressing the game itself.
     - `Battle context` => This is where the player battle enemy with his/her monster partner.
-3. For each of these context, define `Service` interface for it. Just like what we did in [here](../../internal/core/service/battle/service.go#L20-L44) & [here](../../internal/core/service/play/service.go#L18-L29). Remember to also write the expected behavior for each methods as comments like in [here](../../internal/core/service/play/service.go#L22-L23). Trust me these comments will greatly keeping our head in straight line when implementing these methods.
+3. For each of these context, define `Service` interface for it. Just like what we did in [here](../../internal/core/service/battle/service.go#L20-L44) & [here](../../internal/core/service/play/service.go#L18-L29). Remember to also write the expected behavior for each methods as comments like in [here](../../internal/core/service/play/service.go#L22-L23). Trust me these comments will greatly help keeping our head in straight line when implementing these methods.
 4. Notice that the `Service` interface that we define in step `3` is only the `Driver Port` for our application, not our `Core` component. However it is good starting point for us to define our `Core` component.
 5. Implement the `Service` interface just like what we did in [here](../../internal/core/service/battle/service.go#L46-L195) & [here](../../internal/core/service/play/service.go#L31-L81). Notice that this is the place where we put our application business logic. This is also our very first `Core` component.
 6. During the implementation of `Service` interface, we will notice that we need to interact with external entities such as `MySQL` database. This is where we need to define `Driven Port` interfaces for our application just like what we did in [here](../../internal/core/service/battle/storage.go) & [here](../../internal/core/service/play/storage.go).
@@ -84,11 +84,9 @@ In Solutions Team, we use following method spot out `Core` components:
 >
 > Sometimes we face confusion when we are in step `5`, `6`, & `7`. Usually this is because we find it difficult to find relationship between each `Core` components. In such case, try to utilize class diagram just like what we did in [here](../diagrams/class-diagram.png). This will greatly help us in mapping out the relationship between each `Core` components.
 
-[Back to Top](#hexagonal-architecture)
-
 ## Actors
 
-Actors are external entities interact with our application.
+Actors are external entities that interact with our application.
 
 <p align="center">
     <img src="./assets/hex-diagram-actors.drawio.png" alt="Hex Architecture Actors Diagram">
@@ -100,8 +98,6 @@ There are `2` types of actors:
 - `Driven Actor` => Actor that being called by our application as the result of interaction with `Driver Actor`.
 
 In the case of `Hex Monscape`, the incoming HTTP requests are the examples of `Driver Actor` while the `MySQL` database is the example of `Driven Actor`.
-
-[Back to Top](#hexagonal-architecture)
 
 ## Ports
 
@@ -116,8 +112,6 @@ In the case of `Hex Monscape`, the examples for `Driver Ports` are [`battle.Serv
 
 As for the examples for `Driven Ports` are all interfaces defined in [here](../../internal/core/service/battle/storage.go) & [here](../../internal/core/service/play/storage.go).
 
-[Back to Top](#hexagonal-architecture)
-
 ## Adapters
 
 Adapters are the components used to translate interaction from [Actors](#actors) to [Core](#core) components & vice versa. They implements [Ports](#ports) defined in the [Core](#core).
@@ -130,8 +124,6 @@ There are `2` types of adapters:
 In the case of `Hex Monscape`, the example for `Driver Adapters` is [`rest.API`](../../internal/driver/rest/api.go).
 
 As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../internal/driven/storage/memory/battlestrg/storage.go), [`gamestrg.Storage`](../../internal/driven/storage/memory/gamestrg/storage.go), & [`monstrg.Storage`](../../internal/driven/storage/memory/monstrg/storage.go).
-
-[Back to Top](#hexagonal-architecture)
 
 ## Conclusion
 
@@ -151,8 +143,6 @@ This is why in Solutions Team we choose `Hexagonal Architecture` as our default 
 
 To learn how to apply `Hexagonal Architecture` in the new Solutions Team project, please refer to [Project Methodology](./project-methodology.md) document.
 
-[Back to Top](#hexagonal-architecture)
-
 ## Extra: Relation with DDD
 
 `Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
@@ -163,8 +153,6 @@ In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is a
 
 `DDD` & `Hexagonal Architecture` is good combination when we want to create large application with complex business logic. But for us who want to create small application with simple business logic, `DDD` might be an overkill.
 
-[Back to Top](#hexagonal-architecture)
-
 ## References
 
 - https://alistair.cockburn.us/hexagonal-architecture/
@@ -173,5 +161,3 @@ In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is a
 - https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3
 - https://medium.com/ssense-tech/hexagonal-architecture-there-are-always-two-sides-to-every-story-bc0780ed7d9c
 - https://medium.com/ssense-tech/domain-driven-design-everything-you-always-wanted-to-know-about-it-but-were-afraid-to-ask-a85e7b74497a
-
-[Back to Top](#hexagonal-architecture)

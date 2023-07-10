@@ -6,9 +6,7 @@ In this repo you will learn about Haraj Solutions Team's secret technique in wri
 
 The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-In this repo we will share to you our knowledge on this special architecture through simple server-client game named `Hex Monscape`.
-
-We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build `Hex Monscape` game server while coding it using [Go](https://go.dev/). As for the web client, we code it using [Vue 3](https://vuejs.org/).
+In this repo we will share to you our knowledge on this special architecture through simple server-client game named `Hex Monscape`. We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build the game server while coding it using [Go](https://go.dev/) & for the web client we code it using [Vue 3](https://vuejs.org/).
 
 To understand how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
@@ -16,11 +14,11 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 
 > **Note:**
 >
-> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the main architecture we used for building Haraj production services.
+> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the default architecture we used for building Haraj production services.
 >
 > So if you understand this architecture well, you will be in no time contributing to Haraj production.
 >
-> Also notice that even though here we are using Go as an example to showcase [Hexagonal Architecture](./docs/reference/hex-architecture.md), but actually this architecture is language agnostic. So you could apply it to any programming language you want.
+> Also notice that even though in this repo we are using Go to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md), but actually this architecture is language agnostic. So you could apply it to other language as well such as PHP, Typescript, & Python.
 
 ## Background Story
 
@@ -30,7 +28,7 @@ What is code maintainability? Essentially it is the ability of a codebase to be 
 
 In the early days of Haraj, we used to assign project ownership to a single developer. So every developer in the team will own at least one project. However we made a mistake by not setting up common standards on how to write code in Haraj. So every developers in the team wrote code based on their own style & preference.
 
-Usually our developers will stay for quite a long time (~5 years) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
+Usually our developers will stay for quite a long time (`~5 years`) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
 
 <p align="center">
     <img width=512 src="./docs/reference/assets/memes/code-maintainability-this-is-fine.jpg" alt="Code Maintainability? This is fine.">
@@ -56,13 +54,17 @@ Here is the flowchart for each battle in the game:
     <img src="./docs/reference/assets/battle-flow.drawio.svg" alt="Battle Flow" height="400" />
 </p>
 
-To see the REST API specification for this game, please see [this doc](./docs/api-design/rest-api.md).
+To see the REST API specification for this game, please see [this doc](./docs/api/rest-api.md).
 
 ## How to Run The Game
 
 You can try out this game online by visiting this URL: https://hex-monscape.haraj.app.
 
-If you want to run the game locally, make sure [make](https://linuxhint.com/make-command-linux/) & [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above already installed in your machine. Make sure also you already has [Docker Compose](https://docs.docker.com/compose/install/) `v2.0.1` or above.
+If you want to run the game locally, make sure following applications already installed in your machine:
+
+- [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above
+- [Docker Compose](https://docs.docker.com/compose/install/) `v2.0.1` or above
+- [make](https://linuxhint.com/make-command-linux/)
 
 After that use this command to run the game:
 
@@ -100,7 +102,7 @@ For details on these commands, please refer to [this Makefile](./Makefile).
 
 > **Note:**
 >
-> When we use [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build a system, it is quite easy to swap its infrastructure code with another technologies.
+> When we use [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build an application, it is quite easy to swap its infrastructure code with another technologies.
 >
 > So for example, if initially we used in-memory storage to store our data, we could easily swap it with MySQL storage or something else. This is why in this project we provide `3` variants of game server for you, this is to demonstrate exactly this point.
 
@@ -117,6 +119,14 @@ The project layout used in this project is inspired by [this repo](https://githu
 Got more idea on how to make this learning project more fun? Or maybe you found something that can be improved from this project?
 
 Feel free to contribute to this repo by opening issue or creating a pull request! 😃
+
+## Core Maintainers
+
+- [Riandy Rahman Nugraha (@riandyrn)](https://github.com/riandyrn)
+- [Muhammad Iskandar Dzulqornain (@isdzulqor)](https://github.com/isdzulqor)
+- [Muhammad Izzuddin al Fikri (@knightazura)](https://github.com/knightazura)
+- [Alfat Saputra Harun (@harunalfat)](https://github.com/harunalfat)
+- [Ilham Syahid Syamsudin (@ilhamsyahids)](https://github.com/ilhamsyahids)
 
 ## License
 
