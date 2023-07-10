@@ -120,6 +120,14 @@ Got more idea on how to make this learning project more fun? Or maybe you found 
 
 Feel free to contribute to this repo by opening issue or creating a pull request! 😃
 
+## Core Maintainers
+
+- [Riandy Rahman Nugraha (@riandyrn)](https://github.com/riandyrn)
+- [Muhammad Iskandar Dzulqornain (@isdzulqor)](https://github.com/isdzulqor)
+- [Muhammad Izzuddin al Fikri (@knightazura)](https://github.com/knightazura)
+- [Alfat Saputra Harun (@harunalfat)](https://github.com/harunalfat)
+- [Ilham Syahid Syamsudin (@ilhamsyahids)](https://github.com/ilhamsyahids)
+
 ## License
 
 MIT
