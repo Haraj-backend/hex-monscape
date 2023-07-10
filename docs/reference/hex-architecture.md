@@ -73,7 +73,7 @@ In Solutions Team, we use following method spot out `Core` components:
 2. In `Hex Monscape`, when we take a look at its [API specification](../api/rest-api.md), we can see there are `2` context of business logic:
     - `Play context` => This is where the player starting new game and progressing the game itself.
     - `Battle context` => This is where the player battle enemy with his/her monster partner.
-3. For each of these context, define `Service` interface for it. Just like what we did in [here](../../internal/core/service/battle/service.go#L20-L44) & [here](../../internal/core/service/play/service.go#L18-L29). Remember to also write the expected behavior for each methods as comments like in [here](../../internal/core/service/play/service.go#L22-L23). Trust me these comments will greatly keeping our head in straight line when implementing these methods.
+3. For each of these context, define `Service` interface for it. Just like what we did in [here](../../internal/core/service/battle/service.go#L20-L44) & [here](../../internal/core/service/play/service.go#L18-L29). Remember to also write the expected behavior for each methods as comments like in [here](../../internal/core/service/play/service.go#L22-L23). Trust me these comments will greatly help keeping our head in straight line when implementing these methods.
 4. Notice that the `Service` interface that we define in step `3` is only the `Driver Port` for our application, not our `Core` component. However it is good starting point for us to define our `Core` component.
 5. Implement the `Service` interface just like what we did in [here](../../internal/core/service/battle/service.go#L46-L195) & [here](../../internal/core/service/play/service.go#L31-L81). Notice that this is the place where we put our application business logic. This is also our very first `Core` component.
 6. During the implementation of `Service` interface, we will notice that we need to interact with external entities such as `MySQL` database. This is where we need to define `Driven Port` interfaces for our application just like what we did in [here](../../internal/core/service/battle/storage.go) & [here](../../internal/core/service/play/storage.go).
@@ -86,7 +86,7 @@ In Solutions Team, we use following method spot out `Core` components:
 
 ## Actors
 
-Actors are external entities interact with our application.
+Actors are external entities that interact with our application.
 
 <p align="center">
     <img src="./assets/hex-diagram-actors.drawio.png" alt="Hex Architecture Actors Diagram">
