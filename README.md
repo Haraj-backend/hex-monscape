@@ -54,7 +54,7 @@ Here is the flowchart for each battle in the game:
     <img src="./docs/reference/assets/battle-flow.drawio.svg" alt="Battle Flow" height="400" />
 </p>
 
-To see the REST API specification for this game, please see [this doc](./docs/api-design/rest-api.md).
+To see the REST API specification for this game, please see [this doc](./docs/api/rest-api.md).
 
 ## How to Run The Game
 
