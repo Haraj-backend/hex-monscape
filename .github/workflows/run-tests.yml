@@ -2,12 +2,13 @@ name: Test Services
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
     branches-ignore:
       - master
-      - feat/game-demo
   pull_request:
     paths-ignore:
-      - 'Makefile'
       - '**.md'
       - 'docs/**'
 
