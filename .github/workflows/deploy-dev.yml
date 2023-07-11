@@ -8,6 +8,7 @@ on:
       - 'docs/**'
     branches: 
       - master
+      - chore/fix-deployment
 
 jobs:
   run-test:
@@ -53,8 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.preparation.outputs.deploy-lambda == 'true' }}
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: eu-west-1
       INFRA_STACK_NAME_DEV: hex-monscape-infras
     steps:
@@ -64,9 +63,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-          role-to-assume: ${{ secrets.DEV_AWS_DEPLOY_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.OSS_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.OSS_AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.OSS_AWS_DEPLOY_ROLE_ARN }}
           role-duration-seconds: 3600
           aws-region: ${{ env.AWS_REGION }}
 
