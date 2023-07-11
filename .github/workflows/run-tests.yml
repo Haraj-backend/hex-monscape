@@ -1,16 +1,12 @@
 name: Test Services
 
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-    branches-ignore:
-      - master
   pull_request:
     paths-ignore:
       - '**.md'
       - 'docs/**'
+    branches:
+      - master
 
   workflow_call:
     inputs:
