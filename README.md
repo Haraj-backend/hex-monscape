@@ -123,7 +123,7 @@ Feel free to contribute to this repo by opening issue or creating a pull request
 
 ## Core Maintainers
 
-Got any questions related to this project? Feel free to reach out to these people:
+Got any questions related to this project? Feel free to contact us:
 
 - [Riandy Rahman Nugraha (@riandyrn)](https://github.com/riandyrn)
 - [Muhammad Iskandar Dzulqornain (@isdzulqor)](https://github.com/isdzulqor)
