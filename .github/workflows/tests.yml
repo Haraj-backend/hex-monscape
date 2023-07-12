@@ -1,4 +1,4 @@
-name: Build & Test
+name: Tests
 
 on:
   pull_request:
@@ -34,7 +34,7 @@ jobs:
         with:
           ref: ${{ inputs.checkout-ref }}
 
-      - name: Run Build
+      - name: Run Build All
         run: make test-build-all
 
       - name: Notify To Slack If Failed
@@ -52,7 +52,7 @@ jobs:
           commit: true
           token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
   test:
-    name: Run Tests
+    name: Run Automated Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
@@ -65,7 +65,7 @@ jobs:
         with:
           ref: ${{ inputs.checkout-ref }}
 
-      - name: Run Tests
+      - name: Run Automated Tests
         run: make test
 
       - name: Notify To Slack If Failed

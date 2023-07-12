@@ -1,6 +1,6 @@
 # Hex Monscape 👾
 
-[![Build & Test](https://github.com/Haraj-backend/hex-monscape/actions/workflows/build-tests.yml/badge.svg)](https://github.com/Haraj-backend/hex-monscape/actions/workflows/build-tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape) 
+[![Build & Deploy](https://github.com/Haraj-backend/hex-monscape/actions/workflows/deploy.yml/badge.svg)](https://github.com/Haraj-backend/hex-monscape/actions/workflows/deploy.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape) 
 
 Welcome to this repo!
 
@@ -123,7 +123,7 @@ Feel free to contribute to this repo by opening issue or creating a pull request
 
 ## Core Maintainers
 
-Got any questions related to this project? Feel free to reach out to these people:
+Got any questions related to this project? Feel free to contact us:
 
 - [Riandy Rahman Nugraha (@riandyrn)](https://github.com/riandyrn)
 - [Muhammad Iskandar Dzulqornain (@isdzulqor)](https://github.com/isdzulqor)

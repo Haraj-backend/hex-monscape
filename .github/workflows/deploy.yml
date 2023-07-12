@@ -1,4 +1,4 @@
-name: Deploy to Dev environment
+name: Build & Deploy
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
 
 jobs:
   run-test:
-    uses: ./.github/workflows/build-tests.yml
-    name: Run tests before deployment
+    uses: ./.github/workflows/tests.yml
+    name: Run Tests
     with:
       checkout-ref: ${{ github.sha }}
     secrets:
@@ -24,7 +24,7 @@ jobs:
     needs: run-test
     runs-on: ubuntu-latest
     outputs:
-      deploy-lambda: ${{ (steps.changes.outputs.lambda == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-game: ${{ (steps.changes.outputs.lambda == 'true') || (steps.changes.outputs.all == 'true') }}
     steps:
       - name: Checkout Latest Commit
         uses: actions/checkout@v2
@@ -47,11 +47,11 @@ jobs:
               - "deploy/aws/lambda/infras.yml"
               - "deploy/aws/lambda/service.yml"
 
-  deploy-lambda:
-    name: Deploy Lambda
+  deploy-game:
+    name: Deploy Game
     needs: preparation
     runs-on: ubuntu-latest
-    if: ${{ needs.preparation.outputs.deploy-lambda == 'true' }}
+    if: ${{ needs.preparation.outputs.deploy-game == 'true' }}
     env:
       AWS_REGION: eu-west-1
       INFRA_STACK_NAME_DEV: hex-monscape-infras
@@ -76,7 +76,7 @@ jobs:
             --stack-name ${{ env.INFRA_STACK_NAME_DEV }} \
             --capabilities CAPABILITY_NAMED_IAM
 
-      - name: Deploy Service
+      - name: Deploy Game Service
         run: |
           # prepare necessary parameters
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
