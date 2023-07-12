@@ -8,6 +8,7 @@ on:
       - 'docs/**'
     branches: 
       - master
+      - chore/adjust-pipelines
 
 jobs:
   run-test:
@@ -19,7 +20,7 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
 
-  detect-changes:
+  preparation:
     name: Prepare Environment
     needs: run-test
     runs-on: ubuntu-latest
@@ -49,9 +50,9 @@ jobs:
 
   deploy-game:
     name: Deploy Game
-    needs: detect-changes
+    needs: preparation
     runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.deploy-game == 'true' }}
+    if: ${{ needs.preparation.outputs.deploy-game == 'true' }}
     env:
       AWS_REGION: eu-west-1
       INFRA_STACK_NAME_DEV: hex-monscape-infras
