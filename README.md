@@ -8,7 +8,7 @@ In this repo you will learn about Haraj Solutions Team's secret technique in wri
 
 The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-In this repo we will share to you our knowledge on this special architecture through simple server-client game named `Hex Monscape`. We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to build the game server while coding it using [Go](https://go.dev/) & for the web client we code it using [Vue 3](https://vuejs.org/).
+In this repo we will share to you our knowledge on this special architecture through simple server-client game named `Hex Monscape`. We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to structure the game server code while implementing it using [Go](https://go.dev/) & for the web client we implement it using [Vue 3](https://vuejs.org/).
 
 To understand how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
