@@ -8,7 +8,7 @@ on:
       - 'docs/**'
     branches: 
       - master
-      - chore/adjust-pipeline
+      - chore/adjust-pipelines
 
 jobs:
   run-test:
