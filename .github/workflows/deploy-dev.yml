@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-test:
-    uses: ./.github/workflows/run-tests.yml
+    uses: ./.github/workflows/build-tests.yml
     name: Run tests before deployment
     with:
       checkout-ref: ${{ github.sha }}

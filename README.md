@@ -64,9 +64,8 @@ You can try out this game online by visiting this URL: https://hex-monscape.hara
 
 If you want to run the game locally, make sure following applications already installed in your machine:
 
-- [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above
-- [Docker Compose](https://docs.docker.com/compose/install/) `v2.0.1` or above
-- [make](https://linuxhint.com/make-command-linux/)
+- [Docker](https://docs.docker.com/get-docker/) `v20.10.23` or above => this will also install Docker Compose `v2.15.1`
+- [make](https://linuxhint.com/make-command-linux/) => to execute the scripts for running the project defined in [Makefile](./Makefile)
 
 After that use this command to run the game:
 
