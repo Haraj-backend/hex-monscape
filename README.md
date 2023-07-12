@@ -132,7 +132,7 @@ Got any questions related to this project? Feel free to reach out to these peopl
 - [Alfat Saputra Harun (@harunalfat)](https://github.com/harunalfat)
 - [Ilham Syahid Syamsudin (@ilhamsyahids)](https://github.com/ilhamsyahids)
 
-We will be very happy to help you! 😃
+We will be very happy to help you! 🚀
 
 ## License
 
