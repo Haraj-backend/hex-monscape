@@ -19,12 +19,19 @@ run-rest-mysql:
 	-docker compose -f ./deploy/local/run/rest-mysql/docker-compose.yml down --remove-orphans
 	docker compose -f ./deploy/local/run/rest-mysql/docker-compose.yml up --build --attach=server --attach=client
 
+# run the lambda server variant
+run-lambda:
+	-docker compose -f ./deploy/local/run/lambda/docker-compose.yml down --remove-orphans
+	docker compose -f ./deploy/local/run/lambda/docker-compose.yml up --build --attach=lambda
+
 # execute the tests
 test:
 	-docker compose -f ./deploy/local/tests/docker-compose.yml down --remove-orphans
 	docker compose -f ./deploy/local/tests/docker-compose.yml up --build --attach=tests --exit-code-from=tests
 
-# run the lambda server variant
-run-lambda:
-	-docker compose -f ./deploy/local/run/lambda/docker-compose.yml down --remove-orphans
-	docker compose -f ./deploy/local/run/lambda/docker-compose.yml up --build --attach=lambda
+# building all services to ensure everything is okay
+test-build-all:
+	docker build -t hex-monscape-client -f ./build/package/client/Dockerfile .
+	docker build -t hex-monscape-server -f ./build/package/server/Dockerfile .
+	docker build -t hex-monscape-lambda -f ./build/package/lambda/Dockerfile .
+	docker build -t hex-monscape-lambda-local -f ./build/package/lambda/Dockerfile.local .

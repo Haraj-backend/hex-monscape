@@ -52,7 +52,7 @@ Content-Type: application/json
 }
 ```
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -125,7 +125,7 @@ Content-Type: application/json
 
   This error will be received by client when given `partner_id` is not found.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -190,7 +190,7 @@ Content-Type: application/json
 
   Client receive this error when game is not found.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -246,7 +246,7 @@ Content-Type: application/json
 
   Client receive this error when game is not found.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -342,7 +342,7 @@ Content-Type: application/json
 
   Client receive this error when battle state when client executing action is invalid.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -445,7 +445,7 @@ Content-Type: application/json
 
   Client receive this error when game is not found.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -603,7 +603,7 @@ PUT /games/640dd7ef-be61-437d-a8ea-f12383185949/battle/turn
 
   Client receive this error when battle state when client executing action is invalid.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -713,7 +713,7 @@ Content-Type: application/json
 
   Client receive this error when battle state when client executing action is invalid.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
 
@@ -823,6 +823,6 @@ Content-Type: application/json
 
   Client receive this error when battle state when client executing action is invalid.
 
-[Back to Top](#http-api)
+[Back to Top](#rest-api)
 
 ---
