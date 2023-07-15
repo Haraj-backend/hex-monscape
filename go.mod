@@ -3,11 +3,8 @@ module github.com/Haraj-backend/hex-monscape
 go 1.18
 
 require (
-	github.com/Rican7/conjson v0.1.0
-	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-sdk-go v1.44.162
 	github.com/go-chi/chi/v5 v5.0.7
-	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
@@ -18,9 +15,12 @@ require (
 )
 
 require (
+	github.com/Rican7/conjson v0.1.0 // indirect
+	github.com/apex/gateway v1.1.2 // indirect
 	github.com/aws/aws-lambda-go v1.17.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-chi/cors v1.2.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
