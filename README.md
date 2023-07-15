@@ -4,11 +4,13 @@
 
 Welcome to this repo!
 
-In this repo you will learn about Haraj Solutions Team's secret technique in writing maintainable code for Haraj projects. 🥷🏻💥
+In this repo you will learn about Haraj Solutions Team's secret technique in writing production-grade code for Haraj projects that help serves millions of users daily in Saudi Arabia. 🥷🏻💥
 
 The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-In this repo we will share to you our knowledge on this special architecture through simple server-client game named `Hex Monscape`. We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to structure the game server code while implementing it using [Go](https://go.dev/) & for the web client we implement it using [Vue 3](https://vuejs.org/).
+Since this repo is intended as get started guidelines for everyone who wants to know how we write production-grade code for Haraj projects, we will try our best to explain everything about this technique in simple & fun ways. 
+
+In order to do that, we will be using simple server-client game named `Hex Monscape`. We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to structure the game server code while implementing it using [Go](https://go.dev/). For the web client we implement it using [Vue 3](https://vuejs.org/).
 
 To understand how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
@@ -16,11 +18,11 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 
 > **Note:**
 >
-> As Solutions Team member, your understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is mandatory since it is the default architecture we used for building Haraj production services.
+> As Solutions Team member, our understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is necessary since it is the default architecture we used for building Haraj production services.
 >
-> So if you understand this architecture well, you will be in no time contributing to Haraj production.
+> So if we understand this architecture well, we will be in no time contributing to Haraj production.
 >
-> Also notice that even though in this repo we are using Go to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md), but actually this architecture is language agnostic. So you could apply it to other language as well such as PHP, Typescript, & Python.
+> Even though in this repo we are using Go to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md), but actually this architecture is language agnostic. So we could apply it to other language as well such as PHP, Typescript, & Python.
 
 ## Background Story
 
