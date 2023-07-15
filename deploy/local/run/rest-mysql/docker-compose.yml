@@ -27,7 +27,7 @@ services:
     volumes:
       - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
       - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
-      - ../../../../tmp/go/pkg:/go/pkg
+      - ../../../../.tmp/go/pkg:/go/pkg
     ports:
       - 9186:9186
     environment:
