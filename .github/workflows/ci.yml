@@ -56,7 +56,17 @@ jobs:
         run: go install github.com/AlexBeauchemin/gobadge@latest
 
       - name: Generate Coverage Badge
-        run: gobadge -filename=./.tmp/cov-report/coverage.out -green=80 -target=README.md -label=coverage
+        run: |
+          # get the URL for the current job, taken from https://stackoverflow.com/a/76681922/7034602
+          BADGE_TARGET_URL=$(gh run --repo ${{ github.repository }} view ${{ github.run_id }} --json jobs --jq '.jobs[] | select(.name == "${{ github.job }}") | .url')
+          
+          # generate coverage badge
+          gobadge \
+            -filename=./.tmp/cov-report/coverage.out \
+            -green=80 \
+            -target=README.md \
+            -text=coverage \
+            -link=$BADGE_TARGET_URL
   
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v12
