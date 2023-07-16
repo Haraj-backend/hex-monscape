@@ -62,14 +62,14 @@ jobs:
             -green=80 \
             -target=README.md \
             -text=coverage \
-            -link=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            -link=./.output/cov-report/coverage.out
   
       - name: Auto Commit & Push Coverage Badge
         uses: stefanzweifel/git-auto-commit-action@v4
         id: auto-commit-action
         with:
-          commit_message: "chore: apply code coverage badge"
-          file_pattern: README.md
+          commit_message: "chore: update coverage report & apply code coverage badge to README.md"
+          file_pattern: 'README.md .output/cov-report/coverage.out'
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0

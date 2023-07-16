@@ -1,3 +1,4 @@
 *
 !.gitignore
-!cov-report
+!cov-report/
+!cov-report/*
