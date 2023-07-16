@@ -6,13 +6,21 @@
 
 Welcome to this repo!
 
-In this repo you will learn about Haraj Solutions Team's secret technique in writing production-grade code for Haraj projects that help serves millions of users daily in Saudi Arabia. 🥷🏻💥
+<p align="center">
+    <img width=1024 src="./docs/images/hex-monscape.png" alt="Hex-Monscape about page.">
+</p>
+
+`Hex-Monscape` is a simple turn-based game that we use for Haraj Solutions Team's onboarding process.
+
+Game is one first introduction of sofware for us software engineers. Many people got interested in software engineering because of games, so we think it is a good idea to use game as a medium to introduce our workflow to the new team members.
+
+Within this game's source code, you will learn about Haraj Solutions Team's secret technique in writing production-grade code for many Haraj's projects that help serves millions of users daily in Saudi Arabia, with only handful of team members. 🥷🏻💥
 
 The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-Since this repo is intended as getting started guidelines for anyone who wants to know how we write production code for Haraj projects, we will try our best to explain the technique in simple & fun ways. 
+Since this repo is intended as getting started guidelines for anyone who wants to know how we write production code for Haraj projects, we will try our best to explain the technique in simple & fun ways.
 
-In order to do that, we will be using simple server-client game named `Hex Monscape`. We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to structure the game server code while implementing it using [Go](https://go.dev/). For the web client we implement it using [Vue 3](https://vuejs.org/).
+We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to structure the game server code while implementing it using [Go](https://go.dev/). For the web client we implement it using [Vue 3](https://vuejs.org/).
 
 To understand how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
@@ -84,12 +92,12 @@ Wait for a moment until you see message like this:
 ```bash
 rest-memory-client-1  | yarn run v1.22.19
 rest-memory-client-1  | $ vite --host --port 8161
-rest-memory-client-1  | 
+rest-memory-client-1  |
 rest-memory-client-1  |   vite v2.8.4 dev server running at:
-rest-memory-client-1  | 
+rest-memory-client-1  |
 rest-memory-client-1  |   > Local:    http://localhost:8161/
 rest-memory-client-1  |   > Network:  http://172.31.0.3:8161/
-rest-memory-client-1  | 
+rest-memory-client-1  |
 rest-memory-client-1  |   ready in 151ms.
 ```
 
