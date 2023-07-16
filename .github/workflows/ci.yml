@@ -1,4 +1,4 @@
-name: Tests
+name: ci
 
 on:
   pull_request:
@@ -10,34 +10,34 @@ on:
       - docs/refine-readme
 
 jobs:
-  # build:
-  #   name: Test Build All Container Images
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Current Commit
-  #       uses: actions/checkout@v3
+  build-all:
+    name: Test Build All Container Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Current Commit
+        uses: actions/checkout@v3
 
-  #     - name: Run Build All
-  #       run: make test-build-all
+      - name: Run Build All
+        run: make test-build-all
 
-  #     - name: Notify To Slack If Failed
-  #       uses: lazy-actions/slatify@v3.0.0
-  #       if: failure()
-  #       with:
-  #         type: ${{ job.status }}
-  #         job_name: "*[hex-monscape]* ${{ github.job }}"
-  #         mention: "here"
-  #         mention_if: "failure"
-  #         channel: "#solutions-team-ci-cd"
-  #         icon_emoji: ":haraaj:"
-  #         username: "ci/cd-reporter"
-  #         url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
-  #         commit: true
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*[hex-monscape]* ${{ github.job }}"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  test-coverage:
-    name: Run Tests & Code Coverage
-    # needs: build
+  run-tests:
+    name: Run Automated Tests
+    needs: build-all
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -47,29 +47,6 @@ jobs:
 
       - name: Run Automated Tests
         run: make test
-
-      - name: Install Go
-        uses: actions/setup-go@v4.0.1
-
-      - name: Install GOBadge
-        run: go install github.com/AlexBeauchemin/gobadge@latest
-
-      - name: Generate Coverage Badge
-        run: |
-          # generate coverage badge
-          gobadge \
-            -filename=./.output/cov-report/coverage.out \
-            -green=80 \
-            -target=README.md \
-            -text=coverage \
-            -link=./.output/cov-report/coverage.out
-  
-      - name: Auto Commit & Push Coverage Badge
-        uses: stefanzweifel/git-auto-commit-action@v4
-        id: auto-commit-action
-        with:
-          commit_message: "chore: update coverage report & apply code coverage badge to README.md"
-          file_pattern: 'README.md .output/cov-report/coverage.out'
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0

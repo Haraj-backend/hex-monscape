@@ -8,14 +8,14 @@ on:
       - 'docs/**'
     branches: 
       - master
-      # - chore/adhere-to-awesome-go-guideline
+      - chore/adhere-to-awesome-go-guideline
 
 jobs:
   preparation:
     name: Prepare Deployment
     runs-on: ubuntu-latest
     outputs:
-      deploy-game: ${{ (steps.changes.outputs.lambda == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-game: ${{ (steps.changes.outputs.deploy-game == 'true') }}
     steps:
       - name: Checkout Current Commit
         uses: actions/checkout@v3
@@ -29,13 +29,12 @@ jobs:
         with:
           base: ${{ github.ref }}
           filters: |
-            all:
+            deploy-game:
               - "internal/**"
               - ".github/workflows/deploy-dev.yml"
               - ".github/workflows/run-tests.yml"
               - "go.mod"
               - "go.sum"
-            lambda:
               - "build/package/lambda/**"
               - "cmd/lambda/**"
               - "internal/driven/storage/dynamodb/**"

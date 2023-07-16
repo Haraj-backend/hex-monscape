@@ -1,0 +1,62 @@
+name: coverage-badge
+
+on:
+  push:
+    paths-ignore:
+      - 'Makefile'
+      - '**.md'
+      - 'docs/**'
+    branches: 
+      - master
+      - chore/adhere-to-awesome-go-guideline
+
+jobs:
+  gen-badge:
+    name: Generate Coverage Badge
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Current Commit
+        uses: actions/checkout@v3
+
+      - name: Generate Coverage Report
+        run: make test
+
+      - name: Install Go
+        uses: actions/setup-go@v4.0.1
+
+      - name: Install gobadge
+        run: go install github.com/AlexBeauchemin/gobadge@latest
+
+      - name: Generate Coverage Badge
+        run: |
+          # generate coverage badge
+          gobadge \
+            -filename=./.output/cov-report/coverage.out \
+            -green=80 \
+            -target=README.md \
+            -text=coverage \
+            -link=./.output/cov-report/coverage.out
+  
+      - name: Auto Commit & Push Coverage Badge
+        uses: stefanzweifel/git-auto-commit-action@v4
+        id: auto-commit-action
+        with:
+          commit_message: "chore: update coverage report & apply coverage badge to README.md"
+          file_pattern: 'README.md .output/cov-report/coverage.out'
+
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*[hex-monscape]* ${{ github.job }}"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
