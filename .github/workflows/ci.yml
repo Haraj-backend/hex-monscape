@@ -56,6 +56,9 @@ jobs:
         run: go install github.com/AlexBeauchemin/gobadge@latest
 
       - name: Generate Coverage Badge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
           # get the URL for the current job, taken from https://stackoverflow.com/a/76681922/7034602
           BADGE_TARGET_URL=$(gh run --repo ${{ github.repository }} view ${{ github.run_id }} --json jobs --jq '.jobs[] | select(.name == "${{ github.job }}") | .url')
