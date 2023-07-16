@@ -16,7 +16,7 @@ github.com/Haraj-backend/hex-monscape/internal/core/entity/monster.go:38:				max
 github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:52:			StartBattle			75.0%
 github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:90:			GetBattle			100.0%
 github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:103:			getGameAndBattleInstance	72.7%
-github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:121:			DecideTurn			68.8%
+github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:121:			DecideTurn			56.2%
 github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:146:			Attack				52.4%
 github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:178:			Surrender			66.7%
 github.com/Haraj-backend/hex-monscape/internal/core/service/battle/service.go:203:			Validate			100.0%
@@ -77,4 +77,4 @@ github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg/stor
 github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg/storage.go:44:		GetPossibleEnemies		100.0%
 github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg/storage.go:48:		GetPartner			85.7%
 github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg/storage.go:75:		getMonsterByRole		72.7%
-total:													(statements)			82.7%
+total:													(statements)			82.2%
