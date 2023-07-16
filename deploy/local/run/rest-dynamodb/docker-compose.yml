@@ -29,7 +29,7 @@ services:
     volumes:
       - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
       - ../../../../cmd/server:/go/src/github.com/Haraj-backend/hex-monscape/cmd/server
-      - ../../../../.tmp/go/pkg:/go/pkg
+      - ../../../../.output/go/pkg:/go/pkg
     environment:
       - STORAGE_TYPE=dynamodb
       - STORAGE_DYNAMODB_LOCALSTACK_ENDPOINT=http://localstack:4566

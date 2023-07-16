@@ -48,5 +48,5 @@ services:
       - TEST_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
       - CGO_ENABLED=0
     volumes:
-      - ../../../.tmp/cov-report/:/go/src/github.com/Haraj-backend/hex-monscape/.cov-report/
-      - ../../../.tmp/go/pkg:/go/pkg # enable caching for go modules
+      - ../../../.output/cov-report/:/go/src/github.com/Haraj-backend/hex-monscape/.cov-report/
+      - ../../../.output/go/pkg:/go/pkg # enable caching for go modules

@@ -15,7 +15,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Checkout Current Commit
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v3
 
   #     - name: Run Build All
   #       run: make test-build-all
@@ -43,7 +43,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout Current Commit
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Automated Tests
         run: make test
@@ -58,7 +58,7 @@ jobs:
         run: |
           # generate coverage badge
           gobadge \
-            -filename=./.tmp/cov-report/coverage.out \
+            -filename=./.output/cov-report/coverage.out \
             -green=80 \
             -target=README.md \
             -text=coverage \

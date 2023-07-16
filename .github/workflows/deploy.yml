@@ -18,7 +18,7 @@ jobs:
       deploy-game: ${{ (steps.changes.outputs.lambda == 'true') || (steps.changes.outputs.all == 'true') }}
     steps:
       - name: Checkout Current Commit
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Automated Tests
         run: make test
@@ -67,7 +67,7 @@ jobs:
       INFRA_STACK_NAME_DEV: hex-monscape-infras
     steps:
       - name: Checkout Current Commit
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
