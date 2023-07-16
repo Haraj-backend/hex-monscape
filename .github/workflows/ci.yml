@@ -1,0 +1,108 @@
+name: Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+    branches:
+      - master
+      - docs/refine-readme
+
+jobs:
+  build:
+    name: Test Build All Container Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Current Commit
+        uses: actions/checkout@v2
+
+      - name: Run Build All
+        run: make test-build-all
+
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*[hex-monscape]* ${{ github.job }}"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-coverage:
+    name: Run Tests & Code Coverage
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Current Commit
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Run Automated Tests
+        run: make test
+
+      - name: Install Go
+        uses: actions/setup-go@v4.0.1
+
+      - name: Install GOBadge
+        run: go install github.com/AlexBeauchemin/gobadge@latest
+
+      - name: Generate Coverage Badge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          # get the URL for the current job, taken from https://stackoverflow.com/a/76681922/7034602
+          BADGE_TARGET_URL=$(gh run --repo ${{ github.repository }} view ${{ github.run_id }} --json jobs --jq '.jobs[] | select(.name == "${{ github.job }}") | .url')
+          
+          # generate coverage badge
+          gobadge \
+            -filename=./.tmp/cov-report/coverage.out \
+            -green=80 \
+            -target=README.md \
+            -text=coverage \
+            -link=$BADGE_TARGET_URL
+  
+      - name: Verify Changed files
+        uses: tj-actions/verify-changed-files@v12
+        id: verify-changed-files
+        with:
+          files: README.md
+  
+      - name: Commit changes
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "chore: updated test coverage badge"
+
+      - name: Push changes
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ github.token }}
+          branch: ${{ github.head_ref }}
+
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*[hex-monscape]* ${{ github.job }}"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
