@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/Haraj-backend/hex-monscape.svg)](https://pkg.go.dev/github.com/Haraj-backend/hex-monscape)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape)
-![coverage](https://img.shields.io/badge/coverage-82.7%25-brightgreen)
+![coverage](https://img.shields.io/badge/coverage-82.2%25-brightgreen)
 
 Welcome to this repo!
 
