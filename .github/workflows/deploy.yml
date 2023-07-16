@@ -8,7 +8,7 @@ on:
       - 'docs/**'
     branches: 
       - master
-      - chore/adhere-to-awesome-go-guideline
+      # - chore/adhere-to-awesome-go-guideline
 
 jobs:
   preparation:
