@@ -47,6 +47,6 @@ services:
       - LOCALSTACK_ENDPOINT=http://localstack:4566
       - TEST_SQL_DSN=root:test1234@tcp(mysql:3306)/db_monscape?timeout=5s
       - CGO_ENABLED=0
-    command: "go test ./... -p=1 -count=1"
     volumes:
-      - ../../../tmp/go/pkg:/go/pkg # enable caching for go modules
+      - ../../../.output/cov-report/:/go/src/github.com/Haraj-backend/hex-monscape/.cov-report/
+      - ../../../.output/go/pkg:/go/pkg # enable caching for go modules
