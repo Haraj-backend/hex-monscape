@@ -56,20 +56,14 @@ jobs:
         run: go install github.com/AlexBeauchemin/gobadge@latest
 
       - name: Generate Coverage Badge
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
         run: |
-          # get the URL for the current job, taken from https://stackoverflow.com/a/76681922/7034602
-          BADGE_TARGET_URL=$(gh run --repo ${{ github.repository }} view ${{ github.run_id }} --json jobs --jq '.jobs[] | select(.name == "${{ github.job }}") | .url')
-          
           # generate coverage badge
           gobadge \
             -filename=./.tmp/cov-report/coverage.out \
             -green=80 \
             -target=README.md \
             -text=coverage \
-            -link=$BADGE_TARGET_URL
+            -link=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v12
@@ -90,7 +84,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ github.token }}
-          branch: ${{ github.head_ref }}
+          branch: ${{ github.ref }}
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
