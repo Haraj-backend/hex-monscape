@@ -49,11 +49,14 @@ jobs:
       - name: Run Automated Tests
         run: make test
 
-      - name: Go Coverage Badge
-        uses: tj-actions/coverage-badge-go@v2
-        with:
-          green: 80
-          filename: ./.tmp/cov-report/coverage.out
+      - name: Install Go
+        uses: actions/setup-go@v4.0.1
+
+      - name: Install GOBadge
+        run: go install github.com/AlexBeauchemin/gobadge@latest
+
+      - name: Generate Coverage Badge
+        run: gobadge -filename=./.tmp/cov-report/coverage.out -green=80 -target=README.md -label=coverage
   
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v12
