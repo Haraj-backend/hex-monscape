@@ -7,6 +7,7 @@ on:
       - 'docs/**'
     branches:
       - master
+      - docs/refine-readme
 
 jobs:
   build:

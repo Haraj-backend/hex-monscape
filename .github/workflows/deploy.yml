@@ -8,6 +8,7 @@ on:
       - 'docs/**'
     branches: 
       - master
+      - chore/adhere-to-awesome-go-guideline
 
 jobs:
   preparation:
@@ -40,7 +41,7 @@ jobs:
               - "internal/driven/storage/dynamodb/**"
               - "deploy/aws/lambda/infras.yml"
               - "deploy/aws/lambda/service.yml"
-              
+
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
         if: failure()
