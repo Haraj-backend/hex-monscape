@@ -84,7 +84,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ github.token }}
-          branch: ${{ github.ref }}
+          branch: ${{ github.head_ref }}
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
