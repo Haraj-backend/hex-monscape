@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: deploy
 
 on:
   push:
@@ -8,26 +8,21 @@ on:
       - 'docs/**'
     branches: 
       - master
+      # - chore/adhere-to-awesome-go-guideline
 
 jobs:
-  run-test:
-    uses: ./.github/workflows/tests.yml
-    name: Run Tests
-    with:
-      checkout-ref: ${{ github.sha }}
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
-
   preparation:
-    name: Prepare Environment
-    needs: run-test
+    name: Prepare Deployment
     runs-on: ubuntu-latest
     outputs:
       deploy-game: ${{ (steps.changes.outputs.lambda == 'true') || (steps.changes.outputs.all == 'true') }}
     steps:
-      - name: Checkout Latest Commit
+      - name: Checkout Current Commit
         uses: actions/checkout@v2
+
+      - name: Run Automated Tests
+        run: make test
+
       - name: Determine Changes
         uses: dorny/paths-filter@v2
         id: changes
@@ -46,6 +41,21 @@ jobs:
               - "internal/driven/storage/dynamodb/**"
               - "deploy/aws/lambda/infras.yml"
               - "deploy/aws/lambda/service.yml"
+
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*[hex-monscape]* ${{ github.job }}"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-game:
     name: Deploy Game

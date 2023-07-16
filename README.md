@@ -1,6 +1,8 @@
 # Hex Monscape 👾
 
-[![Build & Deploy](https://github.com/Haraj-backend/hex-monscape/actions/workflows/deploy.yml/badge.svg)](https://github.com/Haraj-backend/hex-monscape/actions/workflows/deploy.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape) 
+[![Go Reference](https://pkg.go.dev/badge/github.com/Haraj-backend/hex-monscape.svg)](https://pkg.go.dev/github.com/Haraj-backend/hex-monscape)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape)
+![Coverage](https://img.shields.io/badge/coverage-83.4%25-brightgreen)
 
 Welcome to this repo!
 

@@ -7,32 +7,15 @@ on:
       - 'docs/**'
     branches:
       - master
-
-  workflow_call:
-    inputs:
-      checkout-ref:
-        type: string
-        required: true
-    secrets:
-      github-token:
-        required: true
-      SOLUTIONS_TEAM_SLACK_WEBHOOK:
-        required: true
+      - docs/refine-readme
 
 jobs:
   build:
-    name: Run Test Build All
+    name: Test Build All Container Images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
-        if: github.event_name != 'workflow_call'
         uses: actions/checkout@v2
-
-      - name: Checkout Using `checkout-ref`
-        if: github.event_name == 'workflow_call'
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.checkout-ref }}
 
       - name: Run Build All
         run: make test-build-all
@@ -50,23 +33,48 @@ jobs:
           username: "ci/cd-reporter"
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
-  test:
-    name: Run Automated Tests
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-coverage:
+    name: Run Tests & Code Coverage
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
-        if: github.event_name != 'workflow_call'
-        uses: actions/checkout@v2
-
-      - name: Checkout Using `checkout-ref`
-        if: github.event_name == 'workflow_call'
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.checkout-ref }}
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Run Automated Tests
         run: make test
+
+      - name: Go Coverage Badge
+        uses: tj-actions/coverage-badge-go@v2
+        with:
+          green: 80
+          filename: ./.tmp/cov-report/coverage.out
+  
+      - name: Verify Changed files
+        uses: tj-actions/verify-changed-files@v12
+        id: verify-changed-files
+        with:
+          files: README.md
+  
+      - name: Commit changes
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "chore: updated test coverage badge"
+
+      - name: Push changes
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ github.token }}
+          branch: ${{ github.head_ref }}
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
@@ -81,4 +89,4 @@ jobs:
           username: "ci/cd-reporter"
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
