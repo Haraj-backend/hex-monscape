@@ -12,7 +12,7 @@ Welcome to this repo!
 
 Game is one first introduction of sofware for us software engineers. Many people got interested in software engineering because of games, so we think it is a good idea to use game as a medium to introduce our workflow to the new team members.
 
-Within this game's source code, you will learn about Haraj Solutions Team's secret technique in writing production-grade code for Haraj projects that help serves millions of users daily in Saudi Arabia. 🥷🏻💥
+Within this game's source code, you will learn about Haraj Solutions Team's secret technique in writing production-grade code for many Haraj's projects that help serves millions of users daily in Saudi Arabia, with only handful of team members. 🥷🏻💥
 
 The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
