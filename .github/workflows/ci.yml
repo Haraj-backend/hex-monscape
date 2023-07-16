@@ -8,31 +8,13 @@ on:
     branches:
       - master
 
-  workflow_call:
-    inputs:
-      checkout-ref:
-        type: string
-        required: true
-    secrets:
-      github-token:
-        required: true
-      SOLUTIONS_TEAM_SLACK_WEBHOOK:
-        required: true
-
 jobs:
   build:
-    name: Run Test Build All
+    name: Test Build All Containers
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
-        if: github.event_name != 'workflow_call'
         uses: actions/checkout@v2
-
-      - name: Checkout Using `checkout-ref`
-        if: github.event_name == 'workflow_call'
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.checkout-ref }}
 
       - name: Run Build All
         run: make test-build-all
@@ -50,23 +32,39 @@ jobs:
           username: "ci/cd-reporter"
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
-  test:
-    name: Run Automated Tests
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-coverage:
+    name: Run Tests & Code Coverage
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
-        if: github.event_name != 'workflow_call'
         uses: actions/checkout@v2
-
-      - name: Checkout Using `checkout-ref`
-        if: github.event_name == 'workflow_call'
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.checkout-ref }}
 
       - name: Run Automated Tests
         run: make test
+
+      - name: Go Coverage Badge
+        uses: tj-actions/coverage-badge-go@v1
+        with:
+          green: 80
+          filename: coverage.out
+  
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        id: auto-commit-action
+        with:
+          commit_message: Apply Code Coverage Badge
+          skip_fetch: true
+          skip_checkout: true
+          file_pattern: ./README.md
+  
+      - name: Push Changes
+        if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
@@ -81,4 +79,4 @@ jobs:
           username: "ci/cd-reporter"
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
