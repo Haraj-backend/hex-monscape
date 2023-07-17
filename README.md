@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/Haraj-backend/hex-monscape.svg)](https://pkg.go.dev/github.com/Haraj-backend/hex-monscape)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape)
-[![coverage](https://img.shields.io/badge/coverage-82.2%25-brightgreen)](./.output/cov-report/coverage.out)
+[![Coverage Status](https://coveralls.io/repos/github/Haraj-backend/hex-monscape/badge.svg?branch=master)](https://coveralls.io/github/Haraj-backend/hex-monscape?branch=master)
 
 `Hex-Monscape` is a simple turn-based game created for Haraj Solutions Team onboarding process.
 

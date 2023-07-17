@@ -8,4 +8,4 @@ RUN mkdir -p .cov-report
 
 COPY ./internal ./internal
 
-CMD go test ./... -covermode=count -coverprofile=./.cov-report/coverage.out fmt && go tool cover -func=./.cov-report/coverage.out -o=./.cov-report/coverage.out
+CMD go test -v -coverprofile=./.cov-report/profile.cov ./...

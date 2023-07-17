@@ -7,61 +7,8 @@ on:
       - 'docs/**'
 
 jobs:
-  preparation:
-    name: Determine Changes
-    runs-on: ubuntu-latest
-    outputs:
-      exec-tests: ${{ (steps.changes.outputs.exec-tests == 'true') }}
-    steps:
-      - name: Checkout Current Commit
-        uses: actions/checkout@v3
-
-      - name: Determine Changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            exec-tests:
-              - ".github/workflows/**"
-              - "internal/**"
-              - "build/**"
-              - "cmd/**"
-              - "deploy/**"
-              - "go.mod"
-              - "go.sum"
-              - "Makefile"
-
-  build-all:
-    name: Test Build All Container Images
-    needs: preparation
-    if: needs.preparation.outputs.exec-tests == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Current Commit
-        uses: actions/checkout@v3
-
-      - name: Run Build All
-        run: make test-build-all
-
-      - name: Notify To Slack If Failed
-        uses: lazy-actions/slatify@v3.0.0
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: "*[hex-monscape]* ${{ github.job }}"
-          mention: "here"
-          mention_if: "failure"
-          channel: "#solutions-team-ci-cd"
-          icon_emoji: ":haraaj:"
-          username: "ci/cd-reporter"
-          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
-          commit: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   run-tests:
     name: Run Automated Tests
-    needs: preparation
-    if: needs.preparation.outputs.exec-tests == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -71,6 +18,9 @@ jobs:
 
       - name: Run Automated Tests
         run: make test
+
+      - name: Test Build All Container Images
+        run: make test-build-all
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
