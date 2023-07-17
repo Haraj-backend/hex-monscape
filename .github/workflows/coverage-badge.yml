@@ -23,7 +23,8 @@ jobs:
       - name: Generate Coverage Report
         run: make test
 
-      - uses: shogo82148/actions-goveralls@v1
+      - name: Send Coverage Report to Coveralls
+        uses: shogo82148/actions-goveralls@v1
         with:
           path-to-profile: ./.output/cov-report/profile.cov
 

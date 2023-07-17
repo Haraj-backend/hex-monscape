@@ -1,4 +1,3 @@
 *
 !.gitignore
-!cov-report/
-!cov-report/*
+!README.md
