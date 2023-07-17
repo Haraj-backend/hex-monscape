@@ -26,11 +26,11 @@ One of the most significant engineering issues in Haraj is code maintainability.
 
 What is code maintainability? Essentially it is the ability of a codebase to be easily maintained by other developers. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
 
-As you may already know, Haraj engineering team is quite small. So in our early days, we used to give project ownership to the developer who started the project. This developer will be responsible for every aspects of the project. From writing the code, deploying it to production, to maintaining it.
+As you may already know, Haraj engineering team is relatively small. So in our early days, we gave project ownership to the developer who started the project. This developer will be responsible for every aspect of the project: writing the code, deploying it to production, & maintaining it.
 
 At that time we were making mistake by not setting up common standards on how to write code for those projects. So every developers end up writing code based on their own style & preferences with almost no concern for other developers.
 
-Usually our developers will stay for quite a long time (`~5 years`) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
+Usually our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects were written by the developer's own style, no one in the team could easily take over those projects. 😅
 
 <p align="center">
     <img width=512 src="./docs/reference/assets/memes/code-maintainability-this-is-fine.jpg" alt="Code Maintainability? This is fine.">
