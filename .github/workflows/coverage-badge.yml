@@ -8,7 +8,6 @@ on:
       - 'docs/**'
     branches: 
       - master
-      - chore/use-coveralls
 
 jobs:
   update-badge:
