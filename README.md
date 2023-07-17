@@ -8,7 +8,7 @@
 
 Inside the game source code, you can find the team's secret technique in writing production-grade code for Haraj web services that help serve millions of users daily in Saudi Arabia, even with only a handful of team members. 🥷🏻💥
 
-The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md). We use this remarkable architecture to structure the game server code while implementing it using [Go](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
+The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md). We use this remarkable architecture to structure the game server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
 
 To get started on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
@@ -16,27 +16,27 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 
 > **Note:**
 >
-> Game is one of the first introductions to software for us software engineers. Many people got interested in software engineering because of games, so we think it is a good idea to use games as a medium to pass the knowledge of our technique to our team members.
+> Many people got interested in software engineering because of games, so we think it is a fun idea to use games as a medium for passing the knowledge of our technique to the team members.
 >
-> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, this architecture itself is language agnostic. So we can apply it to other languages such as PHP, Typescript, & Python. In the future, we might also provide examples of these languages.
+> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, the architecture itself is language agnostic. So we can apply it to other languages such as PHP, Typescript, & Python.
 
 ## Background Story
 
 One of the most significant engineering issues in Haraj is code maintainability.
 
-What is code maintainability? Essentially it is the ability of a codebase to be easily maintained by other developers. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
+What is code maintainability? It is the ability of a codebase to be easily maintained by other developers. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
 
 As you may already know, Haraj engineering team is relatively small. So in our early days, we gave project ownership to the developer who started the project. This developer will be responsible for every aspect of the project: writing the code, deploying it to production, & maintaining it.
 
-At that time we were making mistake by not setting up common standards on how to write code for those projects. So every developers end up writing code based on their own style & preferences with almost no concern for other developers.
+At that time, we did not set up common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
 
-Usually our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects were written by the developer's own style, no one in the team could easily take over those projects. 😅
+Usually, our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer leaves the team, they usually own several valuable projects for Haraj business. The problem is that since the projects were written in the developer's style, no team member could easily take over those projects. 😅
 
 <p align="center">
     <img width=512 src="./docs/reference/assets/memes/code-maintainability-this-is-fine.jpg" alt="Code Maintainability? This is fine.">
 </p>
 
-This is why code maintainability grows into such a big issue in Haraj and the solution to prevent more of this is to set up common standards on how to write code in Haraj projects. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
+This is why code maintainability grows into such a big issue in Haraj, and the solution to prevent more of this is to set up common standards on how to write code in Haraj projects. This is where [Hexagonal Architecture](./docs/reference/hex-architecture.md) comes into play.
 
 ## Game Design
 
