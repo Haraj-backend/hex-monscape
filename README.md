@@ -6,9 +6,11 @@
 
 `Hex-Monscape` is a simple turn-based game created for Haraj Solutions Team onboarding process.
 
-Inside the game source code, you can find the team's secret technique in writing production-grade code for [Haraj](https://haraj.com.sa) web services that help serve millions of users daily in Saudi Arabia, despite only having a handful of team members. 🥷🏻💥
+In the game source code, you can find the team's secret technique in writing production-grade code for [Haraj](https://haraj.com.sa) web services that help serve millions of users daily in Saudi Arabia, despite only having a handful of team members. 🥷🏻💥
 
-The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md). We use this remarkable architecture to structure the game server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
+The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
+
+We use this remarkable architecture to structure the game server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
 
 To get started on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
