@@ -13,8 +13,6 @@ jobs:
   update-badge:
     name: Update Coverage Badge
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout Current Commit
         uses: actions/checkout@v3
