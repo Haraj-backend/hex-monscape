@@ -4,45 +4,31 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape)
 [![coverage](https://img.shields.io/badge/coverage-82.2%25-brightgreen)](./.output/cov-report/coverage.out)
 
-Welcome to this repo!
+`Hex-Monscape` is a simple turn-based game for Haraj Solutions Team onboarding process.
 
-<p align="center">
-    <img width=1024 src="./docs/images/hex-monscape.png" alt="Hex-Monscape about page.">
-</p>
+Inside the game source code, you can find the team's secret technique in writing production-grade code for Haraj web services that help serve millions of users daily in Saudi Arabia, even with only a handful of team members. 🥷🏻💥
 
-`Hex-Monscape` is a simple turn-based game that we use for Haraj Solutions Team's onboarding process.
+The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md). We use this remarkable architecture to structure the game server code while implementing it using [Go](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
 
-Game is one first introduction of sofware for us software engineers. Many people got interested in software engineering because of games, so we think it is a good idea to use game as a medium to introduce our workflow to the new team members.
-
-Within this game's source code, you will learn about Haraj Solutions Team's secret technique in writing production-grade code for many Haraj's projects that help serves millions of users daily in Saudi Arabia, with only handful of team members. 🥷🏻💥
-
-The secret technique actually lies in the software architecture we choose for these projects: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
-
-Since this repo is intended as getting started guidelines for anyone who wants to know how we write production code for Haraj projects, we will try our best to explain the technique in simple & fun ways.
-
-We are using [Hexagonal Architecture](./docs/reference/hex-architecture.md) to structure the game server code while implementing it using [Go](https://go.dev/). For the web client we implement it using [Vue 3](https://vuejs.org/).
-
-To understand how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
+To get started on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
 To start playing the game, please refer to [How to Run The Game](#how-to-run-the-game) section.
 
 > **Note:**
 >
-> As Solutions Team member, our understanding towards [Hexagonal Architecture](./docs/reference/hex-architecture.md) is necessary since it is the default architecture we used for building Haraj production services.
+> Game is one of the first introductions to software for us software engineers. Many people got interested in software engineering because of games, so we think it is a good idea to use games as a medium to pass the knowledge of our technique to our team members.
 >
-> So if we understand this architecture well, we will be in no time contributing to Haraj production.
->
-> Even though in this repo we are using Go to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md), but actually this architecture is language agnostic. So we could apply it to other language as well such as PHP, Typescript, & Python.
+> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, this architecture itself is language agnostic. So we can apply it to other languages such as PHP, Typescript, & Python. In the future, we might also provide examples of these languages.
 
 ## Background Story
 
-One of the biggest engineering issue in Haraj is code maintainability.
+One of the most significant engineering issues in Haraj is code maintainability.
 
-What is code maintainability? Essentially it is the ability of a codebase to be easily maintained by other developers. So when a developer no longer able to maintain the codebase, other developers could easily take over the code he/she left behind.
+What is code maintainability? Essentially it is the ability of a codebase to be easily maintained by other developers. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
 
 As you may already know, Haraj engineering team is quite small. So in our early days, we used to give project ownership to the developer who started the project. This developer will be responsible for every aspects of the project. From writing the code, deploying it to production, to maintaining it.
 
-At that time we were making mistake by not setting up common standards on how to write code for those projects. So in the end every developers decided to write code based on their own style & preferences with almost no concern for other developers.
+At that time we were making mistake by not setting up common standards on how to write code for those projects. So every developers end up writing code based on their own style & preferences with almost no concern for other developers.
 
 Usually our developers will stay for quite a long time (`~5 years`) before they left. So when a developer left the team, usually he/she already owned several projects that valuable for Haraj business. The problem is since the projects written by the developer's own style, no one in the team could easily take over those projects. 😅
 
