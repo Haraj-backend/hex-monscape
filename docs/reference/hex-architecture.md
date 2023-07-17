@@ -18,11 +18,11 @@ After studying several architectural patterns, we discovered that `Hexagonal Arc
 
 ## Why Hexagonal Architecture?
 
-Unlike its sibling architectures `Clean Architecture` & `Onion Architecture` which focus on layers, `Hexagonal Architecture` focus on application business logic. This is what makes the application created using it very easy to understand even by someone who just get started.
+Unlike its sibling architectures (`Clean Architecture` & `Onion Architecture`) which focus on layers, `Hexagonal Architecture` focuses on application business logic. This makes the application created using it very easy to understand, even by someone who just got started in Solutions Team.
 
-When everyone in the team can easily understand our code, this means they will be able to handle its maintenance. This means when we are getting sick or going on vacation, someone from our team can easily cover our back. This is what it means to have maintainable code.
+When everyone on the team can easily understand our code, they will be able to handle its maintenance. This means when we are getting sick or going on vacation, someone from our team can easily cover our back. This is what it means to have maintainable code.
 
-On top of that, `Hexagonal Architecture` provides a very good way to write automated tests for our code. This is because it clearly separate the business logic from its dependencies. So we can easily mock the dependencies when writing the tests.
+On top of that, `Hexagonal Architecture` provides an excellent way to write automated tests for our code. This is because it clearly separates the business logic from its dependencies. So we can easily mock the dependencies when writing the tests.
 
 <p align="center">
     <img width=512 src="./assets/memes/we-want-maintainable-code.jpg" alt="We Want Maintainable Code">
@@ -30,11 +30,11 @@ On top of that, `Hexagonal Architecture` provides a very good way to write autom
 
 However the concrete implementation of `Hexagonal Architecture` could vary between team to team.
 
-This is because `Hexagonal Architecture` is more like a set of basic principles rather than a complete recipe. This is why when we read online articles about its concrete implementation, the authors usually come up with their own ways to implement it.
+This is because `Hexagonal Architecture` is more like a set of fundamental principles rather than a complete recipe. This is why when we read online articles about its concrete implementation, the authors usually come up with their own ways to implement it.
 
 This is also the reason why we suggest you to use this document as your primary reference when learning about `Hexagonal Architecture`. Yeah, this is because when you search for it online, everyone has their own ways to implement it including the Solutions Team.
 
-In the upcoming sections, we will be discussing about the details of `Hexagonal Architecture` implementation that suitable for Solutions Team projects. To make it easy to understand, we will be using `Hex Monscape` as our implementation example.
+In the upcoming sections, we will discuss the details of `Hexagonal Architecture` implementation that suitable for Solutions Team projects. To make it easy to understand, we will use `Hex Monscape` as our implementation example.
 
 ## What is Hexagonal Architecture?
 
@@ -42,15 +42,15 @@ In the upcoming sections, we will be discussing about the details of `Hexagonal 
     <img src="./assets/hex-diagram.drawio.png" alt="Hex Architecture Diagram">
 </p>
 
-`Hexagonal Architecture` is architectural pattern that put the business logic as center of everything in application codebase.
+`Hexagonal Architecture` is an architectural pattern that puts the business logic at the center of everything in the application codebase.
 
 There are `3` main principles we need to follow when we want to implement this architecture:
 
-1. Clearly divide between `inside` & `outside` of the application. `Inside` of the application is every components constructing application business logic where `outside` is the otherwise.
-2. Dependencies on `inside` & `outside` boundaries should always point towards `inside` components, not the other way around. So `outside` components must always refer to `inside` components, not the other way around.
+1. Clearly divide between the `inside` & `outside` of the application. `Inside` of the application is every components constructing application business logic where `outside` is the otherwise.
+2. Dependencies on `inside` & `outside` boundaries should always point towards `inside` components. So `outside` components must always refer to `inside` components, not the other way around.
 3. Isolate boundaries between `inside` & `outside` components using ports & adapters.
 
-From these principles we can infer `4` constructing pillars of `Hexagonal Architecture`:
+From these principles, we can infer `4` constructing pillars of `Hexagonal Architecture`:
 
 - [Core](#core) => A group of components constructing our application business logic. This is the `inside` of our application.
 - [Actors](#actors) => Any external entities interacting with our application.
@@ -61,13 +61,13 @@ Each of these pillars will be explained thoroughly in the upcoming sections.
 
 ## Core
 
-`Core` is a group of components constructing our application business logic. Essentially it governs how our application should behave on expected usecases (hence named `Core`).
+`Core` is a group of components constructing our application business logic. Essentially it governs how our application should behave on expected use cases (hence named `Core`).
 
 <p align="center">
     <img src="./assets/hex-diagram-core.drawio.png" alt="Hex Architecture Core Diagram">
 </p>
 
-In Solutions Team, we use following method spot out `Core` components:
+In Solutions Team, we use the following method to spot out `Core` components:
 
 1. Take a look at our application API specification. Try to spot out the business logic context from there.
 2. In `Hex Monscape`, when we take a look at its [API specification](../api/rest-api.md), we can see there are `2` context of business logic:
@@ -82,7 +82,7 @@ In Solutions Team, we use following method spot out `Core` components:
 
 > **Note:**
 >
-> Sometimes we face confusion when we are in step `5`, `6`, & `7`. Usually this is because we find it difficult to find relationship between each `Core` components. In such case, try to utilize class diagram just like what we did in [here](../diagrams/class-diagram.png). This will greatly help us in mapping out the relationship between each `Core` components.
+> Sometimes we face confusion when we are in step `5`, `6`, & `7`. Usually this is because we find it difficult to find relationship between each `Core` components. In such case, try to utilize class diagram just like what we did in [here](../diagrams/class-diagram.png). This will greatly help us in mapping out the relationship between each `Core` component.
 
 ## Actors
 
