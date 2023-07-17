@@ -6,7 +6,7 @@
 
 `Hex-Monscape` is a simple turn-based game created for Haraj Solutions Team onboarding process.
 
-Inside the game source code, you can find the team's secret technique in writing production-grade code for Haraj web services that help serve millions of users daily in Saudi Arabia, despite only having a handful of team members. 🥷🏻💥
+Inside the game source code, you can find the team's secret technique in writing production-grade code for [Haraj](https://haraj.com.sa) web services that help serve millions of users daily in Saudi Arabia, despite only having a handful of team members. 🥷🏻💥
 
 The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md). We use this remarkable architecture to structure the game server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
 
@@ -22,7 +22,7 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 
 ## Background Story
 
-One of the most significant engineering issues in Haraj is code maintainability.
+One of the most significant engineering issues in [Haraj](https://haraj.com.sa) is code maintainability.
 
 What is code maintainability? It is the ability of a codebase to be easily maintained by other developers. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
 
