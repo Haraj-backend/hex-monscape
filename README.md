@@ -6,7 +6,7 @@
 
 `Hex-Monscape` is a simple turn-based game for Haraj Solutions Team onboarding process.
 
-Inside the game source code, you can find the team's secret technique in writing production-grade code for Haraj web services that help serve millions of users daily in Saudi Arabia, even with only a handful of team members. 🥷🏻💥
+Inside the game source code, you can find the team's secret technique in writing production-grade code for Haraj web services that help serve millions of users daily in Saudi Arabia, despite only having a handful of team members. 🥷🏻💥
 
 The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md). We use this remarkable architecture to structure the game server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
 
@@ -30,7 +30,7 @@ As you may already know, Haraj engineering team is relatively small. So in our e
 
 At that time, we did not set up common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
 
-Usually, our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer leaves the team, they usually own several valuable projects for Haraj business. The problem is that since the projects were written in the developer's style, no team member could easily take over those projects. 😅
+Usually, our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer leaves the team, they usually own several valuable projects for Haraj business. The problem is that since the projects were written in the developer's style, no one in the team could easily take over those projects. 😅
 
 <p align="center">
     <img width=512 src="./docs/reference/assets/memes/code-maintainability-this-is-fine.jpg" alt="Code Maintainability? This is fine.">
