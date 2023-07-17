@@ -151,7 +151,7 @@ In reality, `DDD` & `Hexagonal Architecture` are separate things. `DDD` is an ap
 
 `DDD` basically provides a formalized way to define the application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
 
-`DDD` & `Hexagonal Architecture` is an good combination to create large applications with complex business logic. But for us who want to create small applications with simple business logic, `DDD` might be an overkill.
+`DDD` & `Hexagonal Architecture` is a good combination to create large applications with complex business logic. But for us who want to create small applications with simple business logic, `DDD` might be an overkill.
 
 ## References
 
