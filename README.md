@@ -10,7 +10,7 @@ In the game source code, you can find the team's secret technique in writing pro
 
 The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-We use this remarkable architecture to structure the game server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
+In this repo, we use this remarkable architecture to structure `Hex Monscape` server code while implementing it using [Golang](https://go.dev/). For the web client, we implement it using [Vue 3](https://vuejs.org/).
 
 To get started on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
