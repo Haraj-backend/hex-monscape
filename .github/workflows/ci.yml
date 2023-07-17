@@ -8,7 +8,7 @@ on:
 
 jobs:
   preparation:
-    name: Prepare Deployment
+    name: Determine Changes
     runs-on: ubuntu-latest
     outputs:
       exec-tests: ${{ (steps.changes.outputs.exec-tests == 'true') }}
@@ -20,7 +20,6 @@ jobs:
         uses: dorny/paths-filter@v2
         id: changes
         with:
-          base: ${{ github.ref }}
           filters: |
             exec-tests:
               - ".github/workflows/**"
@@ -31,21 +30,6 @@ jobs:
               - "go.mod"
               - "go.sum"
               - "Makefile"
-
-      - name: Notify To Slack If Failed
-        uses: lazy-actions/slatify@v3.0.0
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: "*[hex-monscape]* ${{ github.job }}"
-          mention: "here"
-          mention_if: "failure"
-          channel: "#solutions-team-ci-cd"
-          icon_emoji: ":haraaj:"
-          username: "ci/cd-reporter"
-          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
-          commit: true
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   build-all:
     name: Test Build All Container Images
