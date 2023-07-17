@@ -8,10 +8,9 @@ on:
       - 'docs/**'
     branches: 
       - master
-      - chore/use-coveralls
 
 jobs:
-  gen-badge:
+  update-badge:
     name: Update Coverage Badge
     runs-on: ubuntu-latest
     permissions:

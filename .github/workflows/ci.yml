@@ -7,34 +7,8 @@ on:
       - 'docs/**'
 
 jobs:
-  preparation:
-    name: Determine Changes
-    runs-on: ubuntu-latest
-    outputs:
-      exec-tests: ${{ (steps.changes.outputs.exec-tests == 'true') }}
-    steps:
-      - name: Checkout Current Commit
-        uses: actions/checkout@v3
-
-      - name: Determine Changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            exec-tests:
-              - ".github/workflows/**"
-              - "internal/**"
-              - "build/**"
-              - "cmd/**"
-              - "deploy/**"
-              - "go.mod"
-              - "go.sum"
-              - "Makefile"
-
   build-all:
     name: Test Build All Container Images
-    needs: preparation
-    if: needs.preparation.outputs.exec-tests == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
@@ -60,8 +34,6 @@ jobs:
 
   run-tests:
     name: Run Automated Tests
-    needs: preparation
-    if: needs.preparation.outputs.exec-tests == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
