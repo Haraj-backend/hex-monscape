@@ -2,19 +2,19 @@
 
 ## Background Story
 
-In Solutions Team, we always try to work with small applications. Even in the relatively complex system such as `Haraj Bill` or `Chat Next`, we always try to break them down to much smaller applications depending on the focus of their business usecases.
+In Solutions Team, we always try to work with small applications. Even in relatively complex systems such as `Haraj Bill` or `Chat Next`, we always try to break them down into much smaller applications depending on the focus of their business use cases.
 
-The reason why we are doing it like this is because small application will have much less code rather than the big one. Less code means less complexity in maintaining it. So when the application requires bug fix or in need of new feature, it will be much easier to write the necessary changes for it.
+The reason why we are doing it like this is because small applications will have much less code rather than the big ones. Less code means less complexity in maintaining it. So when the application requires a bug fix or a new feature, it will be much easier to write the necessary changes.
 
-However since we will have a lot of small applications, we need some kind of standard architecture on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those applications before (a.k.a maintainable code).
+However, since we will have a lot of small applications, we need some standard architecture on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those applications before (a.k.a maintainable code).
 
 <p align="center">
     <img width=512 src="./assets/memes/one-does-not-simply-write-maintainable-code.jpg" alt="One Does Not Simply Write Maintainable Code">
 </p>
 
-On top of that, we also need to automate the testing for our code. This is to ensure our changes (especially bug fix) is working as expected and it doesn't introduce break in the existing application functionalities.
+On top of that, we also need to automate the testing for our code. This is to ensure our changes (especially bug fix) is working as expected and it doesn't break existing application functionalities.
 
-After studying several architectural patterns, we found out that `Hexagonal Architecture` is the most suitable architecture for our workflow in Solutions Team.
+After studying several architectural patterns, we discovered that `Hexagonal Architecture` is the most suitable architecture for our workflow in Solutions Team.
 
 ## Why Hexagonal Architecture?
 
