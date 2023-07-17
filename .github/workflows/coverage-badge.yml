@@ -8,10 +8,11 @@ on:
       - 'docs/**'
     branches: 
       - master
+      - chore/use-coveralls
 
 jobs:
   gen-badge:
-    name: Generate Coverage Badge
+    name: Update Coverage Badge
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,28 +23,9 @@ jobs:
       - name: Generate Coverage Report
         run: make test
 
-      - name: Install Go
-        uses: actions/setup-go@v4.0.1
-
-      - name: Install gobadge
-        run: go install github.com/AlexBeauchemin/gobadge@latest
-
-      - name: Generate Coverage Badge
-        run: |
-          # generate coverage badge
-          gobadge \
-            -filename=./.output/cov-report/coverage.out \
-            -green=80 \
-            -target=README.md \
-            -text=coverage \
-            -link=./.output/cov-report/coverage.out
-  
-      - name: Auto Commit & Push Coverage Badge
-        uses: stefanzweifel/git-auto-commit-action@v4
-        id: auto-commit-action
+      - uses: shogo82148/actions-goveralls@v1
         with:
-          commit_message: "chore: update coverage report & apply coverage badge to README.md"
-          file_pattern: 'README.md .output/cov-report/coverage.out'
+          path-to-profile: ./.output/cov-report/profile.cov
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
