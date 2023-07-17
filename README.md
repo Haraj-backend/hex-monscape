@@ -18,7 +18,7 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 
 > **Note:**
 >
-> Many people got interested in software engineering because of games, so we think using games as a medium for transferring knowledge to our team members is a fun idea. This is why we created this project. 😃
+> Many people got interested in software engineering because of games, so using games as a medium for transferring knowledge to our team members might be a fun idea. This is why we created this project. 😃
 >
 > Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, the architecture itself is language agnostic. So we can also apply it to other languages such as PHP, Typescript, & Python.
 
