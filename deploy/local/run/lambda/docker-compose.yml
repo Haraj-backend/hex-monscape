@@ -27,7 +27,7 @@ services:
     volumes:
       - ../../../../internal:/go/src/github.com/Haraj-backend/hex-monscape/internal
       - ../../../../cmd/lambda:/go/src/github.com/Haraj-backend/hex-monscape/cmd/lambda
-      - ../../../../.tmp/go/pkg:/go/pkg
+      - ../../../../.output/go/pkg:/go/pkg
     environment:
       - LOCALSTACK_ENDPOINT=http://localstack:4566
       - DYNAMODB_BATTLE_TABLE=battle

@@ -1,38 +1,44 @@
-name: Tests
+name: ci
 
 on:
   pull_request:
     paths-ignore:
       - '**.md'
       - 'docs/**'
-    branches:
-      - master
-
-  workflow_call:
-    inputs:
-      checkout-ref:
-        type: string
-        required: true
-    secrets:
-      github-token:
-        required: true
-      SOLUTIONS_TEAM_SLACK_WEBHOOK:
-        required: true
 
 jobs:
-  build:
-    name: Run Test Build All
+  preparation:
+    name: Determine Changes
+    runs-on: ubuntu-latest
+    outputs:
+      exec-tests: ${{ (steps.changes.outputs.exec-tests == 'true') }}
+    steps:
+      - name: Checkout Current Commit
+        uses: actions/checkout@v3
+
+      - name: Determine Changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            exec-tests:
+              - ".github/workflows/**"
+              - "internal/**"
+              - "build/**"
+              - "cmd/**"
+              - "deploy/**"
+              - "go.mod"
+              - "go.sum"
+              - "Makefile"
+
+  build-all:
+    name: Test Build All Container Images
+    needs: preparation
+    if: needs.preparation.outputs.exec-tests == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Current Commit
-        if: github.event_name != 'workflow_call'
-        uses: actions/checkout@v2
-
-      - name: Checkout Using `checkout-ref`
-        if: github.event_name == 'workflow_call'
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.checkout-ref }}
+        uses: actions/checkout@v3
 
       - name: Run Build All
         run: make test-build-all
@@ -50,20 +56,18 @@ jobs:
           username: "ci/cd-reporter"
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
-  test:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  run-tests:
     name: Run Automated Tests
+    needs: preparation
+    if: needs.preparation.outputs.exec-tests == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Current Commit
-        if: github.event_name != 'workflow_call'
-        uses: actions/checkout@v2
-
-      - name: Checkout Using `checkout-ref`
-        if: github.event_name == 'workflow_call'
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.checkout-ref }}
+        uses: actions/checkout@v3
 
       - name: Run Automated Tests
         run: make test
@@ -81,4 +85,4 @@ jobs:
           username: "ci/cd-reporter"
           url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
           commit: true
-          token: ${{ secrets.GITHUB_TOKEN || secrets.github-token }}
+          token: ${{ secrets.GITHUB_TOKEN }}

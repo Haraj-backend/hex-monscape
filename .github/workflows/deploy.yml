@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: deploy
 
 on:
   push:
@@ -10,42 +10,50 @@ on:
       - master
 
 jobs:
-  run-test:
-    uses: ./.github/workflows/tests.yml
-    name: Run Tests
-    with:
-      checkout-ref: ${{ github.sha }}
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      SOLUTIONS_TEAM_SLACK_WEBHOOK: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
-
   preparation:
-    name: Prepare Environment
-    needs: run-test
+    name: Prepare Deployment
     runs-on: ubuntu-latest
     outputs:
-      deploy-game: ${{ (steps.changes.outputs.lambda == 'true') || (steps.changes.outputs.all == 'true') }}
+      deploy-game: ${{ (steps.changes.outputs.deploy-game == 'true') }}
     steps:
-      - name: Checkout Latest Commit
-        uses: actions/checkout@v2
+      - name: Checkout Current Commit
+        uses: actions/checkout@v3
+
+      - name: Run Automated Tests
+        run: make test
+
       - name: Determine Changes
         uses: dorny/paths-filter@v2
         id: changes
         with:
           base: ${{ github.ref }}
           filters: |
-            all:
+            deploy-game:
               - "internal/**"
               - ".github/workflows/deploy-dev.yml"
               - ".github/workflows/run-tests.yml"
               - "go.mod"
               - "go.sum"
-            lambda:
               - "build/package/lambda/**"
               - "cmd/lambda/**"
               - "internal/driven/storage/dynamodb/**"
               - "deploy/aws/lambda/infras.yml"
               - "deploy/aws/lambda/service.yml"
+
+      - name: Notify To Slack If Failed
+        uses: lazy-actions/slatify@v3.0.0
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: "*[hex-monscape]* ${{ github.job }}"
+          mention: "here"
+          mention_if: "failure"
+          channel: "#solutions-team-ci-cd"
+          icon_emoji: ":haraaj:"
+          username: "ci/cd-reporter"
+          url: ${{ secrets.SOLUTIONS_TEAM_SLACK_WEBHOOK }}
+          commit: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-game:
     name: Deploy Game
@@ -57,7 +65,7 @@ jobs:
       INFRA_STACK_NAME_DEV: hex-monscape-infras
     steps:
       - name: Checkout Current Commit
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

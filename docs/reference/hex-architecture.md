@@ -2,19 +2,19 @@
 
 ## Background Story
 
-In Solutions Team, we always try to work with small applications. Even in the relatively complex system such as `Haraj Bill` or `Chat Next`, we always try to break them down to much smaller applications depending on the focus of their business usecases.
+In Solutions Team, we always try to work with small applications. Even in relatively complex systems such as `Haraj Bill` or `Chat Next`, we always try to break them down into much smaller applications depending on the focus of their business use cases.
 
-The reason why we are doing it like this is because small application will have much less code rather than the big one. Less code means less complexity in maintaining it. So when the application requires bug fix or in need of new feature, it will be much easier to write the necessary changes for it.
+The reason why we are doing it like this is because small applications will have much less code rather than the big ones. Less code means less complexity in maintaining it. So when the application requires a bug fix or a new feature, it will be much easier to write the necessary changes.
 
-However since we will have a lot of small applications, we need some kind of standard architecture on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those applications before (a.k.a maintainable code).
+However, since we will have a lot of small applications, we need some standard architecture on how to write them. This is so everyone in the Solutions Team can easily understand them even if they never work with those applications before (a.k.a maintainable code).
 
 <p align="center">
     <img width=512 src="./assets/memes/one-does-not-simply-write-maintainable-code.jpg" alt="One Does Not Simply Write Maintainable Code">
 </p>
 
-On top of that, we also need to automate the testing for our code. This is to ensure our changes (especially bug fix) is working as expected and it doesn't introduce break in the existing application functionalities.
+On top of that, we also need to automate the testing for our code. This is to ensure our changes (especially bug fix) is working as expected and it doesn't break existing application functionalities.
 
-After studying several architectural patterns, we found out that `Hexagonal Architecture` is the most suitable architecture for our workflow in Solutions Team.
+After studying several architectural patterns, we discovered that `Hexagonal Architecture` is the most suitable architecture for our workflow in Solutions Team.
 
 ## Why Hexagonal Architecture?
 
@@ -127,15 +127,15 @@ As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../inter
 
 ## Conclusion
 
-Creating application with `Hexagonal Architecture` is very simple.
+Creating an application with `Hexagonal Architecture` is very simple.
 
-We just need to think about the expected behavior of our application, create the `Core` components for it, then define the necessary `Ports` & `Adapters` for our `Core` components. Voila we have our application ready! 😁
+We just need to think about the expected behavior of our application, create the `Core` components for it, then define the necessary `Ports` & `Adapters` for our `Core` components. Voila, we have our application ready! 😁
 
-Understanding application created using `Hexagonal Architecture` is also very simple.
+Understanding applications created using `Hexagonal Architecture` is also straightforward.
 
-We just need to learn about its `Core` components, understand its business context, and all of sudden we understand the whole application context! 😁
+We just need to learn about its `Core` components, understand its business context, and suddenly understand the whole application context! 😁
 
-This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building our applications. Yeah, this is because it enable us to create maintainable code much more easily! 😁
+This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building our applications. Yeah, because it enables us to create maintainable code much more quickly! 😁
 
 <p align="center">
     <img width=512 src="./assets/memes/hexagonal-architecture-its-magic.jpg" alt="Hexagonal Architecture? It's magic!">
@@ -145,13 +145,13 @@ To learn how to apply `Hexagonal Architecture` in the new Solutions Team project
 
 ## Extra: Relation with DDD
 
-`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
+`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` are commonly paired. Some people even used the terms interchangeably.
 
-In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is an approach to spot out application logic components from business model perspective, while `Hexagonal Architecture` gives our application a structure. 
+In reality, `DDD` & `Hexagonal Architecture` are separate things. `DDD` is an approach to spot application logic components from a business model perspective, while `Hexagonal Architecture` gives our application a structure.
 
-`DDD` basically provides a formalized way to define application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
+`DDD` basically provides a formalized way to define the application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
 
-`DDD` & `Hexagonal Architecture` is good combination when we want to create large application with complex business logic. But for us who want to create small application with simple business logic, `DDD` might be an overkill.
+`DDD` & `Hexagonal Architecture` is an good combination to create large applications with complex business logic. But for us who want to create small applications with simple business logic, `DDD` might be an overkill.
 
 ## References
 
