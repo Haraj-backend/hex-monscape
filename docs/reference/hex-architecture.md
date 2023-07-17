@@ -127,15 +127,15 @@ As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../inter
 
 ## Conclusion
 
-Creating application with `Hexagonal Architecture` is very simple.
+Creating an application with `Hexagonal Architecture` is very simple.
 
-We just need to think about the expected behavior of our application, create the `Core` components for it, then define the necessary `Ports` & `Adapters` for our `Core` components. Voila we have our application ready! 😁
+We just need to think about the expected behavior of our application, create the `Core` components for it, then define the necessary `Ports` & `Adapters` for our `Core` components. Voila, we have our application ready! 😁
 
-Understanding application created using `Hexagonal Architecture` is also very simple.
+Understanding applications created using `Hexagonal Architecture` is also straightforward.
 
-We just need to learn about its `Core` components, understand its business context, and all of sudden we understand the whole application context! 😁
+We just need to learn about its `Core` components, understand its business context, and suddenly understand the whole application context! 😁
 
-This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building our applications. Yeah, this is because it enable us to create maintainable code much more easily! 😁
+This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building our applications. Yeah, because it enables us to create maintainable code much more quickly! 😁
 
 <p align="center">
     <img width=512 src="./assets/memes/hexagonal-architecture-its-magic.jpg" alt="Hexagonal Architecture? It's magic!">
@@ -145,13 +145,13 @@ To learn how to apply `Hexagonal Architecture` in the new Solutions Team project
 
 ## Extra: Relation with DDD
 
-`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` is commonly paired together. Some people even used the terms interchangeably.
+`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` are commonly paired. Some people even used the terms interchangeably.
 
-In reality, `DDD` & `Hexagonal Architecture` are two separate things. `DDD` is an approach to spot out application logic components from business model perspective, while `Hexagonal Architecture` gives our application a structure. 
+In reality, `DDD` & `Hexagonal Architecture` are separate things. `DDD` is an approach to spot application logic components from a business model perspective, while `Hexagonal Architecture` gives our application a structure.
 
-`DDD` basically provides a formalized way to define application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
+`DDD` basically provides a formalized way to define the application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
 
-`DDD` & `Hexagonal Architecture` is good combination when we want to create large application with complex business logic. But for us who want to create small application with simple business logic, `DDD` might be an overkill.
+`DDD` & `Hexagonal Architecture` is an good combination to create large applications with complex business logic. But for us who want to create small applications with simple business logic, `DDD` might be an overkill.
 
 ## References
 
