@@ -32,7 +32,9 @@ jobs:
           docker buildx bake \
             -f ./deploy/local/tests/docker-compose.yml \
             --set *.cache-to="type=gha,mode=max" \
-            --set *.cache-from="type=gha" --load  
+            --set *.cache-from="type=gha" \
+            --set *.context="." \
+            --load  
 
       - name: Run Automated Tests
         run: make test
