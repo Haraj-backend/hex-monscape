@@ -16,11 +16,38 @@ jobs:
       - name: Checkout Current Commit
         uses: actions/checkout@v3
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ./.output/tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build docker-compose
+        run: |
+          docker buildx bake \
+            --file ./deploy/local/tests/docker-compose.yml \
+            --file ./deploy/local/tests/docker-compose-cache.json
+
       - name: Run Automated Tests
         run: make test
 
       - name: Test Build All Container Images
         run: make test-build-all
+
+      # This ugly bit is necessary if you don't want your cache to grow forever
+      # until it hits GitHub's limit of 5GB.
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf ./.output/tmp/.buildx-cache
+          mv ./.output/tmp/.buildx-cache-new ./.output/tmp/.buildx-cache
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
