@@ -1,17 +1,39 @@
 {
 	"target": {
+    "localstack": {
+      "cache-from": [
+        "type=local,src=./.output/tmp/.buildx-cache"
+      ],
+      "cache-to": [
+        "type=local,dest=./.output/tmp/.buildx-cache-new"
+      ],
+      "output": [
+        "type=docker"
+      ]
+    },
+    "mysql": {
+      "cache-from": [
+        "type=local,src=./.output/tmp/.buildx-cache"
+      ],
+      "cache-to": [
+        "type=local,dest=./.output/tmp/.buildx-cache-new"
+      ],
+      "output": [
+        "type=docker"
+      ]
+    },
 	  "tests": {
-		"context": ".",
-		"dockerfile": "./build/package/tests/Dockerfile",
-		"cache-from": [
-		  "type=local,src=./.output/tmp/.buildx-cache"
-		],
-		"cache-to": [
-			"type=local,dest=./.output/tmp/.buildx-cache-new"
-		],
-		"output": [
-		  "type=docker"
-		]
+      "context": ".",
+      "dockerfile": "./build/package/tests/Dockerfile",
+      "cache-from": [
+        "type=local,src=./.output/tmp/.buildx-cache"
+      ],
+      "cache-to": [
+        "type=local,dest=./.output/tmp/.buildx-cache-new"
+      ],
+      "output": [
+        "type=docker"
+      ]
 	  }
 	}
 }
