@@ -2,11 +2,7 @@
   "group": {
     "default": {
       "targets": [
-        "tests",
-        "hex-monscape-client",
-        "hex-monscape-server",
-        "hex-monscape-lambda",
-        "hex-monscape-lambda-local"
+        "tests"
       ]
     }
   },
