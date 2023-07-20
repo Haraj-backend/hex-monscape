@@ -9,7 +9,7 @@ on:
 jobs:
   run-tests:
     name: Run Automated Tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write
     steps:
@@ -19,22 +19,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: ./.output/tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx
-
-      - name: Build All Docker Images Necessary For Tests
-        run: |
-          docker buildx bake \
-            -f ./deploy/local/tests/docker-bake.json \
-            --set '*.cache-from'="type=local,src=./.output/tmp/.buildx-cache" \
-            --set '*.cache-to'="type=local,dest=./.output/tmp/.buildx-cache" \
-            --load 
-
       - name: Run Automated Tests
         run: make test
+
+      - name: Run Test Build All
+        run: make test-build-all
 
       - name: Notify To Slack If Failed
         uses: lazy-actions/slatify@v3.0.0
