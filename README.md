@@ -4,6 +4,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape)
 [![Coverage Status](https://coveralls.io/repos/github/Haraj-backend/hex-monscape/badge.svg?branch=master)](https://coveralls.io/github/Haraj-backend/hex-monscape?branch=master)
 
+![hex_monscape_preview](./docs/images/preview.png)
+
 `Hex-Monscape` is a simple turn-based game created for Haraj Solutions Team onboarding process.
 
 In the game source code, you can find the team's secret technique in writing production code for [Haraj](https://haraj.com.sa) services that help serve millions of users daily in Saudi Arabia despite only having a handful of team members. 🥷🏻💥
@@ -116,6 +118,8 @@ The monster characters used in this project is designed by [Freepik](http://www.
 The memes used in this project is generated using [this meme generator](https://imgflip.com/memegenerator).
 
 The project layout used in this project is inspired by [this repo](https://github.com/golang-standards/project-layout).
+
+The font used in the words "Hex Monscape" on the Hex Monscape logo is [Lexend Deca](https://fonts.google.com/specimen/Lexend+Deca?preview.text=HEX%20MONSCAPE&preview.text_type=custom&category=Sans+Serif,Display) from Google Fonts.
 
 ## Contributing
 
