@@ -10,6 +10,45 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNew(t *testing.T) {
+	testCases := []struct {
+		Name       string
+		Config     monstrg.Config
+		ExpStorage bool
+		ExpErr     bool
+	}{
+		{
+			Name:       "Empty Monster Data in Config",
+			Config:     monstrg.Config{},
+			ExpStorage: false,
+			ExpErr:     true,
+		},
+		{
+			Name: "Invalid Monster Data in Config",
+			Config: monstrg.Config{
+				MonsterData: []byte(`invalid`),
+			},
+			ExpStorage: false,
+			ExpErr:     true,
+		},
+		{
+			Name: "Valid Config",
+			Config: monstrg.Config{
+				MonsterData: monsterData,
+			},
+			ExpStorage: true,
+			ExpErr:     false,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			storage, err := monstrg.New(testCase.Config)
+			assert.Equal(t, testCase.ExpStorage, storage != nil, "unexpected storage")
+			assert.Equal(t, testCase.ExpErr, err != nil, "unexpected error")
+		})
+	}
+}
+
 func TestGetAvailablePartners(t *testing.T) {
 	// init storage
 	strg := initStorage(t)
