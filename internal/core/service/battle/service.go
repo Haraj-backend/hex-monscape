@@ -154,12 +154,9 @@ func (s *service) Attack(ctx context.Context, gameID string) (*entity.Battle, er
 	if battle == nil {
 		return nil, ErrBattleNotFound
 	}
-	if battle.State != entity.StatePartnerTurn {
-		return nil, ErrInvalidBattleState
-	}
 	err = battle.PartnerAttack()
 	if err != nil {
-		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+		return nil, ErrInvalidBattleState
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {

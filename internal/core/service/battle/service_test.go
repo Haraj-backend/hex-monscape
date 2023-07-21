@@ -18,6 +18,7 @@ package battle_test
 
 import (
 	"context"
+	"math"
 	"testing"
 	"time"
 
@@ -259,48 +260,76 @@ func TestServiceDecideTurn(t *testing.T) {
 }
 
 func TestServiceAttack(t *testing.T) {
-	battleStorage := newMockBattleStorage()
-	gameStorage := newMockGameStorage()
-	monsterStorage := newMockMonsterStorage()
+	// init service
+	output := initService(t)
 
+	// create partner & enemy
+	stdBattleStats := entity.BattleStats{
+		Health:    100,
+		MaxHealth: 100,
+		Attack:    100,
+		Defense:   100,
+		Speed:     100,
+	}
 	partner := testutil.NewTestMonster()
+	partner.BattleStats = stdBattleStats
+
+	enemy := testutil.NewTestMonster()
+	enemy.BattleStats = stdBattleStats
+
+	// create game
 	game, err := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
 		CreatedAt:  time.Now().Unix(),
 	})
-	if err != nil {
-		t.Fatalf("unable to init new game, due: %v", err)
-	}
+	require.NoError(t, err, "unable to init new game")
 
+	// save game
+	err = output.GameStorage.SaveGame(context.Background(), *game)
+	require.NoError(t, err, "unable to save game")
+
+	// perform attack without creating battle, should return error
+	_, err = output.Service.Attack(context.Background(), game.ID)
+	require.ErrorIs(t, err, battle.ErrBattleNotFound)
+
+	// create battle with state partner turn
 	bt, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
-		Enemy:   testutil.NewTestMonster(),
+		Enemy:   enemy,
 	})
 	bt.State = entity.StatePartnerTurn
 
-	err = gameStorage.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
-	}
-	err = battleStorage.SaveBattle(context.Background(), *bt)
-	if err != nil {
-		t.Fatalf("unable to save battle, due: %v", err)
-	}
+	// save battle
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err, "unable to save battle")
 
-	svc, err := battle.NewService(battle.ServiceConfig{
-		GameStorage:    gameStorage,
-		BattleStorage:  battleStorage,
-		MonsterStorage: monsterStorage,
-	})
-	if err != nil {
-		t.Fatalf("unable to init new service, due: %v", err)
-	}
-	_, err = svc.Attack(context.Background(), bt.GameID)
-	if err != nil {
-		t.Fatalf("unable to attack, due: %v", err)
-	}
+	// perform attack in battle with invalid game id, should return error
+	_, err = output.Service.Attack(context.Background(), uuid.NewString())
+	require.ErrorIs(t, err, battle.ErrGameNotFound)
+
+	// perform attack in battle, it should be successful
+	_, err = output.Service.Attack(context.Background(), bt.GameID)
+	require.NoError(t, err, "unable to attack")
+
+	// modify the partner attack to make the enemy die instantly
+	bt.Partner.BattleStats.Attack = math.MaxInt64
+	bt.State = entity.StatePartnerTurn
+
+	// save battle
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err, "unable to save battle")
+
+	// perform attack in battle, partner should win immediately
+	updBattle, err := output.Service.Attack(context.Background(), bt.GameID)
+	require.NoError(t, err, "unable to attack")
+	require.Equal(t, updBattle.State, entity.StateWin, "invalid battle state")
+
+	// check if the game battle won is incremented
+	updGame, err := output.GameStorage.GetGame(context.Background(), game.ID)
+	require.NoError(t, err, "unable to get game")
+	require.Equal(t, 1, updGame.BattleWon, "invalid battle won")
 }
 
 func TestServiceSurrender(t *testing.T) {
@@ -349,14 +378,12 @@ func TestServiceSurrender(t *testing.T) {
 	require.NoError(t, err, "unable to save battle")
 
 	// surrender battle, this time we expect error
-	surrenderBattle, err = output.Service.Surrender(context.Background(), bt.GameID)
+	_, err = output.Service.Surrender(context.Background(), bt.GameID)
 	require.ErrorIs(t, err, battle.ErrInvalidBattleState)
-	require.Nil(t, surrenderBattle, "unexpected battle returned")
 
 	// try to surrender with invalid game id, should return error
-	surrenderBattle, err = output.Service.Surrender(context.Background(), uuid.NewString())
+	_, err = output.Service.Surrender(context.Background(), uuid.NewString())
 	require.ErrorIs(t, err, battle.ErrGameNotFound)
-	require.Nil(t, surrenderBattle, "unexpected battle returned")
 }
 
 type initServiceOutput struct {
