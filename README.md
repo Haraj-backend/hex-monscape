@@ -12,9 +12,7 @@ Within the game source code, you can find the team's secret technique in writing
 
 The secret technique actually lies in the software architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-By using this remarkable architecture, not only can we speed up the project development but also make it maintainable by the whole team.
-
-This is why even though our team is small, we can still create services that help serve millions of people daily in Saudi Arabia while still sleeping well at night. 🤣
+By using this remarkable architecture, not only can we speed up their development process but also make them maintainable by the whole team. This is why even though our team is small, we can still develop services that help serve millions of people daily in Saudi Arabia without sabotaging our good sleep at night. 🤣
 
 This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). Please refer to [this doc]((./docs/reference/hex-architecture.md)) to learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game.
 
@@ -24,7 +22,7 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 >
 > Many people got interested in software engineering because of games. So using them to exchange knowledge within our team would be a fun idea. This is why we created this project. 😃
 >
-> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, the architecture itself is language agnostic. So we can also apply it to other languages such as PHP, Typescript, & Python. This is why we believe this repo could also be useful for other software engineers outside our team. 😁
+> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, the architecture itself is language agnostic. So we can also apply it to other languages such as PHP, Typescript, & Python. This is why we believe this repo could also be useful for other software developers outside our team. 😁
 
 ## Background Story
 
@@ -34,9 +32,11 @@ What is code maintainability? Essentially it is the ability of a codebase to be 
 
 As you may already know, Haraj engineering team is small. So in our early days, we gave project ownership to the developer who started the project. This developer will be responsible for every aspect of the project development: writing the code, deploying it to production, & maintaining it.
 
-At that time, we made a mistake by not setting up common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
+At that time, we did not set common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
 
-Usually, our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer leaves the team, they usually own several valuable projects for Haraj business. The problem is that since the projects were written in the developer's style, no one in the team could easily take over those projects. 😅
+This situation created a lot of stress for each developer on the team. Since they were the only ones who understood the code they wrote, they were the only ones who could maintain it. So when they are on vacation or sick, they must be on standby to fix any issues that might arise in their projects. 😔
+
+On the other hand, our developers will stay long before they leave (`~5 years`). So when a developer leaves the team, they usually own several valuable projects for the Haraj business. The problem is that since the projects were written in the developer's style, no team member could easily take over those projects. 😅
 
 <p align="center">
     <img width=512 src="./docs/reference/assets/memes/code-maintainability-this-is-fine.jpg" alt="Code Maintainability? This is fine.">
