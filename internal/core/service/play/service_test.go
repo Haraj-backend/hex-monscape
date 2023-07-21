@@ -18,11 +18,13 @@ package play_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -74,34 +76,66 @@ func TestNewService(t *testing.T) {
 func TestServiceGetAvailablePartners(t *testing.T) {
 	// initialize new service
 	output := newService()
+
 	// get available partners
 	retPartners, err := output.Service.GetAvailablePartners(context.Background())
 	require.NoError(t, err, "unexpected error")
+
 	// check returned partners
 	require.ElementsMatch(t, output.Partners, retPartners, "mismatch partners")
+
+	// set error on get available partners
+	output.PartnerStorage.SetRetErrOnGetAvailablePartners(true)
+
+	// get available partners, should return error
+	_, err = output.Service.GetAvailablePartners(context.Background())
+	require.Error(t, err, "expected error")
 }
 
 func TestServiceNewGame(t *testing.T) {
 	// initialize new service
 	output := newService()
+
 	// create new game
 	partner := output.Partners[0]
 	game, err := output.Service.NewGame(context.Background(), "Riandy R.N", partner.ID)
 	require.NoError(t, err, "unexpected error")
+
 	// validate returned game with stored game, this is to make sure the game
 	// is also stored on storage
 	storedGame, err := output.GameStorage.GetGame(context.Background(), game.ID)
 	require.NoError(t, err, "unexpected error")
 	require.Equal(t, *game, *storedGame, "mismatch game")
+
+	// create new game with invalid partner
+	game, err = output.Service.NewGame(context.Background(), "Riandy R.N", uuid.NewString())
+	require.Equal(t, play.ErrPartnerNotFound, err, "mismatch error")
+	require.Nil(t, game, "unexpected game")
+
+	// set error on save game, should return error
+	output.GameStorage.SetRetErrOnSaveGame(true)
+	game, err = output.Service.NewGame(context.Background(), "Riandy R.N", partner.ID)
+	output.GameStorage.SetRetErrOnSaveGame(false)
+	require.Error(t, err, "expected error")
+	require.Nil(t, game, "unexpected game")
+
+	// set error on get partner, should return error
+	output.PartnerStorage.SetRetErrOnGetPartner(true)
+	game, err = output.Service.NewGame(context.Background(), "Riandy R.N", partner.ID)
+	output.PartnerStorage.SetRetErrOnGetPartner(false)
+	require.Error(t, err, "expected error")
+	require.Nil(t, game, "unexpected game")
 }
 
 func TestServiceGetGame(t *testing.T) {
 	// initialize new service
 	output := newService()
+
 	// create new game
 	partner := output.Partners[0]
 	game, err := output.Service.NewGame(context.Background(), "Riandy R.N", partner.ID)
 	require.NoError(t, err, "unexpected error")
+
 	// define test cases
 	testCases := []struct {
 		Name   string
@@ -130,6 +164,12 @@ func TestServiceGetGame(t *testing.T) {
 			require.Equal(t, game, retGame, "mismatch game")
 		})
 	}
+
+	// set error on get game, should return error
+	output.GameStorage.SetRetErrOnGetGame(true)
+	game, err = output.Service.GetGame(context.Background(), game.ID)
+	require.Error(t, err, "expected error")
+	require.Nil(t, game, "unexpected game")
 }
 
 func newService() *newServiceOutput {
@@ -140,33 +180,52 @@ func newService() *newServiceOutput {
 		*(testutil.NewTestMonster()),
 		*(testutil.NewTestMonster()),
 	}
+
+	// initialize dependencies
+	gameStorage := newMockGameStorage()
+	partnerStorage := newMockPartnerStorage(partners)
+
 	// initialize service
 	cfg := play.ServiceConfig{
-		GameStorage:    newMockGameStorage(),
-		PartnerStorage: newMockPartnerStorage(partners),
+		GameStorage:    gameStorage,
+		PartnerStorage: partnerStorage,
 	}
 	svc, _ := play.NewService(cfg)
 
 	return &newServiceOutput{
 		Service:        svc,
-		GameStorage:    cfg.GameStorage,
-		PartnerStorage: cfg.PartnerStorage,
+		GameStorage:    gameStorage,
+		PartnerStorage: partnerStorage,
 		Partners:       partners,
 	}
 }
 
 type newServiceOutput struct {
 	Service        play.Service
-	GameStorage    play.GameStorage
-	PartnerStorage play.PartnerStorage
+	GameStorage    *mockGameStorage
+	PartnerStorage *mockPartnerStorage
 	Partners       []entity.Monster
 }
 
 type mockGameStorage struct {
-	data map[string]entity.Game
+	data             map[string]entity.Game
+	retErrOnGetGame  bool
+	retErrOnSaveGame bool
+}
+
+func (gs *mockGameStorage) SetRetErrOnGetGame(retErr bool) {
+	gs.retErrOnGetGame = retErr
+}
+
+func (gs *mockGameStorage) SetRetErrOnSaveGame(retErr bool) {
+	gs.retErrOnSaveGame = retErr
 }
 
 func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	if gs.retErrOnGetGame {
+		return nil, ErrIntentionalError
+	}
+
 	game, ok := gs.data[gameID]
 	if !ok {
 		return nil, nil
@@ -175,6 +234,10 @@ func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*entity.
 }
 
 func (gs *mockGameStorage) SaveGame(ctx context.Context, game entity.Game) error {
+	if gs.retErrOnSaveGame {
+		return ErrIntentionalError
+	}
+
 	gs.data[game.ID] = game
 	return nil
 }
@@ -186,10 +249,23 @@ func newMockGameStorage() *mockGameStorage {
 }
 
 type mockPartnerStorage struct {
-	partnerMap map[string]entity.Monster
+	partnerMap                   map[string]entity.Monster
+	retErrOnGetAvailablePartners bool
+	retErrOnGetPartner           bool
+}
+
+func (gs *mockPartnerStorage) SetRetErrOnGetAvailablePartners(retErr bool) {
+	gs.retErrOnGetAvailablePartners = retErr
+}
+
+func (gs *mockPartnerStorage) SetRetErrOnGetPartner(retErr bool) {
+	gs.retErrOnGetPartner = retErr
 }
 
 func (gs *mockPartnerStorage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
+	if gs.retErrOnGetAvailablePartners {
+		return nil, ErrIntentionalError
+	}
 	var partners []entity.Monster
 	for _, v := range gs.partnerMap {
 		partners = append(partners, v)
@@ -198,6 +274,9 @@ func (gs *mockPartnerStorage) GetAvailablePartners(ctx context.Context) ([]entit
 }
 
 func (gs *mockPartnerStorage) GetPartner(ctx context.Context, partnerID string) (*entity.Monster, error) {
+	if gs.retErrOnGetPartner {
+		return nil, ErrIntentionalError
+	}
 	partner, ok := gs.partnerMap[partnerID]
 	if !ok {
 		return nil, nil
@@ -212,3 +291,5 @@ func newMockPartnerStorage(partners []entity.Monster) *mockPartnerStorage {
 	}
 	return &mockPartnerStorage{partnerMap: data}
 }
+
+var ErrIntentionalError = errors.New("intentional error")
