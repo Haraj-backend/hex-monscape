@@ -3,11 +3,11 @@ package entity_test
 import (
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
+	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestIsDead(t *testing.T) {
@@ -21,7 +21,7 @@ func TestIsDead(t *testing.T) {
 			Name: "Monster is Not Dead",
 			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				Name: generateMonsterName(false),
 				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
@@ -29,7 +29,7 @@ func TestIsDead(t *testing.T) {
 					Defense:   100,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			Expected: false,
 		},
@@ -37,7 +37,7 @@ func TestIsDead(t *testing.T) {
 			Name: "Monster Has 0 Health",
 			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				Name: generateMonsterName(false),
 				BattleStats: entity.BattleStats{
 					Health:    0,
 					MaxHealth: 100,
@@ -45,7 +45,7 @@ func TestIsDead(t *testing.T) {
 					Defense:   100,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			Expected: true,
 		},
@@ -53,7 +53,7 @@ func TestIsDead(t *testing.T) {
 			Name: "Monster Has Negative Health",
 			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				Name: generateMonsterName(false),
 				BattleStats: entity.BattleStats{
 					Health:    -100,
 					MaxHealth: 100,
@@ -61,7 +61,7 @@ func TestIsDead(t *testing.T) {
 					Defense:   100,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			Expected: true,
 		},
@@ -71,7 +71,7 @@ func TestIsDead(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
 			actual := testCase.Monster.IsDead()
-			assert.Equal(t, testCase.Expected, actual, "unexpected dead")
+			require.Equal(t, testCase.Expected, actual, "unexpected dead")
 		})
 	}
 }
@@ -88,7 +88,7 @@ func TestInflictDamage(t *testing.T) {
 			Name: "Monster Get Zero Damage",
 			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				Name: generateMonsterName(false),
 				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
@@ -96,11 +96,11 @@ func TestInflictDamage(t *testing.T) {
 					Defense:   0,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("enemy_%v", time.Now().Unix()),
+				Name: generateMonsterName(true),
 				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
@@ -108,7 +108,7 @@ func TestInflictDamage(t *testing.T) {
 					Defense:   100,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			ExpectedHealthAmount: 0,
 		},
@@ -116,7 +116,7 @@ func TestInflictDamage(t *testing.T) {
 			Name: "Monster Get 50 Damage",
 			Monster: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("monster_%v", time.Now().Unix()),
+				Name: generateMonsterName(false),
 				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
@@ -124,11 +124,11 @@ func TestInflictDamage(t *testing.T) {
 					Defense:   50,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			Enemy: entity.Monster{
 				ID:   uuid.NewString(),
-				Name: fmt.Sprintf("enemy_%v", time.Now().Unix()),
+				Name: generateMonsterName(true),
 				BattleStats: entity.BattleStats{
 					Health:    100,
 					MaxHealth: 100,
@@ -136,20 +136,71 @@ func TestInflictDamage(t *testing.T) {
 					Defense:   100,
 					Speed:     100,
 				},
-				AvatarURL: fmt.Sprintf("https://example.com/%v", time.Now().Unix()),
+				AvatarURL: generateAvatarURL(),
 			},
 			ExpectedHealthAmount: 50,
+		},
+		{
+			Name: "Enemy Attack is Lower Than Monster Defense",
+			Monster: entity.Monster{
+				ID:   uuid.NewString(),
+				Name: generateMonsterName(false),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    100,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: generateAvatarURL(),
+			},
+			Enemy: entity.Monster{
+				ID:   uuid.NewString(),
+				Name: generateMonsterName(true),
+				BattleStats: entity.BattleStats{
+					Health:    100,
+					MaxHealth: 100,
+					Attack:    10,
+					Defense:   100,
+					Speed:     100,
+				},
+				AvatarURL: generateAvatarURL(),
+			},
+			ExpectedHealthAmount: 100 - entity.MinDamage,
 		},
 	}
 
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			_, err := testCase.Monster.InflictDamage(testCase.Enemy)
-			if err != nil {
-				t.Errorf("unable to inflict damage, due: %v", err)
-			}
-			assert.Equal(t, testCase.ExpectedHealthAmount, testCase.Monster.BattleStats.Health, "unexpected health amount")
+			testCase.Monster.InflictDamage(testCase.Enemy)
+			require.Equal(t, testCase.ExpectedHealthAmount, testCase.Monster.BattleStats.Health, "unexpected health amount")
 		})
 	}
+}
+
+func TestResetBattleStats(t *testing.T) {
+	// create new monster
+	m := testutil.NewTestMonster()
+
+	// set the monster health to 0
+	m.BattleStats.Health = 0
+
+	// reset the battle stats
+	m.ResetBattleStats()
+
+	// the monster health should be equal to max health
+	require.Equal(t, m.BattleStats.MaxHealth, m.BattleStats.Health, "unexpected health amount")
+}
+
+func generateMonsterName(isEnemy bool) string {
+	prefix := "monster"
+	if isEnemy {
+		prefix = "enemy"
+	}
+	return fmt.Sprintf("%v_%v", prefix, uuid.NewString())
+}
+
+func generateAvatarURL() string {
+	return fmt.Sprintf("https://example.com/%v.jpg", uuid.NewString())
 }

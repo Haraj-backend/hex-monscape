@@ -1,6 +1,6 @@
 package entity
 
-const minDamage = 5
+const MinDamage = 5
 
 type Monster struct {
 	ID          string
@@ -21,10 +21,11 @@ func (p Monster) IsDead() bool {
 
 // InflictDamage is used for inflicting damage to self based
 // on given enemy. Returned the damage amount.
-func (p *Monster) InflictDamage(enemy Monster) (int, error) {
-	dmg := max(enemy.BattleStats.Attack-p.BattleStats.Defense, minDamage)
+func (p *Monster) InflictDamage(enemy Monster) int {
+	dmg := max(enemy.BattleStats.Attack-p.BattleStats.Defense, MinDamage)
 	p.BattleStats.Health -= dmg
-	return dmg, nil
+
+	return dmg
 }
 
 type BattleStats struct {

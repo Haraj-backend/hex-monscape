@@ -123,14 +123,11 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*entity.Battle
 	if err != nil {
 		return nil, err
 	}
-	if battle.State != entity.StateDecideTurn {
+	newState, err := battle.DecideTurn()
+	if err != nil {
 		return nil, ErrInvalidBattleState
 	}
-	_, err = battle.DecideTurn()
-	if err != nil {
-		return nil, fmt.Errorf("unable to decide turn due: %w", err)
-	}
-	if battle.State == entity.StateEnemyTurn {
+	if newState == entity.StateEnemyTurn {
 		err = battle.EnemyAttack()
 		if err != nil {
 			return nil, fmt.Errorf("unable to make enemy attack due: %w", err)
@@ -154,12 +151,9 @@ func (s *service) Attack(ctx context.Context, gameID string) (*entity.Battle, er
 	if battle == nil {
 		return nil, ErrBattleNotFound
 	}
-	if battle.State != entity.StatePartnerTurn {
-		return nil, ErrInvalidBattleState
-	}
 	err = battle.PartnerAttack()
 	if err != nil {
-		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+		return nil, ErrInvalidBattleState
 	}
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
@@ -176,17 +170,19 @@ func (s *service) Attack(ctx context.Context, gameID string) (*entity.Battle, er
 }
 
 func (s *service) Surrender(ctx context.Context, gameID string) (*entity.Battle, error) {
+	// get existing battle
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
-	if battle.State != entity.StatePartnerTurn {
-		return nil, ErrInvalidBattleState
-	}
+
+	// make partner surrender in battle
 	err = battle.PartnerSurrender()
 	if err != nil {
-		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+		return nil, ErrInvalidBattleState
 	}
+
+	// save battle
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
 		return nil, fmt.Errorf("unable to save battle due: %w", err)

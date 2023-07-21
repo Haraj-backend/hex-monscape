@@ -11,10 +11,7 @@ type Storage struct {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	g, ok := s.data[gameID]
-	if !ok {
-		return nil, nil
-	}
+	g := s.data[gameID]
 	return &g, nil
 }
 

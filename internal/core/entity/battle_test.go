@@ -2,21 +2,22 @@ package entity_test
 
 import (
 	"fmt"
+	"math"
 	"testing"
 	"time"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewBattle(t *testing.T) {
 	// define function for validating battle
 	validateBattle := func(t *testing.T, battle entity.Battle, cfg entity.BattleConfig) {
-		assert.NotEmpty(t, battle.GameID, "GameID is empty")
-		assert.NotEmpty(t, battle.Partner, "Partner is empty")
-		assert.NotEmpty(t, battle.Enemy, "Enemy is empty")
+		require.NotEmpty(t, battle.GameID, "GameID is empty")
+		require.NotEmpty(t, battle.Partner, "Partner is empty")
+		require.NotEmpty(t, battle.Enemy, "Enemy is empty")
 	}
 	// define test cases
 	testCases := []struct {
@@ -43,7 +44,7 @@ func TestNewBattle(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battle, err := entity.NewBattle(testCase.Config)
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if battle == nil {
 				return
 			}
@@ -118,12 +119,25 @@ func TestPartnerAttack(t *testing.T) {
 
 			battle.State = testCase.State
 			err := battle.PartnerAttack()
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if !testCase.IsError {
-				assert.Equal(t, battle.Enemy.BattleStats.Health, testCase.ExpectedEnemyHealth, "enemy health is not valid")
+				require.Equal(t, battle.Enemy.BattleStats.Health, testCase.ExpectedEnemyHealth, "enemy health is not valid")
 			}
 		})
 	}
+}
+
+func TestPartnerAttackWin(t *testing.T) {
+	battle := initNewBattle()
+	// set partner attack to very high number so that enemy will be dead
+	battle.Partner.BattleStats.Attack = math.MaxInt
+	// set battle state to partner attack
+	battle.State = entity.StatePartnerTurn
+	// execute partner attack, enemy should be dead
+	err := battle.PartnerAttack()
+	require.NoError(t, err)
+	// validate battle state
+	require.Equal(t, entity.StateWin, battle.State)
 }
 
 func TestPartnerSurrender(t *testing.T) {
@@ -155,9 +169,9 @@ func TestPartnerSurrender(t *testing.T) {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battle.State = testCase.State
 			err := battle.PartnerSurrender()
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if !testCase.IsError {
-				assert.Equal(t, entity.StateLose, battle.State)
+				require.Equal(t, entity.StateLose, battle.State)
 			}
 		})
 	}
@@ -235,12 +249,25 @@ func TestEnemyAttack(t *testing.T) {
 			})
 			battle.State = testCase.State
 			err := battle.EnemyAttack()
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if !testCase.IsError {
-				assert.Equal(t, battle.Partner.BattleStats.Health, testCase.ExpectedPartnerHealth, "partner health is not valid")
+				require.Equal(t, battle.Partner.BattleStats.Health, testCase.ExpectedPartnerHealth, "partner health is not valid")
 			}
 		})
 	}
+}
+
+func TestEnemyAttackWin(t *testing.T) {
+	battle := initNewBattle()
+	// set enemy attack to very high number so that partner will be dead
+	battle.Enemy.BattleStats.Attack = math.MaxInt
+	// set battle state to enemy attack
+	battle.State = entity.StateEnemyTurn
+	// execute enemy attack, partner should be dead
+	err := battle.EnemyAttack()
+	require.NoError(t, err)
+	// validate battle state
+	require.Equal(t, entity.StateLose, battle.State)
 }
 
 func TestIsEnded(t *testing.T) {
@@ -283,7 +310,7 @@ func TestIsEnded(t *testing.T) {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battle.State = testCase.State
 			actual := battle.IsEnded()
-			assert.Equal(t, testCase.Expected, actual, "unexpected dead")
+			require.Equal(t, testCase.Expected, actual, "unexpected dead")
 		})
 	}
 }
@@ -383,9 +410,9 @@ func TestDecideTurn(t *testing.T) {
 			})
 			battle.State = testCase.State
 			state, err := battle.DecideTurn()
-			assert.Equal(t, testCase.IsError, (err != nil), "unexpected error")
+			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
 			if !testCase.IsError {
-				assert.Equal(t, testCase.ExpectedState, state, "expected state is not valid")
+				require.Equal(t, testCase.ExpectedState, state, "expected state is not valid")
 			}
 		})
 	}
