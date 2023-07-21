@@ -14,7 +14,7 @@ The secret technique actually lies in the software architecture we choose for th
 
 By using this remarkable architecture, not only can we speed up their development process but also make them maintainable by the whole team. This is why even though our team is small, we can still develop services that help serve millions of people daily in Saudi Arabia without sabotaging our good sleep at night. 🤣
 
-This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). Please refer to [this doc]((./docs/reference/hex-architecture.md)) to learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game.
+This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). Please refer to [this doc](./docs/reference/hex-architecture.md) to learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game.
 
 To start playing the game, please refer to [How to Run The Game](#how-to-run-the-game) section.
 
