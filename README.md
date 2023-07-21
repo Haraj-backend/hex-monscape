@@ -6,15 +6,15 @@
 
 ![hex_monscape_preview](./docs/images/preview.png)
 
-`Hex Monscape` is a simple turn-based game for Haraj Solutions Team onboarding process.
+`Hex Monscape` is a simple turn-based game to make Haraj Solutions Team onboarding more fun.
 
-Within the game source code, you can find the team's secret technique in writing production code for [Haraj](https://haraj.com.sa) services that help serve millions of people daily in Saudi Arabia despite only having a handful of members. 🥷🏻💥
+In the game code, you can find the team's secret technique in writing production code for [Haraj](https://haraj.com.sa) services that help serve millions of people daily in Saudi Arabia despite only having a handful of members. 🥷🏻💥
 
 The secret technique actually lies in the architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-By using this remarkable architecture, not only can we speed up the development process of these projects but also make them maintainable by the whole team.  This is why even though our team is small, we can still create services that help serve millions in Saudi Arabia without sabotaging our good sleep at night. 🤣
+By using this remarkable architecture, not only can we speed up the development process of these services but also make them maintainable by the whole team.  This is why even though our team is small, we can still develop services that help serve millions in Saudi Arabia without sabotaging our good sleep at night. 🤣
 
-This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). Please refer to [this doc](./docs/reference/hex-architecture.md) to learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game.
+This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). To learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to the game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
 To start playing the game, please refer to [How to Run The Game](#how-to-run-the-game) section.
 
