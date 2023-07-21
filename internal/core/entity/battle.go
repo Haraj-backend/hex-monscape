@@ -2,7 +2,6 @@ package entity
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -27,10 +26,7 @@ func (b *Battle) PartnerAttack() error {
 		return ErrInvalidState
 	}
 	// inflict damage to enemy
-	damage, err := b.Enemy.InflictDamage(*b.Partner)
-	if err != nil {
-		return fmt.Errorf("unable to inflict damage to enemy due: %w", err)
-	}
+	damage := b.Enemy.InflictDamage(*b.Partner)
 	// set enemy last damage
 	b.LastDamage.Enemy = damage
 	// set battle state accordingly
@@ -63,10 +59,7 @@ func (b *Battle) EnemyAttack() error {
 		return ErrInvalidState
 	}
 	// inflict damage to partner
-	damage, err := b.Partner.InflictDamage(*b.Enemy)
-	if err != nil {
-		return fmt.Errorf("unable to inflict damage to partner due: %w", err)
-	}
+	damage := b.Partner.InflictDamage(*b.Enemy)
 	// set partner last damage
 	b.LastDamage.Partner = damage
 	// set battle state accordingly

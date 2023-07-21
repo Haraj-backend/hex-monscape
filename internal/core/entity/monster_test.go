@@ -173,10 +173,7 @@ func TestInflictDamage(t *testing.T) {
 	// execute test cases
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			_, err := testCase.Monster.InflictDamage(testCase.Enemy)
-			if err != nil {
-				t.Errorf("unable to inflict damage, due: %v", err)
-			}
+			testCase.Monster.InflictDamage(testCase.Enemy)
 			require.Equal(t, testCase.ExpectedHealthAmount, testCase.Monster.BattleStats.Health, "unexpected health amount")
 		})
 	}
