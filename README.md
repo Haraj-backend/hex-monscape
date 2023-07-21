@@ -8,13 +8,13 @@
 
 `Hex Monscape` is a simple turn-based game to make Haraj Solutions Team onboarding more fun.
 
-In the game code, you can find the team's secret technique in writing production code for [Haraj](https://haraj.com.sa) services that help serve millions of people daily in Saudi Arabia despite only having a handful of members. 🥷🏻💥
+In the game code, you can find the team's secret technique in writing production code for [Haraj](https://haraj.com.sa) services that help serve millions of people daily in Saudi Arabia despite only having a handful of team members. 🥷🏻💥
 
 The secret technique actually lies in the architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-By using this remarkable architecture, not only can we speed up the development process of these services but also make them maintainable by the whole team.  This is why even though our team is small, we can still develop services that help serve millions in Saudi Arabia without sabotaging our good sleep at night. 🤣
+By using this remarkable architecture, not only can we speed up the development process of these services but also make them **maintainable** by the whole team. This is why even though our team is small, we can still do our job properly without losing good sleep at night. 🤣
 
-This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). To learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to the game, please refer to [this doc](./docs/reference/hex-architecture.md).
+The game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). To learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to the game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
 To start playing the game, please refer to [How to Run The Game](#how-to-run-the-game) section.
 
@@ -22,7 +22,7 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 >
 > Many people got interested in software engineering because of games. So using them to exchange knowledge within our team seems like a fun idea. This is why we created this project. 😃
 >
-> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, the architecture itself is language agnostic. So we can also apply it to other languages such as PHP, Typescript, & Python. This is why we believe this repo could also be useful for other software developers outside our team. 😁
+> Even though we are using Golang to implement [Hexagonal Architecture](./docs/reference/hex-architecture.md) in this repo, the architecture itself is language agnostic. So we can also apply it to other languages such as PHP, Typescript, & Python.
 
 ## Background Story
 
