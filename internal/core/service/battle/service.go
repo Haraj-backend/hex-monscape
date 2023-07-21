@@ -176,17 +176,19 @@ func (s *service) Attack(ctx context.Context, gameID string) (*entity.Battle, er
 }
 
 func (s *service) Surrender(ctx context.Context, gameID string) (*entity.Battle, error) {
+	// get existing battle
 	battle, err := s.GetBattle(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
-	if battle.State != entity.StatePartnerTurn {
-		return nil, ErrInvalidBattleState
-	}
+
+	// make partner surrender in battle
 	err = battle.PartnerSurrender()
 	if err != nil {
-		return nil, fmt.Errorf("unable to decide turn due: %w", err)
+		return nil, ErrInvalidBattleState
 	}
+
+	// save battle
 	err = s.battleStorage.SaveBattle(ctx, *battle)
 	if err != nil {
 		return nil, fmt.Errorf("unable to save battle due: %w", err)

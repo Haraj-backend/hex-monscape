@@ -24,6 +24,7 @@ import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -303,20 +304,23 @@ func TestServiceAttack(t *testing.T) {
 }
 
 func TestServiceSurrender(t *testing.T) {
-	battleStorage := newMockBattleStorage()
-	gameStorage := newMockGameStorage()
-	monsterStorage := newMockMonsterStorage()
+	// init service
+	output := initService(t)
 
+	// create game
 	partner := testutil.NewTestMonster()
 	game, err := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
 		CreatedAt:  time.Now().Unix(),
 	})
-	if err != nil {
-		t.Fatalf("unable to init new game, due: %v", err)
-	}
+	require.NoError(t, err, "unable to init new game")
 
+	// save game
+	err = output.GameStorage.SaveGame(context.Background(), *game)
+	require.NoError(t, err, "unable to save game")
+
+	// create battle with state partner turn
 	bt, _ := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
@@ -324,30 +328,64 @@ func TestServiceSurrender(t *testing.T) {
 	})
 	bt.State = entity.StatePartnerTurn
 
-	err = gameStorage.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
-	}
-	err = battleStorage.SaveBattle(context.Background(), *bt)
-	if err != nil {
-		t.Fatalf("unable to save battle, due: %v", err)
-	}
+	// save battle
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err, "unable to save battle")
 
+	// surrender battle
+	surrenderBattle, err := output.Service.Surrender(context.Background(), bt.GameID)
+	require.NoError(t, err, "unable to surrender battle")
+
+	// assert returned battle state
+	expectedBattle := bt
+	expectedBattle.State = entity.StateLose
+	require.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
+
+	// change battle state to enemy turn
+	bt.State = entity.StateEnemyTurn
+
+	// update battle
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err, "unable to save battle")
+
+	// surrender battle, this time we expect error
+	surrenderBattle, err = output.Service.Surrender(context.Background(), bt.GameID)
+	require.ErrorIs(t, err, battle.ErrInvalidBattleState)
+	require.Nil(t, surrenderBattle, "unexpected battle returned")
+
+	// try to surrender with invalid game id, should return error
+	surrenderBattle, err = output.Service.Surrender(context.Background(), uuid.NewString())
+	require.ErrorIs(t, err, battle.ErrGameNotFound)
+	require.Nil(t, surrenderBattle, "unexpected battle returned")
+}
+
+type initServiceOutput struct {
+	Service        battle.Service
+	BattleStorage  *mockBattleStorage
+	GameStorage    *mockGameStorage
+	MonsterStorage *mockMockStorage
+}
+
+func initService(t *testing.T) *initServiceOutput {
+	// init dependencies
+	battleStorage := newMockBattleStorage()
+	gameStorage := newMockGameStorage()
+	monsterStorage := newMockMonsterStorage()
+
+	// init service
 	svc, err := battle.NewService(battle.ServiceConfig{
 		GameStorage:    gameStorage,
 		BattleStorage:  battleStorage,
 		MonsterStorage: monsterStorage,
 	})
-	if err != nil {
-		t.Fatalf("unable to init new service, due: %v", err)
+	require.NoError(t, err)
+
+	return &initServiceOutput{
+		Service:        svc,
+		BattleStorage:  battleStorage,
+		GameStorage:    gameStorage,
+		MonsterStorage: monsterStorage,
 	}
-	surrenderBattle, err := svc.Surrender(context.Background(), bt.GameID)
-	if err != nil {
-		t.Fatalf("unable to surrender, due: %v", err)
-	}
-	expectedBattle := bt
-	expectedBattle.State = entity.StateLose
-	require.Equal(t, expectedBattle, surrenderBattle, "invalid battle stored")
 }
 
 type mockGameStorage struct {
