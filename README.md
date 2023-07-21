@@ -121,7 +121,7 @@ The memes used in this project is generated using [this meme generator](https://
 
 The project layout used in this project is inspired by [this repo](https://github.com/golang-standards/project-layout).
 
-The font used in the words "Hex Monscape" on the Hex Monscape logo is [Lexend Deca](https://fonts.google.com/specimen/Lexend+Deca?preview.text=HEX%20MONSCAPE&preview.text_type=custom&category=Sans+Serif,Display) from Google Fonts.
+The font used in the words `"Hex Monscape"` on the Hex Monscape logo is [Lexend Deca](https://fonts.google.com/specimen/Lexend+Deca?preview.text=HEX%20MONSCAPE&preview.text_type=custom&category=Sans+Serif,Display) from Google Fonts.
 
 ## Contributing
 
