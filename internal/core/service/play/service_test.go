@@ -107,9 +107,14 @@ func TestServiceNewGame(t *testing.T) {
 	require.NoError(t, err, "unexpected error")
 	require.Equal(t, *game, *storedGame, "mismatch game")
 
-	// create new game with invalid partner
+	// create new game with invalid partner, should return error
 	game, err = output.Service.NewGame(context.Background(), "Riandy R.N", uuid.NewString())
 	require.Equal(t, play.ErrPartnerNotFound, err, "mismatch error")
+	require.Nil(t, game, "unexpected game")
+
+	// create new game with empty player name, should return error
+	game, err = output.Service.NewGame(context.Background(), "", partner.ID)
+	require.Error(t, err, "expected error")
 	require.Nil(t, game, "unexpected game")
 
 	// set error on save game, should return error
