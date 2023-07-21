@@ -123,14 +123,11 @@ func (s *service) DecideTurn(ctx context.Context, gameID string) (*entity.Battle
 	if err != nil {
 		return nil, err
 	}
-	if battle.State != entity.StateDecideTurn {
+	newState, err := battle.DecideTurn()
+	if err != nil {
 		return nil, ErrInvalidBattleState
 	}
-	_, err = battle.DecideTurn()
-	if err != nil {
-		return nil, fmt.Errorf("unable to decide turn due: %w", err)
-	}
-	if battle.State == entity.StateEnemyTurn {
+	if newState == entity.StateEnemyTurn {
 		err = battle.EnemyAttack()
 		if err != nil {
 			return nil, fmt.Errorf("unable to make enemy attack due: %w", err)

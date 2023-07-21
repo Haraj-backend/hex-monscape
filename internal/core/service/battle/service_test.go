@@ -212,51 +212,66 @@ func TestServiceGetBattle(t *testing.T) {
 }
 
 func TestServiceDecideTurn(t *testing.T) {
-	battleStorage := newMockBattleStorage()
-	gameStorage := newMockGameStorage()
-	monsterStorage := newMockMonsterStorage()
+	// init service
+	output := initService(t)
 
+	// create partner, we make it's speed to 0 so enemy will always attack first
 	partner := testutil.NewTestMonster()
+	partner.BattleStats.Health = 100
+	partner.BattleStats.Defense = 95
+	partner.BattleStats.Speed = 0
+
+	// create enemy, we make it's speed to 100 so enemy will always attack first
+	enemy := testutil.NewTestMonster()
+	enemy.BattleStats.Health = 100
+	enemy.BattleStats.Speed = 100
+	enemy.BattleStats.Attack = 100
+
+	// create game
 	game, err := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",
 		Partner:    partner,
 		CreatedAt:  time.Now().Unix(),
 	})
-	if err != nil {
-		t.Fatalf("unable to init new game, due: %v", err)
-	}
+	require.NoError(t, err)
 
-	bt, _ := entity.NewBattle(entity.BattleConfig{
+	// save game
+	err = output.GameStorage.SaveGame(context.Background(), *game)
+	require.NoError(t, err)
+
+	// create battle
+	bt, err := entity.NewBattle(entity.BattleConfig{
 		GameID:  game.ID,
 		Partner: partner,
-		Enemy:   testutil.NewTestMonster(),
+		Enemy:   enemy,
 	})
+	require.NoError(t, err)
 
-	err = gameStorage.SaveGame(context.Background(), *game)
-	if err != nil {
-		t.Fatalf("unable to save game, due: %v", err)
-	}
-	err = battleStorage.SaveBattle(context.Background(), *bt)
-	if err != nil {
-		t.Fatalf("unable to save battle, due: %v", err)
-	}
+	// save battle
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err)
 
-	svc, err := battle.NewService(battle.ServiceConfig{
-		GameStorage:    gameStorage,
-		BattleStorage:  battleStorage,
-		MonsterStorage: monsterStorage,
-	})
-	if err != nil {
-		t.Fatalf("unable to init new service, due: %v", err)
-	}
-	bt, err = svc.DecideTurn(context.Background(), bt.GameID)
-	if err != nil {
-		t.Fatalf("unable to decide turn, due: %v", err)
-	}
+	// decide turn, should be enemy turn
+	bt, err = output.Service.DecideTurn(context.Background(), bt.GameID)
+	require.NoError(t, err)
 
-	storedBattle, err := battleStorage.GetBattle(context.Background(), bt.GameID)
+	// check returned battle state, in here we expect partner reduced to 100 - (100 - 5) = 95
+	storedBattle, err := output.BattleStorage.GetBattle(context.Background(), bt.GameID)
 	require.NoError(t, err, "unable to get stored battle")
-	require.Equal(t, bt, storedBattle, "invalid battle stored")
+	require.NotNil(t, storedBattle, "stored battle is nil")
+	require.Equal(t, storedBattle.Partner.BattleStats.Health, 95, "invalid partner health")
+
+	// the battle state will be DECIDE_TURN again
+	require.Equal(t, entity.StateDecideTurn, storedBattle.State, "invalid battle state")
+
+	// update battle state to something else
+	bt.State = entity.StatePartnerTurn
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err)
+
+	// decide turn, this time we expect error
+	_, err = output.Service.DecideTurn(context.Background(), bt.GameID)
+	require.ErrorIs(t, err, battle.ErrInvalidBattleState)
 }
 
 func TestServiceAttack(t *testing.T) {
