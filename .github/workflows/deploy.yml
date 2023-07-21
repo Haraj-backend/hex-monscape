@@ -3,7 +3,6 @@ name: deploy
 on:
   push:
     paths-ignore:
-      - 'Makefile'
       - '**.md'
       - 'docs/**'
     branches: 
