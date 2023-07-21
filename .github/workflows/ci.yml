@@ -5,6 +5,12 @@ on:
     paths-ignore:
       - '**.md'
       - 'docs/**'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
 
 jobs:
   run-tests:
@@ -18,6 +24,11 @@ jobs:
 
       - name: Run Automated Tests
         run: make test
+
+      - name: Send Coverage Report to Coveralls
+        uses: shogo82148/actions-goveralls@v1
+        with:
+          path-to-profile: ./.output/cov-report/profile.cov
 
       - name: Test Build All Container Images
         run: make test-build-all
