@@ -14,9 +14,9 @@ The secret technique actually lies in the software architecture we choose for th
 
 By using this remarkable architecture, not only can we speed up the project development but also make it maintainable by the whole team.
 
-This is why even though our team is small, we can still create services that help serve millions of people daily in Saudi Arabia while still having a good sleep. 🤣
+This is why even though our team is small, we can still create services that help serve millions of people daily in Saudi Arabia while still sleeping well at night. 🤣
 
-This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). To learn on how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game, please refer to [this doc](./docs/reference/hex-architecture.md).
+This game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). Please refer to [this doc]((./docs/reference/hex-architecture.md)) to learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to this game.
 
 To start playing the game, please refer to [How to Run The Game](#how-to-run-the-game) section.
 
@@ -30,11 +30,11 @@ To start playing the game, please refer to [How to Run The Game](#how-to-run-the
 
 One of the most significant engineering issues in [Haraj](https://haraj.com.sa) is code maintainability.
 
-What is code maintainability? It is the ability of a codebase to be easily maintained by other developers. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
+What is code maintainability? Essentially it is the ability of a codebase to be easily maintained by others. So when a developer can no longer maintain the codebase, other developers could easily take over the code they left behind.
 
-As you may already know, Haraj engineering team is relatively small. So in our early days, we gave project ownership to the developer who started the project. This developer will be responsible for every aspect of the project: writing the code, deploying it to production, & maintaining it.
+As you may already know, Haraj engineering team is small. So in our early days, we gave project ownership to the developer who started the project. This developer will be responsible for every aspect of the project development: writing the code, deploying it to production, & maintaining it.
 
-At that time, we did not set up common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
+At that time, we made a mistake by not setting up common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
 
 Usually, our developers will stay for quite a long time (`~5 years`) before they leave. So when a developer leaves the team, they usually own several valuable projects for Haraj business. The problem is that since the projects were written in the developer's style, no one in the team could easily take over those projects. 😅
 
