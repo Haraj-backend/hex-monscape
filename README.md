@@ -12,7 +12,7 @@ In the game code, you can find the team's secret technique in writing production
 
 The secret technique actually lies in the architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-By using this remarkable architecture, not only can we speed up the development process of these services but also make them **maintainable** by the whole team. This is why even though our team is small, we can still do our job properly without losing good sleep at night. 🤣
+By using this remarkable architecture, not only can we speed up the development process of these services but also make them **maintainable by the whole team**. This is why even though our team is small, we can still do our job properly without losing good sleep at night. 🤣
 
 The game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). To learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to the game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
@@ -34,7 +34,7 @@ As you may already know, Haraj engineering team is small. So in our early days, 
 
 At that time, we did not set common standards for writing code for those projects. So every developer writes code based on their style & preferences with almost no consideration for other developers.
 
-This situation created a lot of stress for each developer on the team. Since they were the only ones who understood the code they wrote, they were the only ones who could maintain it. So when they are on vacation or sick, they must be on standby to fix any issues that might arise in their projects. 😔
+This situation created a lot of frustration in the team. Since the project authors were the only ones who understood the code they wrote, they were also the only ones who could maintain it. So when they were on vacation or sick, the project they owned would be stuck until they came back because no one else dared to touch it. 😢
 
 On the other hand, our developers will stay long before they leave (`~5 years`). So when a developer leaves the team, they usually own several valuable projects for the Haraj business. The problem is that since the projects were written in the developer's style, no team member could easily take over those projects. 😅
 
