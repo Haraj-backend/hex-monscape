@@ -12,7 +12,7 @@ In the game code, you can find the team's secret technique in writing production
 
 The secret technique actually lies in the architecture we choose for these services: [Hexagonal Architecture](./docs/reference/hex-architecture.md).
 
-By using this remarkable architecture, not only can we speed up the development process of these services but also make them <ins>**maintainable by the whole team**</ins>. This is why even though our team is small, we can still do our job properly without losing good sleep at night. 🤣
+By using this remarkable architecture, not only can we speed up the development process of these services but also make them **maintainable by the whole team**. This is why even though our team is small, we can still do our job properly without losing good sleep at night. 🤣
 
 The game was created using [Golang](https://go.dev/) & [Vue 3](https://vuejs.org/). To learn how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md) to the game, please refer to [this doc](./docs/reference/hex-architecture.md).
 
