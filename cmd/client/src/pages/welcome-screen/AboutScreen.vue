@@ -14,7 +14,7 @@ export default {
 
 <template>
     <div id="welcome-screen-wrapper" class="flex relative w-app h-app bg-cover">
-        <div class="p-[160px]">
+        <div id="screen-wrapper">
             <!-- Game title -->
             <h1 class="game-title">
                 HEX

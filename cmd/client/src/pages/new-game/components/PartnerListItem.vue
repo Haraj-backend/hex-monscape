@@ -30,7 +30,7 @@ export default {
 
 <template>
     <div
-        class="flex items-center gap-x-2 w-[300px] py-2 pl-3 bg-white rounded-lg border border-2"
+        class="flex items-center gap-x-2 w-full lg:w-[300px] py-2 pl-3 bg-white rounded-lg border border-2"
         :class="active ? 'border-black' : 'border-[rgba(0,0,0,.2)]'"
         @click="choosePartner"
     >

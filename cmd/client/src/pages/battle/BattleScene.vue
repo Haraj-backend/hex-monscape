@@ -172,50 +172,66 @@ export default {
 }
 </script>
 <template>
-    <div class="flex flex-col px-16 py-12">
+    <div class="flex flex-col px-6 sm:px-16 py-12">
         <!-- Battle scene -->
         <div class="battle-scene-wrapper">
-            <!-- Partner -->
-            <div class="partner-scene">
-                <div class="top-part">
+            <div class="top-part hud flex flex-row justify-between">
+                <div class="w-full flex flex-col">
                     <HealthBar
                         :maxHealth="battleState.partner.battle_stats.max_health"
                         :currentHealth="battleState.partner.battle_stats.health"
                     />
                     <p class="partner-name">{{ battleState.partner.name }} <small>(Partner)</small></p>
                 </div>
-                <div class="monster-avatar">
-                    <img
-                        :class="shaking.partner || battleState.state === turnStates.LOSE ? 'animate-shake' : ''"
-                        width="256"
-                        height="256"
-                        :src="battleState.partner.avatar_url"
-                        alt="partner_avatar"
-                    />
-                </div>
-            </div>
 
-            <div class="middle-part">
-                <div class="battle-description font-bold text-2xl">{{ battleNumber }}</div>
-            </div>
+                <div class="hidden min-[1060px]:block battle-description font-bold text-2xl">{{ battleNumber }}</div>
 
-            <div class="enemy-scene">
-                <div class="top-part">
+                <div class="w-full flex flex-col max-[1059px]:hidden">
                     <HealthBar
+                        class="ms-auto"
                         :maxHealth="battleState.enemy.battle_stats.max_health"
                         :currentHealth="battleState.enemy.battle_stats.health"
                     />
                     <p class="enemy-name">{{ battleState.enemy.name }}</p>
                 </div>
-                <div class="monster-avatar">
-                    <img
-                        :class="shaking.enemy || battleState.state === turnStates.WIN ? 'animate-shake' : ''"
-                        width="256"
-                        height="256"
-                        :src="battleState.enemy.avatar_url"
-                        alt="partner_avatar"
-                    />
+            </div>
+
+            <div class="battle-scene flex flex-row justify-between">
+                <!-- Partner -->
+                <div class="partner-scene">
+                    <div class="monster-avatar">
+                        <img
+                            :class="shaking.partner || battleState.state === turnStates.LOSE ? 'animate-shake' : ''"
+                            width="256"
+                            height="256"
+                            :src="battleState.partner.avatar_url"
+                            alt="partner_avatar"
+                        />
+                    </div>
                 </div>
+    
+                <div class="enemy-scene">
+                    <div class="monster-avatar">
+                        <img
+                            :class="shaking.enemy || battleState.state === turnStates.WIN ? 'animate-shake' : ''"
+                            width="256"
+                            height="256"
+                            :src="battleState.enemy.avatar_url"
+                            alt="partner_avatar"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="block mb-8 min-[1060px]:hidden battle-description font-bold text-2xl">{{ battleNumber }}</div>
+
+            <div class="w-full flex flex-col min-[1060px]:hidden">
+                <HealthBar
+                    class="ms-auto"
+                    :maxHealth="battleState.enemy.battle_stats.max_health"
+                    :currentHealth="battleState.enemy.battle_stats.health"
+                />
+                <p class="enemy-name">{{ battleState.enemy.name }}</p>
             </div>
         </div>
 
@@ -240,7 +256,7 @@ export default {
                 </div>
                 <div
                     v-if="controlState.turn === turnStates.PARTNER_TURN && controlState.partnerTurn"
-                    class="flex gap-x-4"
+                    class="flex min-[1060px]:gap-x-4 max-[1060px]:flex-col max-[1060px]:w-full"
                 >
                     <ControlButton @click="attack" type="attack" label="Attack" />
                     <ControlButton @click="surrender" type="surrender" label="Surrender" />
@@ -252,13 +268,13 @@ export default {
 
 <style scoped>
 .battle-scene-wrapper {
-    @apply flex justify-between;
+    @apply flex flex-col justify-between;
 }
 .battle-control-wrapper {
     @apply flex flex-col w-full items-center justify-center gap-y-4 mt-20;
 }
 .control-description {
-    @apply w-[800px] bg-white py-12;
+    @apply w-[800px] max-[1060px]:w-full bg-white py-12;
     @apply shadow-[0_6px_0_rgba(0,0,0,.15)] rounded-lg;
     @apply text-center text-5xl italic;
 }
@@ -274,7 +290,10 @@ export default {
 .monster-avatar {
     @apply flex justify-center mt-44;
 }
-.monster-avatar {
-    @apply flex justify-center mt-44;
+
+@media (max-width: 1060px) {
+    .monster-avatar {
+        @apply flex justify-center mt-6;
+    }
 }
 </style>

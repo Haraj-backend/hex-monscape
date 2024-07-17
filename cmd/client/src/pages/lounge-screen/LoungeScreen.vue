@@ -81,7 +81,7 @@ export default {
 }
 </script>
 <template>
-    <div class="flex justify-between w-full h-app p-[160px]">
+    <div class="flex flex-col lg:flex-row justify-between w-full lg:h-app p-10 pt-[160px] sm:p-[160px]">
         <div class="left-side pr-24">
             <!-- Texts -->
             <p class="game-description text-3xl">
@@ -93,7 +93,6 @@ export default {
             <p
                 class="game-description text-xl mt-2"
             >{{ gameFinished ? 'You have won the game!' : `Total wins ${currentGameData.battleWon}` }}</p>
-
             <!-- Battle scenario buttons -->
             <div class="battle-scenario-list flex flex-col gap-y-4 mt-24">
                 <p class="game-description text-xl">{{ loungeOrder }}</p>
@@ -108,7 +107,7 @@ export default {
                 >New Game</button>
             </div>
         </div>
-        <div class="right-side">
+        <div class="right-side hidden sm:block">
             <PartnerCard :partner="partner" />
         </div>
     </div>
