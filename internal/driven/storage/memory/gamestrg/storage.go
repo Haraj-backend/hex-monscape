@@ -11,7 +11,12 @@ type Storage struct {
 }
 
 func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	g := s.data[gameID]
+	g, exist := s.data[gameID]
+	if !exist {
+		// if item is not found, returns nil as expected by game interface
+		return nil, nil
+	}
+
 	return &g, nil
 }
 
