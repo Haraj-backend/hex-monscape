@@ -25,13 +25,25 @@ export default {
             <div class="game-initial-actions">
                 <button
                     @click="router.push({ name: 'player-name' })"
-                    class="bg-white rounded-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_rgba(0,0,0,0.2)] text-2xl max-[325px]:text-lg font-bold py-2 w-full sm:w-[264px] mt-10 sm:mt-0"
+                    class="btn-start bg-white rounded-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_rgba(0,0,0,0.2)] text-2xl font-bold py-2 w-full sm:w-[264px] mt-10 sm:mt-0"
                 >New Game</button>
                 <button
                     @click="router.push({ name: 'about-screen' })"
-                    class="bg-white rounded-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_rgba(0,0,0,0.2)] text-2xl max-[325px]:text-lg py-2 w-full sm:w-[264px]"
+                    class="bg-white rounded-lg shadow-[0_4px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_rgba(0,0,0,0.2)] text-2xl py-2 w-full sm:w-[264px]"
                 >About</button>
             </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+@media (max-width: 325px) {
+    .btn-start {
+        @apply text-lg;
+    }
+
+    .btn-about {
+        @apply text-lg;
+    }
+}
+</style>

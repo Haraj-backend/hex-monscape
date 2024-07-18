@@ -184,9 +184,9 @@ export default {
                     <p class="partner-name">{{ battleState.partner.name }} <small>(Partner)</small></p>
                 </div>
 
-                <div class="hidden min-[1060px]:block battle-description font-bold text-2xl">{{ battleNumber }}</div>
+                <div class="hidden battle-description battle-description-hud font-bold text-2xl">{{ battleNumber }}</div>
 
-                <div class="w-full flex flex-col max-[1059px]:hidden">
+                <div class="w-full flex flex-col enemy-info-hud">
                     <HealthBar
                         class="ms-auto"
                         :maxHealth="battleState.enemy.battle_stats.max_health"
@@ -223,9 +223,9 @@ export default {
                 </div>
             </div>
 
-            <div class="block mb-8 min-[1060px]:hidden battle-description font-bold text-2xl">{{ battleNumber }}</div>
+            <div class="block mb-8 battle-description battle-description-hud-mobile font-bold text-2xl">{{ battleNumber }}</div>
 
-            <div class="w-full flex flex-col min-[1060px]:hidden">
+            <div class="w-full flex flex-col enemy-info-hud-mobile">
                 <HealthBar
                     class="ms-auto"
                     :maxHealth="battleState.enemy.battle_stats.max_health"
@@ -256,7 +256,7 @@ export default {
                 </div>
                 <div
                     v-if="controlState.turn === turnStates.PARTNER_TURN && controlState.partnerTurn"
-                    class="flex min-[1060px]:gap-x-4 max-[1060px]:flex-col max-[1060px]:w-full"
+                    class="battle-turn-hud flex"
                 >
                     <ControlButton @click="attack" type="attack" label="Attack" />
                     <ControlButton @click="surrender" type="surrender" label="Surrender" />
@@ -274,7 +274,7 @@ export default {
     @apply flex flex-col w-full items-center justify-center gap-y-4 mt-20;
 }
 .control-description {
-    @apply w-[800px] max-[1060px]:w-full bg-white py-12;
+    @apply w-[800px] bg-white py-12;
     @apply shadow-[0_6px_0_rgba(0,0,0,.15)] rounded-lg;
     @apply text-center text-5xl italic;
 }
@@ -291,9 +291,39 @@ export default {
     @apply flex justify-center mt-44;
 }
 
+@media (min-width: 1060px) {
+    .battle-description-hud {
+        @apply block;
+    }
+
+    .battle-description-hud-mobile {
+        @apply hidden;
+    }
+
+    .enemy-info-hud-mobile {
+        @apply hidden;
+    }
+
+    .battle-turn-hud {
+        @apply gap-x-4;
+    }
+}
+
 @media (max-width: 1060px) {
+    .control-description {
+        @apply w-full;
+    }
+
+    .enemy-info-hud {
+        @apply hidden;
+    }
+
     .monster-avatar {
         @apply flex justify-center mt-6;
+    }
+
+    .battle-turn-hud {
+        @apply flex-col w-full;
     }
 }
 </style>

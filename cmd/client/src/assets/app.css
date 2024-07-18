@@ -25,7 +25,7 @@ body {
 }
 
 h1.game-title {
-  @apply text-5xl max-[325px]:text-4xl sm:text-6xl font-bold;
+  @apply text-5xl sm:text-6xl font-bold;
 }
 
 .game-initial-actions {
@@ -35,4 +35,10 @@ h1.game-title {
 
 span.player-name {
   @apply font-bold;
+}
+
+@media (max-width: 325px) {
+    h1.game-title {
+        @apply text-4xl;
+    }
 }
