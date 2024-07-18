@@ -26,4 +26,10 @@ export default {
 .control-general {
     @apply bg-orange-500;
 }
+
+@media (max-width: 1060px) {
+    .control-button {
+        @apply w-full block mb-4;
+    }
+}
 </style>

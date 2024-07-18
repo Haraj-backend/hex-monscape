@@ -14,13 +14,18 @@ body {
 }
 
 #game-wrapper {
-  @apply w-app h-app overflow-hidden;
+  @apply w-screen sm:w-app lg:h-app overflow-hidden;
   @apply border-2 border-gray-900 rounded-lg shadow-xl;
   @apply bg-cover;
 }
 
+#screen-wrapper {
+  @apply w-screen p-10 pt-[160px] sm:p-[160px];
+  @apply flex flex-col sm:flex-none;
+}
+
 h1.game-title {
-  @apply text-6xl font-bold;
+  @apply text-5xl sm:text-6xl font-bold;
 }
 
 .game-initial-actions {
@@ -30,4 +35,10 @@ h1.game-title {
 
 span.player-name {
   @apply font-bold;
+}
+
+@media (max-width: 325px) {
+    h1.game-title {
+        @apply text-4xl;
+    }
 }

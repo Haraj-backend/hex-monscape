@@ -20,7 +20,7 @@ export default {
 <template>
     <div
         v-if="partner"
-        class="flex flex-col items-center bg-white w-[400px] h-[490px] py-6 border border-2 border-black rounded-lg"
+        class="flex flex-col items-center bg-white w-full xl:w-[400px] lg:w-[300px] h-[490px] py-6 border border-2 border-black rounded-lg"
     >
         <img :src="partner.avatar_url" alt="avatar_url" width="192" height="192" />
         <p class="partner-name text-2xl">{{ partner.name }}</p>
