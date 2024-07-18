@@ -16,12 +16,17 @@ func TestSaveGetBattle(t *testing.T) {
 	strg := battlestrg.New()
 	expBattle := newBattle()
 
+	// get battle, supposedly the returned battle is nil
+	battle, err := strg.GetBattle(context.Background(), expBattle.GameID)
+	require.NoError(t, err)
+	require.Nil(t, battle, "battle is not nil")
+
 	// save battle
-	err := strg.SaveBattle(context.Background(), *expBattle)
+	err = strg.SaveBattle(context.Background(), *expBattle)
 	require.NoError(t, err)
 
 	// get battle
-	battle, err := strg.GetBattle(context.Background(), expBattle.GameID)
+	battle, err = strg.GetBattle(context.Background(), expBattle.GameID)
 	require.NoError(t, err)
 
 	// ensure battle is equal to expBattle

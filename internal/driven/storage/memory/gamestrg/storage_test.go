@@ -16,12 +16,17 @@ func TestSaveGetGame(t *testing.T) {
 	strg := gamestrg.New()
 	expGame := initNewGame()
 
+	// get game, supposedly the returned game is nil
+	game, err := strg.GetGame(context.Background(), expGame.ID)
+	require.NoError(t, err)
+	require.Nil(t, game, "game is not nil")
+
 	// save game
-	err := strg.SaveGame(context.Background(), *expGame)
+	err = strg.SaveGame(context.Background(), *expGame)
 	require.NoError(t, err)
 
 	// get game
-	game, err := strg.GetGame(context.Background(), expGame.ID)
+	game, err = strg.GetGame(context.Background(), expGame.ID)
 	require.NoError(t, err)
 
 	// ensure game is equal to newGame
