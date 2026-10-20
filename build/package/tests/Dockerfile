@@ -1,4 +1,4 @@
-FROM golang:1.20.5-alpine3.18 as build
+FROM golang:1.27.3-alpine3.24 AS build
 WORKDIR /go/src/github.com/Haraj-backend/hex-monscape
 
 COPY go.mod go.sum ./

@@ -1,7 +1,7 @@
-FROM golang:1.20.5-alpine3.18 as build
+FROM golang:1.27.3-alpine3.24 AS build
 WORKDIR /go/src/github.com/Haraj-backend/hex-monscape
 
-RUN go install github.com/cosmtrek/air@v1.44.0
+RUN go install github.com/air-verse/air@v1.67.4
 RUN mkdir -p .output
 
 COPY go.mod go.sum ./

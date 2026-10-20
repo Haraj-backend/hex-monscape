@@ -1,4 +1,4 @@
-FROM node:18.16.1-alpine3.18
+FROM node:24.22.0-alpine3.24
 WORKDIR /client
 
 COPY ./cmd/client .
