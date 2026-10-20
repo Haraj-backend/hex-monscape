@@ -4,6 +4,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Haraj-backend/hex-monscape)](https://goreportcard.com/report/github.com/Haraj-backend/hex-monscape)
 [![Coverage Status](https://coveralls.io/repos/github/Haraj-backend/hex-monscape/badge.svg?branch=master&refresh_token=4fff75f6-460c-48d9-b532-896e2aadbc5a)](https://coveralls.io/github/Haraj-backend/hex-monscape?branch=master)
 
+> [!TIP]
+> **Building with Claude Code?** This repo ships a [`hex-architecture`](./.claude/skills/hex-architecture/SKILL.md) skill that teaches Claude how we apply [Hexagonal Architecture](./docs/reference/hex-architecture.md). Use it to scaffold a new project, add a service or adapter, or review code for architecture compliance. Open Claude Code in this repo and it loads automatically. To use it in other projects, copy `.claude/skills/hex-architecture/` into that project's `.claude/skills/` or into `~/.claude/skills/`.
+
 
 ![hex_monscape_preview](./docs/images/readme-preview-cc14f47c-8a2a-41ce-b442-bdd99b4807ca.png)
 
