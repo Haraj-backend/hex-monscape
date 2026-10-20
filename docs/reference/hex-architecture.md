@@ -128,13 +128,17 @@ As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../inter
 
 ## Conclusion
 
-Creating an application with `Hexagonal Architecture` is very simple.
+Creating an application with `Hexagonal Architecture` is very simple:
 
-We just need to think about the expected behavior of our application, create the `Core` components for it, then define the necessary `Ports` & `Adapters` for our `Core` components. Voila, we have our application ready! 😁
+1. Start from the `Service`, since it maps directly to the use cases described in our PRD or API design.
+2. While implementing the `Service`, create the other `Core` components it needs (`Entity` & `Storage` interfaces).
+3. Implement the `Adapters` so the `Core` can talk to the outside world. Voila, we have our application ready! 😁
 
-Understanding applications created using `Hexagonal Architecture` is also straightforward.
+Understanding applications created using `Hexagonal Architecture` is also straightforward:
 
-We just need to learn about its `Core` components, understand its use cases, and suddenly understand the whole application context! 😁
+1. Start from the `Service` to learn the use cases of the application.
+2. Continue to the other `Core` components (`Entity` & `Storage` interfaces) to see what each use case needs.
+3. Now we know **what** the application does! 😁 If we want to know **how** it talks to the outside world (e.g. REST API or MySQL), we just need to look at the `Adapters`.
 
 This is why in Solutions Team we choose `Hexagonal Architecture` as our default architecture when building our applications. Yeah, because it enables us to create maintainable code much more quickly! 😁
 
@@ -146,13 +150,42 @@ To learn how to apply `Hexagonal Architecture` in the new Solutions Team project
 
 ## Extra: Relation with DDD
 
-`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` are commonly paired. Some people even used the terms interchangeably.
+`Domain-Driven Design` (`DDD`) & `Hexagonal Architecture` are commonly paired, so people often mix them up. In reality they solve different problems:
 
-In reality, `DDD` & `Hexagonal Architecture` are separate things. `DDD` is an approach to spot core components from a business model perspective, while `Hexagonal Architecture` gives our application a structure.
+- `Hexagonal Architecture` => Tells us how to **structure** the application, which is separating the `Core` from the outside world using ports & adapters.
+- `DDD` => Tells us how to **model the business domain** inside the `Core`.
 
-`DDD` basically provides a formalized way to define the application core for `Hexagonal Architecture`. But it is not a must for us to use `DDD` when implementing `Hexagonal Architecture`.
+The difference becomes clear when we compare how the code is organized. Here is `Hex Monscape` today (`Hexagonal Architecture` only) compared to how it would roughly look with `DDD` applied inside the `Core`:
 
-`DDD` & `Hexagonal Architecture` is a good combination to create large applications with complex business logic. But for us who want to create small applications with simple business logic, `DDD` might be an overkill.
+```
+Hexagonal Architecture only           Hexagonal Architecture + DDD
+---------------------------           ----------------------------
+internal/                             internal/
+├── core/                             ├── battle/            <- one folder per bounded context
+│   ├── entity/                       │   ├── domain/
+│   │   ├── battle.go                 │   │   ├── battle.go          <- aggregate root
+│   │   ├── game.go                   │   │   ├── health.go          <- value object
+│   │   └── monster.go                │   │   ├── damage.go          <- value object
+│   └── service/                      │   │   ├── events.go          <- domain events
+│       ├── battle/                   │   │   └── repository.go      <- one repository per aggregate
+│       │   ├── service.go            │   └── application/
+│       │   └── storage.go            │       ├── attack.go          <- one handler per use case
+│       └── play/                     │       └── ...
+│           ├── service.go            ├── play/
+│           └── storage.go            │   ├── domain/ ...
+├── driver/                           │   └── application/ ...
+└── driven/                           ├── driver/
+                                      └── driven/
+```
+
+Beside the extra folders, `DDD` also adds rules on how these components should interact. For example, in the `Attack()` use case:
+
+- In our current code, [`battle.Service`](../../internal/core/service/battle/service.go#L143-L170) loads the battle, executes the attack, saves the battle, and directly increments the number of battles won in `Game` when the player wins.
+- In `DDD`, `Battle` & `Game` would belong to different aggregates (even different bounded contexts), so `Battle` is not allowed to update `Game` directly. Instead, `Battle` publishes a `BattleWon` event, and a separate handler in the `play` context listens to it to update `Game`. Values like health & damage would also get their own types (value objects) instead of plain `int`.
+
+These rules are useful for protecting the consistency of a large & complex business domain. However they come with the cost of more files, more concepts, & more indirection to follow.
+
+This is why `Hexagonal Architecture` without `DDD` is our default in Solutions Team. Our applications are small & their business rules are simple, so `Service` + `Entity` + `Storage` interfaces are already enough to express how the application behaves. Adding `DDD` on top of it would only make the code harder to understand for teammates who need to maintain it, which goes against our goal of having maintainable code.
 
 ## References
 

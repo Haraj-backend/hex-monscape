@@ -1,8 +1,8 @@
 package play_test
 
 /*
-	The purpose of testing the Service component is to ensure it has correct
-	implementation of business logic.
+	The purpose of testing the Service component is to ensure it behaves correctly
+	on each of its use cases (application logic).
 
 	The common pitfall when creating test for Service component is we tend to use
 	concrete implementation for the dependency components (e.g actual GameStorage

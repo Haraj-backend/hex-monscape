@@ -7,7 +7,7 @@ This document contains guidelines on implementing [Hexagonal Architecture](../re
 3. Write down the expected use cases for the project. It would be better if we can also create use case diagrams when writing them.
 4. Write API specification for the project based on the use cases we wrote in `step 3`.
 5. Spot out our `Core` components following the guidelines mentioned in [here](./hex-architecture.md#core).
-7. While implementing the code, make any necessary adjustments to the docs created in previous steps. This is to make our docs stay up to date.
-8. Create necessary tests for our project. Remember, our objective is not to get `100%` coverage but to cover the most essential scenarios in our project.
-9. Dockerize our project so it can be run easily by other team members. Also create `Makefile` to simplify the process of running it.
-10. Open a pull request & ask review from your teammates.
+6. While implementing the code, make any necessary adjustments to the docs created in previous steps. This is to make our docs stay up to date.
+7. Create necessary tests for our project. Remember, our objective is not to get `100%` coverage but to cover the most essential scenarios in our project.
+8. Dockerize our project so it can be run easily by other team members. Also create `Makefile` to simplify the process of running it.
+9. Open a pull request & ask review from your teammates.
