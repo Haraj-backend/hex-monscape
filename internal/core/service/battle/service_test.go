@@ -202,7 +202,7 @@ func TestServiceGetBattle(t *testing.T) {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battleStorage := newMockBattleStorage()
 			gameStorage := newMockGameStorage()
-			gameStorage.err = testCase.StorageErr
+			gameStorage.getErr = testCase.StorageErr
 			monsterStorage := newMockMonsterStorage()
 			gameID := ""
 
@@ -346,6 +346,10 @@ func TestServiceAttack(t *testing.T) {
 	_, err = output.Service.Attack(context.Background(), bt.GameID)
 	require.NoError(t, err, "unable to attack")
 
+	// perform attack again, should return error since it is no longer partner turn
+	_, err = output.Service.Attack(context.Background(), bt.GameID)
+	require.ErrorIs(t, err, battle.ErrInvalidBattleState)
+
 	// modify the partner attack to make the enemy die instantly
 	bt.Partner.BattleStats.Attack = math.MaxInt64
 	bt.State = entity.StatePartnerTurn
@@ -419,6 +423,172 @@ func TestServiceSurrender(t *testing.T) {
 	require.ErrorIs(t, err, battle.ErrGameNotFound)
 }
 
+func TestServiceStartBattleWithOngoingBattle(t *testing.T) {
+	// init service
+	output := initService(t)
+
+	// create game
+	partner := testutil.NewTestMonster()
+	game, err := entity.NewGame(entity.GameConfig{
+		PlayerName: "Riandy R.N",
+		Partner:    partner,
+		CreatedAt:  time.Now().Unix(),
+	})
+	require.NoError(t, err, "unable to init new game")
+	err = output.GameStorage.SaveGame(context.Background(), *game)
+	require.NoError(t, err, "unable to save game")
+
+	// create ongoing battle
+	bt, err := entity.NewBattle(entity.BattleConfig{
+		GameID:  game.ID,
+		Partner: partner,
+		Enemy:   testutil.NewTestMonster(),
+	})
+	require.NoError(t, err, "unable to init new battle")
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err, "unable to save battle")
+
+	// start battle, should return error because there is still ongoing battle
+	_, err = output.Service.StartBattle(context.Background(), game.ID)
+	require.ErrorIs(t, err, battle.ErrInvalidBattleState)
+
+	// end the battle, now get battle should return battle not found
+	bt.State = entity.StateWin
+	err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+	require.NoError(t, err, "unable to save battle")
+
+	_, err = output.Service.GetBattle(context.Background(), game.ID)
+	require.ErrorIs(t, err, battle.ErrBattleNotFound)
+}
+
+func TestServiceStorageError(t *testing.T) {
+	errStorage := errors.New("storage failure")
+
+	testCases := []struct {
+		Name          string
+		Action        string
+		BattleState   entity.State // empty means there is no battle in storage
+		GameGetErr    error
+		GameSaveErr   error
+		BattleGetErr  error
+		BattleSaveErr error
+		MonsterErr    error
+	}{
+		{
+			Name:       "StartBattle Get Game Error",
+			Action:     "StartBattle",
+			GameGetErr: errStorage,
+		},
+		{
+			Name:         "StartBattle Get Battle Error",
+			Action:       "StartBattle",
+			BattleGetErr: errStorage,
+		},
+		{
+			Name:       "StartBattle Get Possible Enemies Error",
+			Action:     "StartBattle",
+			MonsterErr: errStorage,
+		},
+		{
+			Name:          "StartBattle Save Battle Error",
+			Action:        "StartBattle",
+			BattleSaveErr: errStorage,
+		},
+		{
+			Name:        "DecideTurn Get Game Error",
+			Action:      "DecideTurn",
+			BattleState: entity.StateDecideTurn,
+			GameGetErr:  errStorage,
+		},
+		{
+			Name:          "DecideTurn Save Battle Error",
+			Action:        "DecideTurn",
+			BattleState:   entity.StateDecideTurn,
+			BattleSaveErr: errStorage,
+		},
+		{
+			Name:        "Attack Get Game Error",
+			Action:      "Attack",
+			BattleState: entity.StatePartnerTurn,
+			GameGetErr:  errStorage,
+		},
+		{
+			Name:          "Attack Save Battle Error",
+			Action:        "Attack",
+			BattleState:   entity.StatePartnerTurn,
+			BattleSaveErr: errStorage,
+		},
+		{
+			Name:        "Attack Save Game Error",
+			Action:      "Attack",
+			BattleState: entity.StatePartnerTurn,
+			GameSaveErr: errStorage,
+		},
+		{
+			Name:          "Surrender Save Battle Error",
+			Action:        "Surrender",
+			BattleState:   entity.StatePartnerTurn,
+			BattleSaveErr: errStorage,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			// init service
+			output := initService(t)
+
+			// create partner & enemy, enemy has low health so partner will win in one attack
+			partner := testutil.NewTestMonster()
+			enemy := testutil.NewTestMonster()
+			enemy.BattleStats.Health = 1
+			output.MonsterStorage.enemyMap[enemy.ID] = *enemy
+
+			// save game
+			game, err := entity.NewGame(entity.GameConfig{
+				PlayerName: "Riandy R.N",
+				Partner:    partner,
+				CreatedAt:  time.Now().Unix(),
+			})
+			require.NoError(t, err, "unable to init new game")
+			err = output.GameStorage.SaveGame(context.Background(), *game)
+			require.NoError(t, err, "unable to save game")
+
+			// save battle if needed
+			if testCase.BattleState != "" {
+				bt, err := entity.NewBattle(entity.BattleConfig{
+					GameID:  game.ID,
+					Partner: partner,
+					Enemy:   enemy,
+				})
+				require.NoError(t, err, "unable to init new battle")
+				bt.State = testCase.BattleState
+				err = output.BattleStorage.SaveBattle(context.Background(), *bt)
+				require.NoError(t, err, "unable to save battle")
+			}
+
+			// set storage errors
+			output.GameStorage.getErr = testCase.GameGetErr
+			output.GameStorage.saveErr = testCase.GameSaveErr
+			output.BattleStorage.getErr = testCase.BattleGetErr
+			output.BattleStorage.saveErr = testCase.BattleSaveErr
+			output.MonsterStorage.err = testCase.MonsterErr
+
+			// execute action
+			ctx := context.Background()
+			switch testCase.Action {
+			case "StartBattle":
+				_, err = output.Service.StartBattle(ctx, game.ID)
+			case "DecideTurn":
+				_, err = output.Service.DecideTurn(ctx, game.ID)
+			case "Attack":
+				_, err = output.Service.Attack(ctx, game.ID)
+			case "Surrender":
+				_, err = output.Service.Surrender(ctx, game.ID)
+			}
+			require.ErrorIs(t, err, errStorage)
+		})
+	}
+}
+
 type initServiceOutput struct {
 	Service        battle.Service
 	BattleStorage  *mockBattleStorage
@@ -449,13 +619,14 @@ func initService(t *testing.T) *initServiceOutput {
 }
 
 type mockGameStorage struct {
-	data map[string]entity.Game
-	err  error
+	data    map[string]entity.Game
+	getErr  error
+	saveErr error
 }
 
 func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	if gs.err != nil {
-		return nil, gs.err
+	if gs.getErr != nil {
+		return nil, gs.getErr
 	}
 	game, ok := gs.data[gameID]
 	if !ok {
@@ -465,6 +636,9 @@ func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*entity.
 }
 
 func (gs *mockGameStorage) SaveGame(ctx context.Context, game entity.Game) error {
+	if gs.saveErr != nil {
+		return gs.saveErr
+	}
 	gs.data[game.ID] = game
 	return nil
 }
@@ -476,10 +650,15 @@ func newMockGameStorage() *mockGameStorage {
 }
 
 type mockBattleStorage struct {
-	data map[string]entity.Battle
+	data    map[string]entity.Battle
+	getErr  error
+	saveErr error
 }
 
 func (gs *mockBattleStorage) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
+	if gs.getErr != nil {
+		return nil, gs.getErr
+	}
 	battle, ok := gs.data[gameID]
 	if !ok {
 		return nil, nil
@@ -488,6 +667,9 @@ func (gs *mockBattleStorage) GetBattle(ctx context.Context, gameID string) (*ent
 }
 
 func (gs *mockBattleStorage) SaveBattle(ctx context.Context, b entity.Battle) error {
+	if gs.saveErr != nil {
+		return gs.saveErr
+	}
 	gs.data[b.GameID] = b
 	return nil
 }
@@ -500,9 +682,13 @@ func newMockBattleStorage() *mockBattleStorage {
 
 type mockMockStorage struct {
 	enemyMap map[string]entity.Monster
+	err      error
 }
 
 func (gs *mockMockStorage) GetPossibleEnemies(ctx context.Context) ([]entity.Monster, error) {
+	if gs.err != nil {
+		return nil, gs.err
+	}
 	var enemies []entity.Monster
 	for _, enemy := range gs.enemyMap {
 		enemies = append(enemies, enemy)
