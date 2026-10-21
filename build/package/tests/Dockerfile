@@ -8,4 +8,6 @@ RUN mkdir -p .cov-report
 
 COPY ./internal ./internal
 
-CMD go test -v -coverprofile=./.cov-report/profile.cov ./...
+# since Go 1.22, packages without test files are counted as 0% coverage,
+# so we only run tests for packages that have test files
+CMD go test -v -coverprofile=./.cov-report/profile.cov $(go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)
