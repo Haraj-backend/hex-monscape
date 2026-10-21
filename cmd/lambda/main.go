@@ -6,9 +6,9 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/battle"
 	"github.com/Haraj-backend/hex-monscape/internal/core/service/play"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/battlestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/gamestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/monstrg"
+	ddbbattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/battlestrg"
+	ddbgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/gamestrg"
+	ddbmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/monstrg"
 	"github.com/Haraj-backend/hex-monscape/internal/driver/rest"
 	"github.com/apex/gateway"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -34,7 +34,7 @@ func main() {
 	dynamoClient := dynamodb.New(awsSess)
 
 	// initialize battle storage
-	battleStrg, err := battlestrg.New(battlestrg.Config{
+	battleStrg, err := ddbbattlestrg.New(ddbbattlestrg.Config{
 		DynamoClient: dynamoClient,
 		TableName:    cfg.DynamoDB.BattleTable,
 	})
@@ -43,7 +43,7 @@ func main() {
 	}
 
 	// initialize game storage
-	gameStrg, err := gamestrg.New(gamestrg.Config{
+	gameStrg, err := ddbgamestrg.New(ddbgamestrg.Config{
 		DynamoClient: dynamoClient,
 		TableName:    cfg.DynamoDB.GameTable,
 	})
@@ -52,7 +52,7 @@ func main() {
 	}
 
 	// initialize monster storage
-	monStrg, err := monstrg.New(monstrg.Config{
+	monStrg, err := ddbmonstrg.New(ddbmonstrg.Config{
 		DynamoClient: dynamoClient,
 		TableName:    cfg.DynamoDB.MonsterTable,
 	})

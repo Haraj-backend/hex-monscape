@@ -58,7 +58,7 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 			return nil, nil
 		}
 
-		return nil, fmt.Errorf("unable to find game with id %s: %v", gameID, err)
+		return nil, fmt.Errorf("unable to find game with id %s due: %w", gameID, err)
 	}
 
 	return game.ToGame(), nil

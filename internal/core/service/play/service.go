@@ -17,6 +17,7 @@ var (
 
 type Service interface {
 	// GetAvailablePartners returns monsters that available to be selected as player partner.
+	// Returns nil when there is no partner available.
 	GetAvailablePartners(ctx context.Context) ([]entity.Monster, error)
 
 	// NewGame is used for initiating new game in storage. If the given `partnerID` not found in storage,

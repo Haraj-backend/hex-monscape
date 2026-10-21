@@ -40,11 +40,11 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 		// initialize monster storage
 		monsterData, err := ioutil.ReadFile(cfg.Storage.Memory.MonsterDataPath)
 		if err != nil {
-			return nil, fmt.Errorf("unable to read monster data due: %v", err)
+			return nil, fmt.Errorf("unable to read monster data due: %w", err)
 		}
 		monsterStorage, err := memmonstrg.New(memmonstrg.Config{MonsterData: monsterData})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize monster storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize monster storage due: %w", err)
 		}
 
 		// initialize game storage
@@ -75,7 +75,7 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 			TableName:    cfg.Storage.DynamoDB.MonsterTableName,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize monster storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize monster storage due: %w", err)
 		}
 		// initialize game storage
 		gameStorage, err := ddbgamestrg.New(ddbgamestrg.Config{
@@ -83,7 +83,7 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 			TableName:    cfg.Storage.DynamoDB.GameTableName,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize game storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize game storage due: %w", err)
 		}
 		// initialize battle storage
 		battleStorage, err := ddbbattlestrg.New(ddbbattlestrg.Config{
@@ -91,7 +91,7 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 			TableName:    cfg.Storage.DynamoDB.BattleTableName,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize battle storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize battle storage due: %w", err)
 		}
 
 		// set storages
@@ -105,22 +105,22 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 		// initialize sql client
 		sqlClient, err := sqlx.Open("mysql", cfg.Storage.MySQL.SQLDSN)
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize sql client due: %v", err)
+			return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 		}
 		// initialize monster storage
 		monsterStorage, err := sqlmonstrg.New(sqlmonstrg.Config{SQLClient: sqlClient})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize monster storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize monster storage due: %w", err)
 		}
 		// initialize game storage
 		gameStorage, err := sqlgamestrg.New(sqlgamestrg.Config{SQLClient: sqlClient})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize game storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize game storage due: %w", err)
 		}
 		// initialize battle storage
 		battleStorage, err := sqlbattlestrg.New(sqlbattlestrg.Config{SQLClient: sqlClient})
 		if err != nil {
-			return nil, fmt.Errorf("unable to initialize battle storage due: %v", err)
+			return nil, fmt.Errorf("unable to initialize battle storage due: %w", err)
 		}
 
 		// set storages

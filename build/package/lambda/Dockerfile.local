@@ -1,5 +1,5 @@
 # build client
-FROM node:18.16.1-alpine3.18 as client_build
+FROM node:24.22.0-alpine3.24 AS client_build
 WORKDIR /client
 
 COPY ./cmd/client .
@@ -9,7 +9,7 @@ RUN yarn install
 RUN yarn build:production
 
 # build server
-FROM golang:1.20.5-alpine3.18 as server_build
+FROM golang:1.27.3-alpine3.24 AS server_build
 WORKDIR /go/src/github.com/Haraj-backend/hex-monscape
 
 COPY go.mod go.sum ./
@@ -21,7 +21,7 @@ WORKDIR /go/src/github.com/Haraj-backend/hex-monscape/cmd/lambda
 RUN CGO_ENABLED=0 GOOS=linux go build -o server
 
 # copy both client & server artifacts to a clean image
-FROM alpine:3.18
+FROM alpine:3.24.2
 RUN apk add ca-certificates tzdata
 WORKDIR /go/src/github.com/Haraj-backend/hex-monscape
 COPY --from=server_build /go/src/github.com/Haraj-backend/hex-monscape/cmd/lambda/server ./server

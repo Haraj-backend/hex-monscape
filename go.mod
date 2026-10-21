@@ -1,6 +1,6 @@
 module github.com/Haraj-backend/hex-monscape
 
-go 1.18
+go 1.26
 
 require (
 	github.com/Rican7/conjson v0.1.0
@@ -18,7 +18,7 @@ require (
 )
 
 require (
-	github.com/aws/aws-lambda-go v1.17.0 // indirect
+	github.com/aws/aws-lambda-go v1.55.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect

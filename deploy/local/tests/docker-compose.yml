@@ -2,7 +2,7 @@ version: "2.4"
 
 services:
   localstack:
-    image: localstack/localstack:2.1.0
+    image: floci/floci:2.3.0-compat
     # ports:
     #   - 4576:4566
     environment:
@@ -15,12 +15,12 @@ services:
       driver: none
 
   mysql:
-    image: bitnami/mysql:5.7
+    image: mysql:8.4.11
     environment:
       MYSQL_ROOT_PASSWORD: "test1234"
       MYSQL_DATABASE: "db_monscape"
     healthcheck:
-      test: "mysqladmin ping"
+      test: "mysqladmin ping -h 127.0.0.1 -uroot -ptest1234"
     volumes:
       - ../shared/mysql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     # ports:

@@ -32,9 +32,12 @@ type Storage struct {
 
 func (s *Storage) GetAvailablePartners(ctx context.Context) ([]entity.Monster, error) {
 	// query partnerable monsters
-	eav, _ := dynamodbattribute.MarshalMap(map[string]interface{}{
+	eav, err := dynamodbattribute.MarshalMap(map[string]interface{}{
 		":is_partnerable": 1,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("unable to marshal expression attribute values due: %w", err)
+	}
 	output, err := s.dynamoClient.QueryWithContext(ctx, &dynamodb.QueryInput{
 		KeyConditionExpression:    aws.String("is_partnerable = :is_partnerable"),
 		ExpressionAttributeValues: eav,

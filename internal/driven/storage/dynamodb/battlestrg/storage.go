@@ -45,13 +45,16 @@ func (s *Storage) GetBattle(ctx context.Context, gameID string) (*entity.Battle,
 
 func (s *Storage) SaveBattle(ctx context.Context, b entity.Battle) error {
 	// construct params
-	item, _ := dynamodbattribute.MarshalMap(toBattleRow(b))
+	item, err := dynamodbattribute.MarshalMap(toBattleRow(b))
+	if err != nil {
+		return fmt.Errorf("unable to marshal battle row due: %w", err)
+	}
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(s.tableName),
 		Item:      item,
 	}
 	// execute put item
-	_, err := s.dynamoClient.PutItemWithContext(ctx, input)
+	_, err = s.dynamoClient.PutItemWithContext(ctx, input)
 	if err != nil {
 		return fmt.Errorf("unable to put item to %s due to: %w", s.tableName, err)
 	}

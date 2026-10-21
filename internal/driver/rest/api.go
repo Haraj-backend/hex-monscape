@@ -111,7 +111,7 @@ func (a *API) serveGetAvailablePartners(w http.ResponseWriter, r *http.Request) 
 	ctx := r.Context()
 	partners, err := a.playService.GetAvailablePartners(ctx)
 	if err != nil {
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(map[string]interface{}{
@@ -159,10 +159,7 @@ func (a *API) serveGetScenario(w http.ResponseWriter, r *http.Request) {
 	gameID := chi.URLParam(r, "game_id")
 	game, err := a.playService.GetGame(ctx, gameID)
 	if err != nil {
-		if errors.Is(err, play.ErrGameNotFound) {
-			err = NewGameNotFoundError()
-		}
-		render.Render(w, r, NewErrorResp(err))
+		handleServiceError(w, r, err)
 		return
 	}
 	render.Render(w, r, NewSuccessResp(map[string]interface{}{
@@ -231,16 +228,16 @@ func (a *API) serveSurrender(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleServiceError(w http.ResponseWriter, r *http.Request, err error) {
-	switch err {
-	case battle.ErrGameNotFound:
+	switch {
+	case errors.Is(err, battle.ErrGameNotFound):
 		err = NewGameNotFoundError()
-	case battle.ErrBattleNotFound:
+	case errors.Is(err, battle.ErrBattleNotFound):
 		err = NewBattleNotFoundError()
-	case battle.ErrInvalidBattleState:
+	case errors.Is(err, battle.ErrInvalidBattleState):
 		err = NewInvalidBattleStateError()
-	case play.ErrGameNotFound:
+	case errors.Is(err, play.ErrGameNotFound):
 		err = NewGameNotFoundError()
-	case play.ErrPartnerNotFound:
+	case errors.Is(err, play.ErrPartnerNotFound):
 		err = NewPartnerNotFoundError()
 	default:
 		err = NewInternalServerError(err.Error())
