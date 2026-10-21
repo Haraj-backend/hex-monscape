@@ -66,7 +66,7 @@ func (s *Storage) GetPartner(ctx context.Context, partnerID string) (*entity.Mon
 			return nil, nil
 		}
 
-		return nil, fmt.Errorf("unable to find partner with id %s: %v", partnerID, err)
+		return nil, fmt.Errorf("unable to find partner with id %s due: %w", partnerID, err)
 	}
 
 	return row.ToMonster(), nil

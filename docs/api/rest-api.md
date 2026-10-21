@@ -12,6 +12,46 @@ Available endpoints for this API:
 - [Attack](#attack)
 - [Surrender](#surrender)
 
+## Common Errors
+
+Besides the specific errors listed in each endpoint, every endpoint may return these errors:
+
+- Bad Request (`400`)
+
+  ```http
+  HTTP/1.1 400 Bad Request
+  Content-Type: application/json
+
+  {
+      "ok": false,
+      "err": "ERR_BAD_REQUEST",
+      "msg": "PlayerName: zero value",
+      "ts": 1644934528
+  }
+  ```
+
+  This error will be received by client when the request is invalid, for example missing required field in request body.
+
+- Internal Error (`500`)
+
+  ```http
+  HTTP/1.1 500 Internal Server Error
+  Content-Type: application/json
+
+  {
+      "ok": false,
+      "err": "ERR_INTERNAL_ERROR",
+      "msg": "unable to get game instance due: connection refused",
+      "ts": 1644934528
+  }
+  ```
+
+  This error will be received by client when the server encounters unexpected error, for example storage failure.
+
+[Back to Top](#rest-api)
+
+---
+
 ## Get Available Partners
 
 GET: `/partners`

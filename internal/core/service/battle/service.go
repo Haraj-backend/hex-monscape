@@ -15,14 +15,22 @@ var (
 	ErrGameNotFound       = errors.New("game is not found")
 	ErrBattleNotFound     = errors.New("battle is not found")
 	ErrInvalidBattleState = errors.New("invalid battle state")
+	ErrNoPossibleEnemies  = errors.New("no possible enemies")
 )
 
 type Service interface {
 	// StartBattle is used for starting new battle for given game id. Battle could only
 	// be started when there is no previous battle or it is already ended.
+	//
+	// Returns `ErrGameNotFound` when game is not found, `ErrInvalidBattleState` when
+	// there is still ongoing battle, and `ErrNoPossibleEnemies` when there is no enemy
+	// to be fought.
 	StartBattle(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// GetBattle returns ongoing battle for given game id.
+	//
+	// Returns `ErrGameNotFound` when game is not found and `ErrBattleNotFound` when
+	// there is no ongoing battle.
 	GetBattle(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// DecideTurn is used for deciding turn for the battle. There are 3 possible outcome
@@ -32,14 +40,23 @@ type Service interface {
 	// 					returned back to DECIDE_TURN
 	// - LOSE => partner has been attacked by enemy and already lose
 	// - PARTNER_TURN => it is partner turn, client may commence attack or surrender
+	//
+	// Returns `ErrGameNotFound`, `ErrBattleNotFound`, or `ErrInvalidBattleState` when
+	// battle state is not DECIDE_TURN.
 	DecideTurn(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// Attack is used for executing attack to enemy. The possible battle state outcome
 	// is DECIDE_TURN or WIN.
+	//
+	// Returns `ErrGameNotFound`, `ErrBattleNotFound`, or `ErrInvalidBattleState` when
+	// battle state is not PARTNER_TURN.
 	Attack(ctx context.Context, gameID string) (*entity.Battle, error)
 
 	// Surrender is used for executing surrender action. Battle will immediately ended
 	// with player losing the battle.
+	//
+	// Returns `ErrGameNotFound`, `ErrBattleNotFound`, or `ErrInvalidBattleState` when
+	// battle state is not PARTNER_TURN.
 	Surrender(ctx context.Context, gameID string) (*entity.Battle, error)
 }
 
@@ -68,6 +85,9 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*entity.Battl
 	if err != nil {
 		return nil, fmt.Errorf("unable to get possible enemies due: %w", err)
 	}
+	if len(enemies) == 0 {
+		return nil, ErrNoPossibleEnemies
+	}
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	enemy := enemies[rnd.Intn(len(enemies))]
 	// create new battle instance
@@ -89,13 +109,16 @@ func (s *service) StartBattle(ctx context.Context, gameID string) (*entity.Battl
 
 func (s *service) GetBattle(ctx context.Context, gameID string) (*entity.Battle, error) {
 	game, battle, err := s.getGameAndBattleInstance(ctx, gameID)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get game and battle instance due: %w", err)
+	}
 	if game == nil {
 		return nil, ErrGameNotFound
 	}
 	if battle == nil {
 		return nil, ErrBattleNotFound
 	}
-	return battle, err
+	return battle, nil
 }
 
 // getGameAndBattleInstance returns game & battle for given game id, if game is not found both game

@@ -12,6 +12,7 @@ Source of truth: [docs/reference/hex-architecture.md](../../../docs/reference/he
 1. Clearly divide the `inside` (Core) from the `outside` (Actors and Adapters) of the application.
 2. Dependencies always point **inward**. Core imports nothing from adapters, `cmd/`, or infrastructure libraries.
 3. Isolate the boundary with **ports** (interfaces defined in Core) and **adapters** (implementations outside Core).
+4. **Keep it simple and avoid overengineering.** Write code a junior developer can read and maintain. Do not add clever Go idioms, extra layers or abstractions, generic helpers, functional options, or "nice to have" safety tricks such as `var _ Port = (*Storage)(nil)` unless the code actually needs them. When in doubt, follow what this repo already does.
 
 The four pillars:
 
@@ -87,6 +88,6 @@ See [references/driven-adapters.md](references/driven-adapters.md), [references/
 ### 4. Review for compliance
 Run through [references/review-checklist.md](references/review-checklist.md). Report each violation with `file:line`, the rule broken, and a concrete fix. Distinguish hard violations (dependency direction, infra in Core) from convention drift.
 
-## Known pitfalls (present in this repo, do not copy)
-- `internal/driver/rest/api.go` `handleServiceError` matches with `switch err { case ...: }`. Use `errors.Is` so wrapped errors still map correctly.
-- `internal/core/service/battle/service.go` `GetBattle` checks `game == nil` before `err`, so a storage failure surfaces as `ErrGameNotFound`. Always check `err` first, then `nil`.
+## Pitfalls to avoid
+- Driver error mapping must use `errors.Is`, not `switch err { case ...: }`, so wrapped errors still map correctly (see `handleServiceError` in `internal/driver/rest/api.go`).
+- Always check `err` first, then `nil`. Checking `game == nil` before `err` makes a storage failure surface as `ErrGameNotFound`.

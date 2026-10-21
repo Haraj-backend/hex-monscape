@@ -15,10 +15,7 @@ The templates continue the `todo` example from [core.md](core.md).
 - One adapter may satisfy several ports from different services. For example, `monstrg.Storage` satisfies both `play.PartnerStorage` and `battle.MonsterStorage`.
 - **Not found returns `nil, nil`.** All other failures are wrapped with context.
 - Persistence models (`XxxRow`, `xxxKey`) live in `model.go` with mappers both ways. Never put `db:`/`dynamodbav:` tags on entities.
-- Recommended (new, not yet used in this repo): add a compile-time assertion so drift is caught by the compiler:
-  ```go
-  var _ todo.TaskStorage = (*Storage)(nil)
-  ```
+- Do not add `var _ Port = (*Storage)(nil)` assertions. The team finds them confusing, especially for junior developers. Wiring in `cmd/` already catches a missing method at compile time.
 
 ## Memory: `internal/driven/storage/memory/taskstrg/storage.go`
 

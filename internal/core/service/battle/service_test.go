@@ -18,6 +18,7 @@ package battle_test
 
 import (
 	"context"
+	"errors"
 	"math"
 	"testing"
 	"time"
@@ -105,6 +106,12 @@ func TestServiceStartBattle(t *testing.T) {
 			Game:    nil,
 			IsError: true,
 		},
+		{
+			Name:    "Test No Possible Enemies",
+			Enemy:   nil,
+			Game:    game,
+			IsError: true,
+		},
 	}
 	// execute test cases
 	for _, testCase := range testCases {
@@ -155,29 +162,39 @@ func TestServiceGetBattle(t *testing.T) {
 		Enemy:   testutil.NewTestMonster(),
 	})
 
+	errStorage := errors.New("storage failure")
+
 	testCases := []struct {
-		Name    string
-		Battle  *entity.Battle
-		Game    *entity.Game
-		IsError bool
+		Name       string
+		Battle     *entity.Battle
+		Game       *entity.Game
+		StorageErr error
+		ExpErr     error
 	}{
 		{
-			Name:    "Test Get entity.Battle Valid",
-			Battle:  bt,
-			Game:    game,
-			IsError: false,
+			Name:   "Test Get entity.Battle Valid",
+			Battle: bt,
+			Game:   game,
+			ExpErr: nil,
 		},
 		{
-			Name:    "Test Game Not Found",
-			Battle:  bt,
-			Game:    nil,
-			IsError: true,
+			Name:   "Test Game Not Found",
+			Battle: bt,
+			Game:   nil,
+			ExpErr: battle.ErrGameNotFound,
 		},
 		{
-			Name:    "Test entity.Battle Not Found",
-			Battle:  nil,
-			Game:    game,
-			IsError: true,
+			Name:   "Test entity.Battle Not Found",
+			Battle: nil,
+			Game:   game,
+			ExpErr: battle.ErrBattleNotFound,
+		},
+		{
+			Name:       "Test Storage Error",
+			Battle:     bt,
+			Game:       game,
+			StorageErr: errStorage,
+			ExpErr:     errStorage,
 		},
 	}
 	// execute test cases
@@ -185,6 +202,7 @@ func TestServiceGetBattle(t *testing.T) {
 		t.Run(testCase.Name, func(t *testing.T) {
 			battleStorage := newMockBattleStorage()
 			gameStorage := newMockGameStorage()
+			gameStorage.err = testCase.StorageErr
 			monsterStorage := newMockMonsterStorage()
 			gameID := ""
 
@@ -203,8 +221,8 @@ func TestServiceGetBattle(t *testing.T) {
 				MonsterStorage: monsterStorage,
 			})
 			newBattle, err := svc.GetBattle(context.Background(), gameID)
-			require.Equal(t, testCase.IsError, (err != nil), "unexpected error")
-			if err == nil {
+			require.ErrorIs(t, err, testCase.ExpErr, "unexpected error")
+			if testCase.ExpErr == nil {
 				require.Equal(t, bt, newBattle, "battle is not valid")
 			}
 		})
@@ -432,9 +450,13 @@ func initService(t *testing.T) *initServiceOutput {
 
 type mockGameStorage struct {
 	data map[string]entity.Game
+	err  error
 }
 
 func (gs *mockGameStorage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	if gs.err != nil {
+		return nil, gs.err
+	}
 	game, ok := gs.data[gameID]
 	if !ok {
 		return nil, nil
