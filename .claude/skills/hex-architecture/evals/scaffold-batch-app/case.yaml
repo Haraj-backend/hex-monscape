@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: scaffold-batch-app
+expected_outcome: |
+  A compilable Go project for example.com/rssdigest following Haraj hex: core entities and one service package per use case (crawl, digest) with ports, a scheduler driver, one deliverable with subcommands, and storage adapters grouped into a small number of packages (not one package per entity). Code is readable with blank lines between logical steps, and service tests use hand-written mocks.

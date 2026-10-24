@@ -62,7 +62,9 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 }
 ```
 
-Import aliases are prefixed by tech: `memtaskstrg`, `sqltaskstrg`, `ddbtaskstrg`.
+When adapters live in per-tech, per-entity packages, import aliases are prefixed by tech (`memtaskstrg`, `sqltaskstrg`, `ddbtaskstrg`). If `dep.go` needs more than a few aliases for one tech, the packages are probably too granular. Merge them into one package per kind (see "Package granularity" in SKILL.md).
+
+When one deliverable has several subcommands, write one small builder per service (`newCrawlService(cfg, logger)`, `newExportService(cfg, logger)`). Each subcommand then builds only what it needs, and missing config for an unused adapter does not block it. Separate each "construct + check err" block with a blank line so the wiring reads as a list of steps.
 
 ## `main.go`: wiring sequence
 

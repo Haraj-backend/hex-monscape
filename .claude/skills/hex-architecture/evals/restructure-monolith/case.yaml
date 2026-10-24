@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: restructure-monolith
+expected_outcome: |
+  starwatch is restructured into hex: scoring logic lives in core entity code without json tags, a service orchestrates via ports, the GitHub API and file I/O are driven adapters grouped into a few packages, cmd/ wires everything, the project builds, and the report.json format (generated_at, repos with full_name, stargazers_count, open_issues_count, pushed_at, score) is unchanged. The agent verifies or explains how it verified that behavior is unchanged.
+context:
+  scaffold_script: place-files.sh

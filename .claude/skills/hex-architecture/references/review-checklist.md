@@ -27,7 +27,7 @@ MOD=$(go list -m)
    go list -f '{{.ImportPath}}: {{join .Imports " "}}' ./internal/driven/... | grep "$MOD/internal/core/service"
    ```
    Expect no output.
-4. **Only `cmd/` constructs adapters and services.** Search for `strg.New(` or `NewAPI(` outside `cmd/` and tests.
+4. **Only `cmd/` constructs adapters and services.** Search for adapter constructors (`strg.New(`, `NewXxxStorage(`, `NewAPI(`) or `NewService(` calls outside `cmd/` and tests.
 5. **Ports are defined in Core.** Interfaces that services depend on live in `internal/core/service/<ctx>/storage.go` (or `service.go`), not in adapter packages. Services hold interface fields, never concrete adapter types.
 
 ## B. Core design (violations unless noted)
@@ -55,10 +55,18 @@ MOD=$(go list -m)
 ## D. Construction and conventions (drift)
 
 16. Every constructor takes `XxxConfig` with `validate` tags and calls `Validate()` first. Required deps are tagged `nonnil`/`nonzero`.
-17. Naming: `Service`/`service`/`NewService`, `XxxStorage` ports, `<name>strg` packages with type `Storage` and `New(Config)`, `serveXxx` handlers, `xxxReqBody` request bodies, tech-prefixed aliases in `cmd/`.
+17. Naming: `Service`/`service`/`NewService`, `XxxStorage` ports, adapter types named after what they store (or `<name>strg.Storage` in per-entity packages), `serveXxx` handlers, `xxxReqBody` request bodies.
 18. Persistence row models live in the adapter's `model.go` with mappers both ways.
 
-## E. Tests and docs
+## E. Readability (drift, but report it: this is what hex is for)
+
+- **Package granularity**: flag many one-file adapter packages and `dep.go` import aliases in an app with a single storage tech. Suggest one package per kind.
+- **Honest names**: flag names that no longer match what the thing does (e.g. a `topic` field that also holds company orgs).
+- **Redundant state**: flag variables, sets, or fields that are always derivable from others, plus checks that can never change the outcome.
+- **Code layout**: flag dense functions with no blank lines between logical steps, and `nil` checks or `defer`s separated from the call they belong to.
+- **Overengineering**: flag abstractions, generic helpers, or options that only one caller uses.
+
+## F. Tests and docs
 
 19. Each service has `TestNewService` (nil deps) plus a test per use case using hand-written mocks, not real storage. *(violation if a service test hits real infra)*
 20. Each driven adapter has an integration test for the round trip and for not found, wired into `deploy/local/tests/docker-compose.yml`.

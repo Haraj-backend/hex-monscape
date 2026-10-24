@@ -10,8 +10,9 @@ Canonical sources:
 The templates continue the `todo` example from [core.md](core.md).
 
 ## Package rules
-- Path: `internal/driven/storage/<tech>/<name>strg/`, where `<name>` is the entity (`taskstrg`, `gamestrg`, `monstrg`). The files are `storage.go`, `model.go`, and `storage_test.go`.
-- The type is always `Storage`, built by `New(Config) (*Storage, error)`. The memory adapter with no deps may use `New() *Storage`.
+- **Pick the granularity that keeps the code easy to navigate** (see "Package granularity" in SKILL.md). The default is one package per kind, e.g. `internal/driven/storage` with one file per concern (`task.go`, `progress.go`) and a shared `model.go`. Types are named after what they store (`TaskStorage`, `NewTaskStorage(TaskStorageConfig)`).
+- Split by tech (`storage/memory`, `storage/mysql`) only when there are alternative implementations of the same ports that `cmd/` switches between. Split by entity (`<tech>/<name>strg/` with `storage.go`, `model.go`, `storage_test.go`, type `Storage`, `New(Config)`) only when a tech package becomes too big. hex-monscape does both because it has three storage techs, and the templates below follow its layout.
+- The memory adapter with no deps may use a constructor without config (`New() *Storage`).
 - One adapter may satisfy several ports from different services. For example, `monstrg.Storage` satisfies both `play.PartnerStorage` and `battle.MonsterStorage`.
 - **Not found returns `nil, nil`.** All other failures are wrapped with context.
 - Persistence models (`XxxRow`, `xxxKey`) live in `model.go` with mappers both ways. Never put `db:`/`dynamodbav:` tags on entities.

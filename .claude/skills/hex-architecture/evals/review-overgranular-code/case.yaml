@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: review-overgranular-code
+expected_outcome: |
+  review.md flags the hard violation (the check service imports the reportstrg adapter and net/http, so Core depends on infra), plus the maintainability problems: over-granular one-file storage packages with aliased imports in dep.go, the redundant sourceChecked set, the misleading CurrentFile name (it also holds RSS feeds and the allowlist), json tags on entities, and dense code with no blank lines between steps. Each finding has a location and a concrete, simple fix.
+context:
+  scaffold_script: place-files.sh

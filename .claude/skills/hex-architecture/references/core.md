@@ -204,6 +204,7 @@ Rules:
 - One method per use case. Its parameters are primitives or entities, never transport types (no `*http.Request`, no request body structs).
 - Return sentinel errors **unwrapped** for expected outcomes (not found, invalid state) so drivers can map them. Wrap unexpected infra errors with `%w`.
 - Validation of input shape (non-empty strings) happens in the driver; invariants happen in entity constructors and methods.
+- Optional test hooks such as `Now func() time.Time` and `Sleep func(ctx, time.Duration) error` may live in `ServiceConfig` without `validate` tags. `NewService` fills in real defaults when they are nil. Keep them clearly marked as optional.
 - If the use cases are hard to reason about, draw a class diagram (`docs/diagrams/`).
 
 ## Service tests: `internal/core/service/todo/service_test.go`
