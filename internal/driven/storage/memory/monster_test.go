@@ -1,31 +1,30 @@
-package monstrg_test
+package memory
 
 import (
 	"context"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestNew(t *testing.T) {
+func TestNewMonsterStorage(t *testing.T) {
 	testCases := []struct {
 		Name       string
-		Config     monstrg.Config
+		Config     MonsterStorageConfig
 		ExpStorage bool
 		ExpErr     bool
 	}{
 		{
 			Name:       "Empty Monster Data in Config",
-			Config:     monstrg.Config{},
+			Config:     MonsterStorageConfig{},
 			ExpStorage: false,
 			ExpErr:     true,
 		},
 		{
 			Name: "Invalid Monster Data in Config",
-			Config: monstrg.Config{
+			Config: MonsterStorageConfig{
 				MonsterData: []byte(`invalid`),
 			},
 			ExpStorage: false,
@@ -33,7 +32,7 @@ func TestNew(t *testing.T) {
 		},
 		{
 			Name: "Valid Config",
-			Config: monstrg.Config{
+			Config: MonsterStorageConfig{
 				MonsterData: monsterData,
 			},
 			ExpStorage: true,
@@ -42,7 +41,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			storage, err := monstrg.New(testCase.Config)
+			storage, err := NewMonsterStorage(testCase.Config)
 			assert.Equal(t, testCase.ExpStorage, storage != nil, "unexpected storage")
 			assert.Equal(t, testCase.ExpErr, err != nil, "unexpected error")
 		})
@@ -51,7 +50,7 @@ func TestNew(t *testing.T) {
 
 func TestGetAvailablePartners(t *testing.T) {
 	// init storage
-	strg := initStorage(t)
+	strg := newMonsterStorage(t)
 
 	// get available partners
 	partners, err := strg.GetAvailablePartners(context.Background())
@@ -79,7 +78,7 @@ func TestGetAvailablePartners(t *testing.T) {
 
 func TestGetPartner(t *testing.T) {
 	// init storage
-	strg := initStorage(t)
+	strg := newMonsterStorage(t)
 
 	// define test cases
 	testCases := []struct {
@@ -122,7 +121,7 @@ func TestGetPartner(t *testing.T) {
 
 func TestGetPossibleEnemies(t *testing.T) {
 	// init storage
-	strg := initStorage(t)
+	strg := newMonsterStorage(t)
 
 	// get possible enemies
 	possibleEnemies, err := strg.GetPossibleEnemies(context.Background())
@@ -193,8 +192,8 @@ var monsterData = []byte(`
 	]
 `)
 
-func initStorage(t *testing.T) *monstrg.Storage {
-	strg, err := monstrg.New(monstrg.Config{
+func newMonsterStorage(t *testing.T) *MonsterStorage {
+	strg, err := NewMonsterStorage(MonsterStorageConfig{
 		MonsterData: monsterData,
 	})
 	require.NoError(t, err)

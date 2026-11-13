@@ -1,13 +1,10 @@
-package monstrg_test
+package mysql
 
 import (
 	"context"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -16,35 +13,35 @@ var partners, enemies []entity.Monster
 
 func init() {
 	// init mysql client
-	sqlClient, err := shared.NewTestSQLClient()
+	sqlClient, err := newTestSQLClient()
 	if err != nil {
 		panic(err)
 	}
 	// seed data to mysql
-	rows := []shared.MonsterRow{
-		shared.NewTestMonsterRow(true),
-		shared.NewTestMonsterRow(true),
-		shared.NewTestMonsterRow(false),
-		shared.NewTestMonsterRow(false),
+	rows := []monsterRow{
+		newTestMonsterRow(true),
+		newTestMonsterRow(true),
+		newTestMonsterRow(false),
+		newTestMonsterRow(false),
 	}
 	for _, row := range rows {
 		// insert monster row to mysql
-		err := shared.InsertMonster(sqlClient, row)
+		err := insertMonster(sqlClient, row)
 		if err != nil {
 			panic(err)
 		}
 		// assign partners & enemies for later tests
 		if row.IsPartnerable == 1 {
-			partners = append(partners, *row.ToMonster())
+			partners = append(partners, *row.toMonster())
 		}
 		// we also include partnerable monsters to enemies so the enemies can be more vary
-		enemies = append(enemies, *row.ToMonster())
+		enemies = append(enemies, *row.toMonster())
 	}
 
 }
 
 func TestGetAvailablePartners(t *testing.T) {
-	storage := newStorage(t)
+	storage := newMonsterStorage(t)
 
 	availablePartners, err := storage.GetAvailablePartners(context.Background())
 	require.NoError(t, err)
@@ -52,7 +49,7 @@ func TestGetAvailablePartners(t *testing.T) {
 }
 
 func TestGetPossibleEnemies(t *testing.T) {
-	storage := newStorage(t)
+	storage := newMonsterStorage(t)
 
 	availableEnemies, err := storage.GetPossibleEnemies(context.Background())
 	require.NoError(t, err)
@@ -60,7 +57,7 @@ func TestGetPossibleEnemies(t *testing.T) {
 }
 
 func TestGetPartner(t *testing.T) {
-	storage := newStorage(t)
+	storage := newMonsterStorage(t)
 
 	testCases := []struct {
 		Name       string
@@ -87,13 +84,13 @@ func TestGetPartner(t *testing.T) {
 	}
 }
 
-func newStorage(t *testing.T) *monstrg.Storage {
+func newMonsterStorage(t *testing.T) *MonsterStorage {
 	// init mysql client
-	sqlClient, err := shared.NewTestSQLClient()
+	sqlClient, err := newTestSQLClient()
 	require.NoError(t, err)
 
 	// init storage
-	storage, err := monstrg.New(monstrg.Config{SQLClient: sqlClient})
+	storage, err := NewMonsterStorage(MonsterStorageConfig{SQLClient: sqlClient})
 	require.NoError(t, err)
 
 	return storage

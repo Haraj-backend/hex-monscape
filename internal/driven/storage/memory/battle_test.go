@@ -1,4 +1,4 @@
-package battlestrg_test
+package memory
 
 import (
 	"context"
@@ -6,14 +6,13 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSaveGetBattle(t *testing.T) {
 	// init storage & battle
-	strg := battlestrg.New()
+	strg := NewBattleStorage()
 	expBattle := newBattle()
 
 	// get battle, supposedly the returned battle is nil

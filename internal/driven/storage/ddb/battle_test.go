@@ -1,4 +1,4 @@
-package battlestrg
+package ddb
 
 import (
 	"context"
@@ -6,14 +6,13 @@ import (
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSaveGetBattle(t *testing.T) {
 	// initialize storage
-	storage := newStorage(t)
+	storage := newBattleStorage(t)
 
 	// save battle
 	battle := entity.Battle{
@@ -43,7 +42,7 @@ func TestSaveGetBattle(t *testing.T) {
 
 func TestGetBattleNotFound(t *testing.T) {
 	// initialize storage
-	storage := newStorage(t)
+	storage := newBattleStorage(t)
 
 	// get battle from storage
 	bt, err := storage.GetBattle(context.Background(), uuid.NewString())
@@ -51,10 +50,10 @@ func TestGetBattleNotFound(t *testing.T) {
 	require.Nil(t, bt)
 }
 
-func newStorage(t *testing.T) *Storage {
-	s, err := New(Config{
-		DynamoClient: shared.NewLocalTestDDBClient(),
-		TableName:    os.Getenv(shared.TestConfig.EnvKeyBattleTableName),
+func newBattleStorage(t *testing.T) *BattleStorage {
+	s, err := NewBattleStorage(BattleStorageConfig{
+		DynamoClient: newTestDDBClient(),
+		TableName:    os.Getenv(envKeyBattleTableName),
 	})
 	require.NoError(t, err)
 

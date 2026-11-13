@@ -1,4 +1,4 @@
-package battlestrg_test
+package mysql
 
 import (
 	"context"
@@ -6,17 +6,13 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/battlestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestSaveBattle(t *testing.T) {
 	// initialize storage
-	strg := newStorage(t)
+	strg := newBattleStorage(t)
 
 	// save battle
 	b := newBattle()
@@ -33,7 +29,7 @@ func TestSaveBattle(t *testing.T) {
 
 func TestUpdateBattle(t *testing.T) {
 	// initialize storage
-	strg := newStorage(t)
+	strg := newBattleStorage(t)
 
 	// save battle
 	b := newBattle()
@@ -55,7 +51,7 @@ func TestUpdateBattle(t *testing.T) {
 
 func TestGetBattle(t *testing.T) {
 	// initialize storage
-	strg := newStorage(t)
+	strg := newBattleStorage(t)
 
 	// save battle
 	b := newBattle()
@@ -100,13 +96,13 @@ func newBattle() entity.Battle {
 	}
 }
 
-func newStorage(t *testing.T) *battlestrg.Storage {
+func newBattleStorage(t *testing.T) *BattleStorage {
 	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
+	sqlClient, err := newTestSQLClient()
 	require.NoError(t, err)
 
 	// initialize storage
-	strg, err := battlestrg.New(battlestrg.Config{SQLClient: sqlClient})
+	strg, err := NewBattleStorage(BattleStorageConfig{SQLClient: sqlClient})
 	require.NoError(t, err)
 
 	return strg

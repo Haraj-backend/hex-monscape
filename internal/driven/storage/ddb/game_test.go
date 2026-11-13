@@ -1,4 +1,4 @@
-package gamestrg
+package ddb
 
 import (
 	"context"
@@ -6,13 +6,12 @@ import (
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSaveGetGame(t *testing.T) {
-	storage := newStorage(t)
+	storage := newGameStorage(t)
 
 	game := entity.Game{
 		ID:         uuid.NewString(),
@@ -33,16 +32,16 @@ func TestSaveGetGame(t *testing.T) {
 }
 
 func TestGetGameNotFound(t *testing.T) {
-	storage := newStorage(t)
+	storage := newGameStorage(t)
 	game, err := storage.GetGame(context.Background(), uuid.NewString())
 	require.NoError(t, err)
 	require.Nil(t, game)
 }
 
-func newStorage(t *testing.T) *Storage {
-	s, err := New(Config{
-		DynamoClient: shared.NewLocalTestDDBClient(),
-		TableName:    os.Getenv(shared.TestConfig.EnvKeyGameTableName),
+func newGameStorage(t *testing.T) *GameStorage {
+	s, err := NewGameStorage(GameStorageConfig{
+		DynamoClient: newTestDDBClient(),
+		TableName:    os.Getenv(envKeyGameTableName),
 	})
 	require.NoError(t, err)
 

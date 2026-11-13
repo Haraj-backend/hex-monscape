@@ -1,4 +1,4 @@
-package shared
+package mysql
 
 import (
 	"fmt"
@@ -6,28 +6,31 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
 	"github.com/jmoiron/sqlx"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const envKeySQLDSN = "TEST_SQL_DSN"
 
-func NewTestSQLClient() (*sqlx.DB, error) {
-	sqlDSN := os.Getenv(envKeySQLDSN)
-	sqlClient, err := sqlx.Connect("mysql", sqlDSN)
+func newTestSQLClient() (*sqlx.DB, error) {
+	sqlClient, err := sqlx.Connect("mysql", os.Getenv(envKeySQLDSN))
 	if err != nil {
 		return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 	}
+
 	return sqlClient, nil
 }
 
-func NewTestMonsterRow(isPartnerable bool) MonsterRow {
-	row := ToMonsterRow(testutil.NewTestMonster())
+func newTestMonsterRow(isPartnerable bool) monsterRow {
+	row := newMonsterRow(testutil.NewTestMonster())
 	if isPartnerable {
 		row.IsPartnerable = 1
 	}
+
 	return *row
 }
 
-func InsertMonster(sqlClient *sqlx.DB, monsterRow MonsterRow) error {
+func insertMonster(sqlClient *sqlx.DB, row monsterRow) error {
 	query := `
 		INSERT INTO monster (
 			id,
@@ -51,9 +54,10 @@ func InsertMonster(sqlClient *sqlx.DB, monsterRow MonsterRow) error {
 			:is_partnerable
 		)
 	`
-	_, err := sqlClient.NamedExec(query, monsterRow)
+	_, err := sqlClient.NamedExec(query, row)
 	if err != nil {
 		return fmt.Errorf("unable to insert monster due: %w", err)
 	}
+
 	return nil
 }

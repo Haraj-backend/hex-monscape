@@ -1,4 +1,4 @@
-package gamestrg
+package mysql
 
 import (
 	"context"
@@ -10,29 +10,29 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-type Storage struct {
+type GameStorage struct {
 	sqlClient *sqlx.DB
 }
 
-type Config struct {
+type GameStorageConfig struct {
 	SQLClient *sqlx.DB `validate:"nonnil"`
 }
 
-func (c Config) Validate() error {
+func (c GameStorageConfig) Validate() error {
 	return validator.Validate(c)
 }
 
-func New(cfg Config) (*Storage, error) {
+func NewGameStorage(cfg GameStorageConfig) (*GameStorage, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, err
 	}
-	s := &Storage{sqlClient: cfg.SQLClient}
-	return s, nil
+
+	return &GameStorage{sqlClient: cfg.SQLClient}, nil
 }
 
-func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
-	var game GameRow
+func (s *GameStorage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+	var row gameRow
 	query := `
 		SELECT
 			g.id,
@@ -52,20 +52,19 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 		LEFT JOIN monster p on partner_id = p.id
 		WHERE g.id = ?
 	`
-
-	if err := s.sqlClient.GetContext(ctx, &game, query, gameID); err != nil {
+	err := s.sqlClient.GetContext(ctx, &row, query, gameID)
+	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-
 		return nil, fmt.Errorf("unable to find game with id %s due: %w", gameID, err)
 	}
 
-	return game.ToGame(), nil
+	return row.toGame(), nil
 }
 
-func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
-	gameRow := NewGameRow(&game)
+func (s *GameStorage) SaveGame(ctx context.Context, game entity.Game) error {
+	row := newGameRow(&game)
 	query := `
 		REPLACE INTO game (
 			id, player_name, created_at, battle_won, scenario, partner_id
@@ -73,17 +72,17 @@ func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
 			:id, :player_name, :created_at, :battle_won, :scenario, :partner_id
 		)
 	`
-
 	_, err := s.sqlClient.NamedExecContext(ctx, query, map[string]interface{}{
-		"id":          gameRow.ID,
-		"player_name": gameRow.PlayerName,
-		"created_at":  gameRow.CreatedAt,
-		"battle_won":  gameRow.BattleWon,
-		"scenario":    gameRow.Scenario,
-		"partner_id":  gameRow.Partner.ID,
+		"id":          row.ID,
+		"player_name": row.PlayerName,
+		"created_at":  row.CreatedAt,
+		"battle_won":  row.BattleWon,
+		"scenario":    row.Scenario,
+		"partner_id":  row.Partner.ID,
 	})
 	if err != nil {
 		return fmt.Errorf("unable to execute query due: %w", err)
 	}
+
 	return nil
 }

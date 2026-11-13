@@ -11,17 +11,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/jmoiron/sqlx"
 
-	membattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/battlestrg"
-	memgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
-	memmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/monstrg"
-
-	ddbbattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/battlestrg"
-	ddbgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/gamestrg"
-	ddbmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/monstrg"
-
-	sqlbattlestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/battlestrg"
-	sqlgamestrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/gamestrg"
-	sqlmonstrg "github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/monstrg"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/ddb"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory"
+	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql"
 )
 
 type storageDeps struct {
@@ -42,16 +34,16 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 		if err != nil {
 			return nil, fmt.Errorf("unable to read monster data due: %w", err)
 		}
-		monsterStorage, err := memmonstrg.New(memmonstrg.Config{MonsterData: monsterData})
+		monsterStorage, err := memory.NewMonsterStorage(memory.MonsterStorageConfig{MonsterData: monsterData})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize monster storage due: %w", err)
 		}
 
 		// initialize game storage
-		gameStorage := memgamestrg.New()
+		gameStorage := memory.NewGameStorage()
 
 		// initialize battle storage
-		battleStorage := membattlestrg.New()
+		battleStorage := memory.NewBattleStorage()
 
 		// set storages
 		deps.BattleGameStorage = gameStorage
@@ -67,26 +59,30 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 				Config: aws.Config{Endpoint: aws.String(cfg.Storage.DynamoDB.LocalstackEndpoint)},
 			},
 		))
+
 		// initialize dynamodb client
 		dynamoClient := dynamodb.New(awsSess)
+
 		// initialize monster storage
-		monsterStorage, err := ddbmonstrg.New(ddbmonstrg.Config{
+		monsterStorage, err := ddb.NewMonsterStorage(ddb.MonsterStorageConfig{
 			DynamoClient: dynamoClient,
 			TableName:    cfg.Storage.DynamoDB.MonsterTableName,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize monster storage due: %w", err)
 		}
+
 		// initialize game storage
-		gameStorage, err := ddbgamestrg.New(ddbgamestrg.Config{
+		gameStorage, err := ddb.NewGameStorage(ddb.GameStorageConfig{
 			DynamoClient: dynamoClient,
 			TableName:    cfg.Storage.DynamoDB.GameTableName,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize game storage due: %w", err)
 		}
+
 		// initialize battle storage
-		battleStorage, err := ddbbattlestrg.New(ddbbattlestrg.Config{
+		battleStorage, err := ddb.NewBattleStorage(ddb.BattleStorageConfig{
 			DynamoClient: dynamoClient,
 			TableName:    cfg.Storage.DynamoDB.BattleTableName,
 		})
@@ -107,18 +103,21 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize sql client due: %w", err)
 		}
+
 		// initialize monster storage
-		monsterStorage, err := sqlmonstrg.New(sqlmonstrg.Config{SQLClient: sqlClient})
+		monsterStorage, err := mysql.NewMonsterStorage(mysql.MonsterStorageConfig{SQLClient: sqlClient})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize monster storage due: %w", err)
 		}
+
 		// initialize game storage
-		gameStorage, err := sqlgamestrg.New(sqlgamestrg.Config{SQLClient: sqlClient})
+		gameStorage, err := mysql.NewGameStorage(mysql.GameStorageConfig{SQLClient: sqlClient})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize game storage due: %w", err)
 		}
+
 		// initialize battle storage
-		battleStorage, err := sqlbattlestrg.New(sqlbattlestrg.Config{SQLClient: sqlClient})
+		battleStorage, err := mysql.NewBattleStorage(mysql.BattleStorageConfig{SQLClient: sqlClient})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize battle storage due: %w", err)
 		}

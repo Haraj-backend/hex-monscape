@@ -1,14 +1,12 @@
-package monstrg
+package ddb
 
 import (
 	"context"
-	"log"
 	"os"
 	"testing"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/dynamodb/shared"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -19,35 +17,34 @@ var partners, enemies []entity.Monster
 
 func init() {
 	// seed data to dynamodb
-	ddbClient := shared.NewLocalTestDDBClient()
-	monsterRows := []shared.MonsterRow{
-		newMonsterRow(true),
-		newMonsterRow(true),
-		newMonsterRow(false),
-		newMonsterRow(false),
+	ddbClient := newTestDDBClient()
+	rows := []monsterRow{
+		newTestMonsterRow(true),
+		newTestMonsterRow(true),
+		newTestMonsterRow(false),
+		newTestMonsterRow(false),
 	}
-	for _, monsterRow := range monsterRows {
+	for _, row := range rows {
 		// put monster row to dynamodb
-		item, _ := dynamodbattribute.MarshalMap(monsterRow)
+		item, _ := dynamodbattribute.MarshalMap(row)
 		_, err := ddbClient.PutItem(&dynamodb.PutItemInput{
-			TableName: aws.String(os.Getenv(shared.TestConfig.EnvKeyMonsterTableName)),
+			TableName: aws.String(os.Getenv(envKeyMonsterTableName)),
 			Item:      item,
 		})
 		if err != nil {
-			log.Printf("[RDebug] item: %+v", item)
 			panic(err)
 		}
 		// append monster row to partners & enemies for later tests
-		if monsterRow.IsPartnerable == 1 {
-			partners = append(partners, *monsterRow.ToMonster())
+		if row.IsPartnerable == 1 {
+			partners = append(partners, *row.toMonster())
 		}
 		// we also include partnerable monsters to enemies so the enemies can be more vary
-		enemies = append(enemies, *monsterRow.ToMonster())
+		enemies = append(enemies, *row.toMonster())
 	}
 }
 
 func TestGetAvailablePartners(t *testing.T) {
-	storage := newStorage(t)
+	storage := newMonsterStorage(t)
 
 	availablePartners, err := storage.GetAvailablePartners(context.Background())
 	require.NoError(t, err)
@@ -55,7 +52,7 @@ func TestGetAvailablePartners(t *testing.T) {
 }
 
 func TestGetPossibleEnemies(t *testing.T) {
-	storage := newStorage(t)
+	storage := newMonsterStorage(t)
 
 	possibleEnemies, err := storage.GetPossibleEnemies(context.Background())
 	require.NoError(t, err)
@@ -63,7 +60,7 @@ func TestGetPossibleEnemies(t *testing.T) {
 }
 
 func TestGetPartner(t *testing.T) {
-	storage := newStorage(t)
+	storage := newMonsterStorage(t)
 
 	// define test cases
 	testCases := []struct {
@@ -93,18 +90,18 @@ func TestGetPartner(t *testing.T) {
 	}
 }
 
-func newStorage(t *testing.T) *Storage {
-	storage, err := New(Config{
-		DynamoClient: shared.NewLocalTestDDBClient(),
-		TableName:    os.Getenv(shared.TestConfig.EnvKeyMonsterTableName),
+func newMonsterStorage(t *testing.T) *MonsterStorage {
+	storage, err := NewMonsterStorage(MonsterStorageConfig{
+		DynamoClient: newTestDDBClient(),
+		TableName:    os.Getenv(envKeyMonsterTableName),
 	})
 	require.NoError(t, err)
 
 	return storage
 }
 
-func newMonsterRow(isPartnerable bool) shared.MonsterRow {
-	row := shared.ToMonsterRow(*(testutil.NewTestMonster()))
+func newTestMonsterRow(isPartnerable bool) monsterRow {
+	row := newMonsterRow(*(testutil.NewTestMonster()))
 	if isPartnerable {
 		row.IsPartnerable = 1
 	}

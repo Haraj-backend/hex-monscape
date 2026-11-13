@@ -1,4 +1,4 @@
-package gamestrg_test
+package memory
 
 import (
 	"context"
@@ -7,14 +7,13 @@ import (
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 	"github.com/Haraj-backend/hex-monscape/internal/core/testutil"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/memory/gamestrg"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSaveGetGame(t *testing.T) {
 	// init storage & game
-	strg := gamestrg.New()
-	expGame := initNewGame()
+	strg := NewGameStorage()
+	expGame := newGame()
 
 	// get game, supposedly the returned game is nil
 	game, err := strg.GetGame(context.Background(), expGame.ID)
@@ -33,7 +32,7 @@ func TestSaveGetGame(t *testing.T) {
 	require.Equal(t, expGame, game, "unexpected game")
 }
 
-func initNewGame() *entity.Game {
+func newGame() *entity.Game {
 	currentTs := time.Now().Unix()
 	game, _ := entity.NewGame(entity.GameConfig{
 		PlayerName: "Riandy R.N",

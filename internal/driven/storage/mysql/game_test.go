@@ -1,4 +1,4 @@
-package gamestrg_test
+package mysql
 
 import (
 	"context"
@@ -9,16 +9,12 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/gamestrg"
-	"github.com/Haraj-backend/hex-monscape/internal/driven/storage/mysql/shared"
 	"github.com/stretchr/testify/require"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestSaveGameGetGame(t *testing.T) {
 	// initialize storage
-	strg := newStorage(t)
+	strg := newGameStorage(t)
 
 	// save Game
 	g := newGame(t)
@@ -35,7 +31,7 @@ func TestSaveGameGetGame(t *testing.T) {
 
 func TestGetGameNotFound(t *testing.T) {
 	// initialize storage
-	strg := newStorage(t)
+	strg := newGameStorage(t)
 
 	// game shouldn't exists in database
 	savedGame, err := strg.GetGame(context.Background(), uuid.NewString())
@@ -45,12 +41,12 @@ func TestGetGameNotFound(t *testing.T) {
 
 func newGame(t *testing.T) entity.Game {
 	// ini sql client
-	sqlClient, err := shared.NewTestSQLClient()
+	sqlClient, err := newTestSQLClient()
 	require.NoError(t, err)
 
 	// insert partner to database
-	partnerRow := shared.NewTestMonsterRow(true)
-	err = shared.InsertMonster(sqlClient, partnerRow)
+	partnerRow := newTestMonsterRow(true)
+	err = insertMonster(sqlClient, partnerRow)
 	require.NoError(t, err)
 
 	nowTs := time.Now().Unix()
@@ -60,17 +56,17 @@ func newGame(t *testing.T) entity.Game {
 		CreatedAt:  nowTs,
 		BattleWon:  2,
 		Scenario:   entity.ScenarioBattle3,
-		Partner:    partnerRow.ToMonster(),
+		Partner:    partnerRow.toMonster(),
 	}
 }
 
-func newStorage(t *testing.T) *gamestrg.Storage {
+func newGameStorage(t *testing.T) *GameStorage {
 	// initialize sql client
-	sqlClient, err := shared.NewTestSQLClient()
+	sqlClient, err := newTestSQLClient()
 	require.NoError(t, err)
 
 	// initialize storage
-	strg, err := gamestrg.New(gamestrg.Config{SQLClient: sqlClient})
+	strg, err := NewGameStorage(GameStorageConfig{SQLClient: sqlClient})
 	require.NoError(t, err)
 
 	return strg

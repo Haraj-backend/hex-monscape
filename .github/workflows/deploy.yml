@@ -36,7 +36,7 @@ jobs:
               - "go.sum"
               - "build/package/lambda/**"
               - "cmd/lambda/**"
-              - "internal/driven/storage/dynamodb/**"
+              - "internal/driven/storage/ddb/**"
               - "deploy/aws/lambda/infras.yml"
               - "deploy/aws/lambda/service.yml"
 

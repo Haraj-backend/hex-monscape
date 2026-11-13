@@ -1,4 +1,4 @@
-package gamestrg
+package memory
 
 import (
 	"context"
@@ -7,12 +7,16 @@ import (
 	"github.com/Haraj-backend/hex-monscape/internal/core/entity"
 )
 
-type Storage struct {
+type GameStorage struct {
 	mu   sync.RWMutex
 	data map[string]entity.Game
 }
 
-func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
+func NewGameStorage() *GameStorage {
+	return &GameStorage{data: make(map[string]entity.Game)}
+}
+
+func (s *GameStorage) GetGame(ctx context.Context, gameID string) (*entity.Game, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -25,14 +29,11 @@ func (s *Storage) GetGame(ctx context.Context, gameID string) (*entity.Game, err
 	return &g, nil
 }
 
-func (s *Storage) SaveGame(ctx context.Context, game entity.Game) error {
+func (s *GameStorage) SaveGame(ctx context.Context, game entity.Game) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	s.data[game.ID] = game
-	return nil
-}
 
-func New() *Storage {
-	return &Storage{data: make(map[string]entity.Game)}
+	return nil
 }
