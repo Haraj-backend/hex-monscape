@@ -1,6 +1,6 @@
 # Driven adapters
 
-A driven adapter implements one or more **driven ports** (`XxxStorage` interfaces in `internal/core/service/<ctx>/storage.go`) using a concrete technology. It imports `internal/core/entity` for types and may import the service package only to assert that it satisfies the port. It never contains application logic.
+A driven adapter implements one or more **driven ports** (`XxxStorage` interfaces in `internal/core/service/<ctx>/storage.go`) using a concrete technology. It imports only `internal/core/entity` for types, never the service package. It never contains application logic.
 
 Canonical sources (one package per tech, one file per entity, plus `model.go`):
 - `internal/driven/storage/memory/{game,battle,monster,model}.go`
