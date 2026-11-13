@@ -124,7 +124,7 @@ There are `2` types of adapters:
 
 In the case of `Hex Monscape`, the example for `Driver Adapters` is [`rest.API`](../../internal/driver/rest/api.go).
 
-As for the examples for `Driven Adapters` are [`battlestrg.Storage`](../../internal/driven/storage/memory/battlestrg/storage.go), [`gamestrg.Storage`](../../internal/driven/storage/memory/gamestrg/storage.go), & [`monstrg.Storage`](../../internal/driven/storage/memory/monstrg/storage.go).
+As for the examples for `Driven Adapters` are [`memory.BattleStorage`](../../internal/driven/storage/memory/battle.go), [`memory.GameStorage`](../../internal/driven/storage/memory/game.go), & [`memory.MonsterStorage`](../../internal/driven/storage/memory/monster.go).
 
 ## Conclusion
 

@@ -22,12 +22,12 @@ MOD=$(go list -m)
    ```bash
    go list -f '{{.ImportPath}}: {{join .Imports " "}}' ./internal/driver/... | grep "$MOD/internal/driven"
    ```
-3. **Driven adapters do not import services.** They may import only `internal/core/entity` and their own `shared` package.
+3. **Driven adapters do not import services.** They may import only `internal/core/entity` (and `internal/core/testutil` in tests).
    ```bash
    go list -f '{{.ImportPath}}: {{join .Imports " "}}' ./internal/driven/... | grep "$MOD/internal/core/service"
    ```
    Expect no output.
-4. **Only `cmd/` constructs adapters and services.** Search for adapter constructors (`strg.New(`, `NewXxxStorage(`, `NewAPI(`) or `NewService(` calls outside `cmd/` and tests.
+4. **Only `cmd/` constructs adapters and services.** Search for adapter constructors (`NewXxxStorage(`, `NewAPI(`) or `NewService(` calls outside `cmd/` and tests.
 5. **Ports are defined in Core.** Interfaces that services depend on live in `internal/core/service/<ctx>/storage.go` (or `service.go`), not in adapter packages. Services hold interface fields, never concrete adapter types.
 
 ## B. Core design (violations unless noted)
@@ -55,7 +55,7 @@ MOD=$(go list -m)
 ## D. Construction and conventions (drift)
 
 16. Every constructor takes `XxxConfig` with `validate` tags and calls `Validate()` first. Required deps are tagged `nonnil`/`nonzero`.
-17. Naming: `Service`/`service`/`NewService`, `XxxStorage` ports, adapter types named after what they store (or `<name>strg.Storage` in per-entity packages), `serveXxx` handlers, `xxxReqBody` request bodies.
+17. Naming: `Service`/`service`/`NewService`, `XxxStorage` ports, adapter types named after what they store (`GameStorage`, `NewGameStorage`), `serveXxx` handlers, `xxxReqBody` request bodies.
 18. Persistence row models live in the adapter's `model.go` with mappers both ways.
 
 ## E. Readability (drift, but report it: this is what hex is for)

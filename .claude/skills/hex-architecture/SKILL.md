@@ -53,8 +53,8 @@ Makefile                        run, run-<variant>, test, test-build-all
 Group driven adapters by **kind**, then split only when there is a real reason:
 
 - **Default: one package per kind.** For example, a single `internal/driven/storage` package with one file per concern (`result.go`, `progress.go`, `catalog.go`) and a shared `model.go` for row models. `cmd/` then imports one package, without aliases.
-- **Split by tech** (`storage/memory`, `storage/mysql`, `storage/dynamodb`) when there are **alternative implementations of the same ports** that `cmd/` switches between. This is why hex-monscape has per-tech packages: the server runs on memory, MySQL, or DynamoDB.
-- **Split by entity** (`<tech>/<name>strg/`) only when a tech package gets big enough that one package is hard to navigate. hex-monscape does this for its three storage techs. Do not copy it into an app with one storage tech and a handful of files.
+- **Split by tech** (`storage/memory`, `storage/mysql`, `storage/ddb`) when there are **alternative implementations of the same ports** that `cmd/` switches between. This is why hex-monscape has per-tech packages: the server runs on memory, MySQL, or DynamoDB.
+- **Split by entity** (`<tech>/<name>strg/`) only when a tech package gets big enough that one package is hard to navigate. hex-monscape does not need this: each tech package holds one file per entity (`game.go`, `battle.go`, `monster.go`) plus a `model.go`.
 
 Core services stay **one package per context**, because each context owns a different set of ports. Merge contexts only when they share almost all of their ports.
 
@@ -68,7 +68,7 @@ Core services stay **one package per context**, because each context owns a diff
 | Not found | Storage and external clients return `nil, nil` (or an empty list). The service converts that into a sentinel error or a skip. Adapter-internal "not found" errors never leave the adapter. |
 | Errors | Sentinel `var ErrXxx = errors.New("...")` in the service package. Infra errors are wrapped as `fmt.Errorf("unable to <do X> due: %w", err)`. Entity errors (e.g. `entity.ErrInvalidState`) are mapped to service errors. |
 | Entities | Exported fields, **no JSON/DB tags**. Typed string enums (`type State string`). Behavior and pure rules (filters, scoring, metrics) live on entities or as functions in `entity`. `NewXxx(XxxConfig)` sets IDs (`uuid.NewString()`) and defaults. |
-| Driven adapter | Type named after what it stores (`ResultStorage`, `GameStorage`) with `NewXxx(XxxConfig)`. In per-entity packages the legacy form `<name>strg.Storage` + `New(Config)` is fine. Persistence row models live in `model.go` with mappers both ways. |
+| Driven adapter | Type named after what it stores (`ResultStorage`, `GameStorage`) with `NewXxx(XxxConfig)`. Persistence row models live in `model.go` with mappers both ways. |
 | REST adapter | `APIConfig` holds Service interfaces only. Handlers are named `serveXxx`; request bodies `xxxReqBody` with `Validate()`. Error codes are `ERR_UPPER_SNAKE`. Every response uses the `RespBody` envelope, with `conjson` producing snake_case keys from entities. |
 | Code layout | Separate logical steps with a blank line, e.g. after an `if err != nil { ... }` block and before the next step. Keep together what belongs together: the `nil` check of a call stays right under its `err` check, and `defer` stays right under the resource it closes. Use short lowercase `// step` comments for non-obvious steps (`// get partner instance`). |
 | Names | Names must say what a thing *is*. When scope grows (e.g. crawl "topics" now also include company orgs), rename (`CurrentTopic` → `CurrentUnit`). Keep old wire or file keys in the row model when renaming would break existing data. |
@@ -116,7 +116,7 @@ Run through [references/review-checklist.md](references/review-checklist.md). Re
 ## Pitfalls to avoid
 - Driver error mapping must use `errors.Is`, not `switch err { case ...: }`, so wrapped errors still map correctly (see `handleServiceError` in `internal/driver/rest/api.go`).
 - Always check `err` first, then `nil`. Checking `game == nil` before `err` makes a storage failure surface as `ErrGameNotFound`.
-- Copying hex-monscape's per-tech, per-entity storage packages into an app with one storage tech. You end up with many one-file packages and a `dep.go` full of import aliases.
+- Copying hex-monscape's per-tech storage packages into an app with one storage tech, or splitting a tech package per entity before it is big. You end up with many one-file packages and a `dep.go` full of import aliases.
 - Copying style mechanically, e.g. writing no blank lines between steps because a reference file was dense. Readability beats imitation.
 - Keeping state that can be derived from other state (e.g. a second "seen IDs" set that is always a subset of the first). It makes maintainers reason about a difference that does not exist.
 - Letting an empty result overwrite good data. When a use case publishes or replaces data (export, sync), return a sentinel such as `ErrNoResults` instead of writing an empty file.

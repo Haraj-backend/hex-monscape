@@ -44,13 +44,13 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 	var deps storageDeps
 	switch cfg.Storage.Type {
 	case storageTypeMemory:
-		deps.TodoTaskStorage = memtaskstrg.New()
+		deps.TodoTaskStorage = memory.NewTaskStorage()
 	case storageTypeMySQL:
 		sqlClient, err := sqlx.Open("mysql", cfg.Storage.MySQL.SQLDSN)
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize sql client due: %v", err)
 		}
-		taskStorage, err := sqltaskstrg.New(sqltaskstrg.Config{SQLClient: sqlClient})
+		taskStorage, err := mysql.NewTaskStorage(mysql.TaskStorageConfig{SQLClient: sqlClient})
 		if err != nil {
 			return nil, fmt.Errorf("unable to initialize task storage due: %v", err)
 		}
@@ -62,7 +62,7 @@ func initStorageDeps(cfg config) (*storageDeps, error) {
 }
 ```
 
-When adapters live in per-tech, per-entity packages, import aliases are prefixed by tech (`memtaskstrg`, `sqltaskstrg`, `ddbtaskstrg`). If `dep.go` needs more than a few aliases for one tech, the packages are probably too granular. Merge them into one package per kind (see "Package granularity" in SKILL.md).
+With one package per tech (`storage/memory`, `storage/mysql`, `storage/ddb`), `dep.go` imports each package once without aliases, as in hex-monscape's `cmd/server/dep.go`. Name a package so it does not clash with the SDK it wraps (hex-monscape uses `ddb` because `dynamodb` is the AWS SDK package). If `dep.go` needs import aliases for adapters, the packages are probably too granular. Merge them (see "Package granularity" in SKILL.md).
 
 When one deliverable has several subcommands, write one small builder per service (`newCrawlService(cfg, logger)`, `newExportService(cfg, logger)`). Each subcommand then builds only what it needs, and missing config for an unused adapter does not block it. Separate each "construct + check err" block with a blank line so the wiring reads as a list of steps.
 
