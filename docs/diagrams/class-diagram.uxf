@@ -91,14 +91,14 @@ _+StateLose: entity.State_</panel_attributes>
     <panel_attributes>&lt;&lt;battle.Service&gt;&gt;
 --
 -gameStorage: battle.GameStorage
--battleStorage: battle.MonsterStorage
+-battleStorage: battle.BattleStorage
 -monsterStorage: battle.MonsterStorage
 --
-+StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+DecideTurn(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+Attack(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+Surrender(ctx: context.Context, gameID: string): (*battle.Battle, error)
++StartBattle(ctx: context.Context, gameID: string): (*entity.Battle, error)
++GetBattle(ctx: context.Context, gameID: string): (*entity.Battle, error)
++DecideTurn(ctx: context.Context, gameID: string): (*entity.Battle, error)
++Attack(ctx: context.Context, gameID: string): (*entity.Battle, error)
++Surrender(ctx: context.Context, gameID: string): (*entity.Battle, error)
 _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attributes>
     <additional_attributes/>
   </element>
@@ -121,10 +121,10 @@ _+NewService(cfg: battle.ServiceConfig): (*battle.Service, error)_</panel_attrib
       <w>459</w>
       <h>54</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;battle.MonsterStorage&gt;&gt;
+    <panel_attributes>&lt;&lt;battle.BattleStorage&gt;&gt;
 --
-+GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+SaveBattle(ctx: context.Context, b: battle.Battle): error</panel_attributes>
++GetBattle(ctx: context.Context, gameID: string): (*entity.Battle, error)
++SaveBattle(ctx: context.Context, b: entity.Battle): error</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -272,13 +272,13 @@ _+NewService(cfg: play.ServiceConfig): (play.Service, error)_</panel_attributes>
       <w>450</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>gamestrg.Storage
+    <panel_attributes>memory.GameStorage
 --
 -data: map[string]entity.Game
 --
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +SaveGame(ctx: context.Context, game: entity.Game): error
-_+New(): *gamestrg.Storage_</panel_attributes>
+_+NewGameStorage(): *memory.GameStorage_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -300,13 +300,13 @@ _+New(): *gamestrg.Storage_</panel_attributes>
       <w>459</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>battlestrg.Storage
+    <panel_attributes>memory.BattleStorage
 --
--data: map[string]battle.Battle
+-data: map[string]entity.Battle
 --
-+GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+SaveBattle(ctx: context.Context, b: battle.Battle): error
-_+New(): *battlestrg.Storage_</panel_attributes>
++GetBattle(ctx: context.Context, gameID: string): (*entity.Battle, error)
++SaveBattle(ctx: context.Context, b: entity.Battle): error
+_+NewBattleStorage(): *memory.BattleStorage_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -411,7 +411,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
     <panel_attributes>battle.ServiceConfig
 --
 +GameStorage: battle.GameStorage
-+BattleStorage: battle.MonsterStorage
++BattleStorage: battle.BattleStorage
 +MonsterStorage: battle.MonsterStorage
 --
 +Validate(): error</panel_attributes>
@@ -436,7 +436,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
       <w>171</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>battle.BattleConfig
+    <panel_attributes>entity.BattleConfig
 --
 +GameID: string
 +Partner: entity.Monster
@@ -561,12 +561,12 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>0</x>
+      <x>-62</x>
       <y>936</y>
-      <w>486</w>
+      <w>610</w>
       <h>117</h>
     </coordinates>
-    <panel_attributes>monstrg.Storage
+    <panel_attributes>memory.MonsterStorage
 --
 -partnerMap: map[string]entity.Monster
 -enemyMap: map[string]entity.Monster
@@ -574,7 +574,7 @@ _+NewAPI(cfg: rest.APIConfig): (*rest.API, error)_</panel_attributes>
 +GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
 +GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
 +GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
-_+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
+_+NewMonsterStorage(cfg: memory.MonsterStorageConfig): (*memory.MonsterStorage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -591,15 +591,14 @@ _+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>144</x>
+      <x>119</x>
       <y>1134</y>
-      <w>180</w>
+      <w>230</w>
       <h>72</h>
     </coordinates>
-    <panel_attributes>monstrg.Config
+    <panel_attributes>memory.MonsterStorageConfig
 --
-+Partners: []entity.Monster
-+Enemies: []entity.Monster
++MonsterData: []byte
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -618,12 +617,12 @@ _+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>3717</x>
+      <x>3690</x>
       <y>1053</y>
-      <w>486</w>
+      <w>610</w>
       <h>117</h>
     </coordinates>
-    <panel_attributes>monstrg.Storage
+    <panel_attributes>memory.MonsterStorage
 --
 -partnerMap: map[string]entity.Monster
 -enemyMap: map[string]entity.Monster
@@ -631,21 +630,20 @@ _+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
 +GetAvailablePartners(ctx: context.Context): ([]entity.Monster, error)
 +GetPartner(ctx: context.Context, partnerID: string): (*entity.Monster, error)
 +GetPossibleEnemies(ctx: context.Context): ([]entity.Monster, error)
-_+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
+_+NewMonsterStorage(cfg: memory.MonsterStorageConfig): (*memory.MonsterStorage, error)_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>3861</x>
+      <x>3871</x>
       <y>1260</y>
-      <w>180</w>
+      <w>230</w>
       <h>72</h>
     </coordinates>
-    <panel_attributes>monstrg.Config
+    <panel_attributes>memory.MonsterStorageConfig
 --
-+Partners: []entity.Monster
-+Enemies: []entity.Monster
++MonsterData: []byte
 --
 +Validate(): error</panel_attributes>
     <additional_attributes/>
@@ -653,7 +651,7 @@ _+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>3942</x>
+      <x>3977</x>
       <y>1161</y>
       <w>27</w>
       <h>117</h>
@@ -664,7 +662,7 @@ _+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>3942</x>
+      <x>3977</x>
       <y>945</y>
       <w>27</w>
       <h>126</h>
@@ -680,13 +678,13 @@ _+New(cfg: monstrg.Config): (*monstrg.Storage, error)_</panel_attributes>
       <w>450</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>gamestrg.Storage
+    <panel_attributes>memory.GameStorage
 --
 -data: map[string]entity.Game
 --
 +GetGame(ctx: context.Context, gameID: string): (*entity.Game, error)
 +SaveGame(ctx: context.Context, game: entity.Game): error
-_+New(): *gamestrg.Storage_</panel_attributes>
+_+NewGameStorage(): *memory.GameStorage_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -752,14 +750,14 @@ _+New(): *gamestrg.Storage_</panel_attributes>
     <panel_attributes>battle.service
 --
 -gameStorage: battle.GameStorage
--battleStorage: battle.MonsterStorage
+-battleStorage: battle.BattleStorage
 -monsterStorage: battle.MonsterStorage
 --
-+StartBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+GetBattle(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+DecideTurn(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+Attack(ctx: context.Context, gameID: string): (*battle.Battle, error)
-+Surrender(ctx: context.Context, gameID: string): (*battle.Battle, error)</panel_attributes>
++StartBattle(ctx: context.Context, gameID: string): (*entity.Battle, error)
++GetBattle(ctx: context.Context, gameID: string): (*entity.Battle, error)
++DecideTurn(ctx: context.Context, gameID: string): (*entity.Battle, error)
++Attack(ctx: context.Context, gameID: string): (*entity.Battle, error)
++Surrender(ctx: context.Context, gameID: string): (*entity.Battle, error)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

@@ -30,13 +30,12 @@ jobs:
           filters: |
             deploy-game:
               - "internal/**"
-              - ".github/workflows/deploy-dev.yml"
-              - ".github/workflows/run-tests.yml"
+              - ".github/workflows/deploy.yml"
+              - ".github/workflows/ci.yml"
               - "go.mod"
               - "go.sum"
               - "build/package/lambda/**"
               - "cmd/lambda/**"
-              - "internal/driven/storage/dynamodb/**"
               - "deploy/aws/lambda/infras.yml"
               - "deploy/aws/lambda/service.yml"
 
